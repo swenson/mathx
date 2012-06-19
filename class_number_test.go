@@ -6,14 +6,13 @@ import (
 )
 
 
-
 func TestRandomClassNumbers(t *testing.T) {
   for _, testCase := range classNumberTestCases {
     p := ParseIntPoly(testCase.polyString)
-    if p.Discriminant().Sign() > 0 {
+    if p.Degree() > 2 {
       continue
     }
-    if p.Degree() > 2 {
+    if p.Discriminant().Sign() > 0 {
       continue
     }
     h := testCase.classNumber
@@ -63,7 +62,6 @@ func TestClassNumber1(t *testing.T) {
     }
   }
 }
-
 
 var classNumberTestCases = []struct {
   classNumber int

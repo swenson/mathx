@@ -1,7 +1,6 @@
 package ntag
 
 import (
-	"fmt"
 	"math"
 	"math/big"
  )
@@ -13,7 +12,6 @@ var intOne = big.NewInt(1)
 func classNumberImagQuadSlow(k *NumberField) int {
 	D := k.Discriminant().Int64()
 	D = makeFundamentalDiscriminant(D)
-	fmt.Println("Fundy", D)
 	h := 1
 	aD := D
 	if aD < 0 {

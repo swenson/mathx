@@ -1,7 +1,6 @@
 package ntag
 
 import (
-  "fmt"
   "math"
   "math/big"
  )
@@ -55,16 +54,10 @@ func Factorization64(n int64) []factor64 {
   factors := []factor64{}
   if n < 0 {
     factors = append(factors, factor64{-1, 1})
+    n = -n
   }
   if n <= 1 {
     return factors
-  }
-  twos := 0
-  for twos := 0; n % 2 == 0; twos++ {
-    n = n / 2
-  }
-  if twos > 0 {
-    factors = append(factors, factor64{2, twos})
   }
   for _, p := range primes {
     x := 0
@@ -122,11 +115,11 @@ func makeFundamentalDiscriminant(D int64) int64 {
     return D
   }
   factors := Factorization64(D)
-  fmt.Println(factors)
   for _, f := range factors {
     ex := f.exponent
     for ex >= 2 {
       D = D / (f.prime * f.prime)
+      ex -= 2
     }
   }
   return D
