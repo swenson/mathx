@@ -71,6 +71,63 @@ func xstring(i int) string {
   return "x^" + strconv.Itoa(i)
 }
 
+func eliminateSpaces(s string) string {
+  t := ""
+  for _, c := range s {
+    if c == ' ' {
+      t += string(c)
+    }
+  }
+  return t
+}
+
+func ParseIntPoly(s string) *IntPolynomial {
+  s = eliminateSpaces(s)
+  coeffs := make([]big.Int, 0)
+
+  neg := false
+  inX := false
+  degree := ""
+  coeff := ""
+  firstChar := true
+  for _, c := range s {
+    switch {
+    case c == 'x':
+      inX = true
+    case c == '^':
+    case c >= '0' && c <= '9':
+      if inX {
+        degree += string(c)
+      } else {
+        coeff += string(c)
+      }
+    case c == '+' || c == '-':
+      inX = false
+      if !firstChar {
+        coeffs = setCoeff(coeffs, degree, coeff, neg)        
+      }
+      neg = false
+      if c == '-' {
+        neg = true
+      }
+    }
+    firstChar = false
+  }
+  p := new(IntPolynomial)
+  p.coeffs = setCoeff(coeffs, degree, coeff, neg)
+  return p
+}
+
+func setCoeff(coeffs []big.Int, degreeS, coeff string, neg bool) []big.Int {
+  degree, _ := strconv.Atoi(degreeS)
+  for degree >= len(coeffs) {
+    coeffs = append(coeffs, *big.NewInt(0))
+  }
+  coeffs[degree].SetString(coeff, 10)
+  coeffs[degree].Neg(&coeffs[degree])
+  return coeffs
+}
+
 func (p *IntPolynomial) String() string {
   if p == nil {
     return "<nil>"

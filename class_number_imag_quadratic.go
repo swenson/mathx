@@ -7,6 +7,8 @@ import (
 
 var intOne = big.NewInt(1)
 
+// Compute the class number of an imaginary, quadratic number field.
+// Based on Henri Cohen, _A Course in Algebraic Number Theory_, Alg 5.3.5.
 func classNumberImagQuad(k *NumberField) int {
 	D := k.Discriminant().Int64()
 	h := 1
@@ -36,6 +38,8 @@ func classNumberImagQuad(k *NumberField) int {
 	return h
 }
 
+// Compute the square root of a large number.
+// Uses Newton's Method.
 func Sqrt(z *big.Int) *big.Int {
 	if z.Sign() < 0 {
 		return nil
@@ -60,7 +64,11 @@ func Sqrt(z *big.Int) *big.Int {
 	return s
 }
 
+// Tell if a number is a perfect square.
 func IsSquare(z *big.Int) bool {
+	if z.Sign() < 0 {
+		return false
+	}
 	s := Sqrt(z)
 	s.Mul(s, s)
 	return s.Cmp(z) == 0
