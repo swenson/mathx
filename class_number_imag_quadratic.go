@@ -17,7 +17,7 @@ package ntag
 import (
 	"math"
 	"math/big"
- )
+)
 
 var intOne = big.NewInt(1)
 
@@ -34,14 +34,14 @@ func classNumberImagQuadSlow(k *NumberField) int {
 	B := int64(math.Floor(math.Sqrt(float64(aD) / 3.0)))
 
 	for b := PosMod(D, 2); b <= B; b += 2 {
-		q := (b * b - D) / 4
+		q := (b*b - D) / 4
 		a := b
 		if a <= 1 {
 			a = 1
 		}
-		for a == 1 || a * a <= q {
-			if a != 1 && q % a == 0 {
-				if a == b || a * a == q || b == 0 {
+		for a == 1 || a*a <= q {
+			if a != 1 && q%a == 0 {
+				if a == b || a*a == q || b == 0 {
 					h++
 				} else {
 					h += 2
@@ -64,8 +64,7 @@ func Sqrt(z *big.Int) *big.Int {
 		return big.NewInt(1)
 	}
 
-
-  // initial guess
+	// initial guess
 	s := big.NewInt(0).Rsh(z, 1)
 	t := big.NewInt(0)
 

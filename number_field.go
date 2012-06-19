@@ -15,24 +15,24 @@
 package ntag
 
 type NumberField struct {
-  polynomial *IntPolynomial
+	polynomial *IntPolynomial
 }
 
 func MakeNumberField(poly *IntPolynomial) *NumberField {
-  k := new(NumberField)
-  k.polynomial = poly
-  return k
+	k := new(NumberField)
+	k.polynomial = poly
+	return k
 }
 
 func (k *NumberField) Degree() int {
-  return len(k.polynomial.coeffs) - 1
+	return len(k.polynomial.coeffs) - 1
 }
 
 func (k *NumberField) ClassNumber() int {
-  if k.Degree() == 2 {
-  	if k.polynomial.Discriminant().Sign() < 0 {
-      return classNumberImagQuadSlow(k)
-    }
-  }
-  return -1
+	if k.Degree() == 2 {
+		if k.polynomial.Discriminant().Sign() < 0 {
+			return classNumberImagQuadSlow(k)
+		}
+	}
+	return -1
 }
