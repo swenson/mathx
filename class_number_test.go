@@ -10,7 +10,10 @@ func TestRandomClassNumbers(t *testing.T) {
   for _, testCase := range classNumberTestCases {
     p := ParseIntPoly(testCase.polyString)
     h := testCase.classNumber
-    if MakeNumberField(p).ClassNumber() != h {
+    k := MakeNumberField(p)
+    hGot := k.ClassNumber()
+    if h2 != h {
+      fmt.Printf("%s expected class number %d got %d\n", p.String(), h, h2)
       t.Fail()
     }
   }
