@@ -1,6 +1,7 @@
 package ntag
 
 import (
+	"fmt"
 	"math"
 	"math/big"
  )
@@ -9,8 +10,10 @@ var intOne = big.NewInt(1)
 
 // Compute the class number of an imaginary, quadratic number field.
 // Based on Henri Cohen, _A Course in Algebraic Number Theory_, Alg 5.3.5.
-func classNumberImagQuad(k *NumberField) int {
+func classNumberImagQuadSlow(k *NumberField) int {
 	D := k.Discriminant().Int64()
+	D = makeFundamentalDiscriminant(D)
+	fmt.Println("Fundy", D)
 	h := 1
 	aD := D
 	if aD < 0 {
@@ -18,7 +21,7 @@ func classNumberImagQuad(k *NumberField) int {
 	}
 	B := int64(math.Floor(math.Sqrt(float64(aD) / 3.0)))
 
-	for b := D % 2; b <= B; b += 2 {
+	for b := PosMod(D, 2); b <= B; b += 2 {
 		q := (b * b - D) / 4
 		a := b
 		if a <= 1 {

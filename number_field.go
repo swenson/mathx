@@ -16,7 +16,9 @@ func (k *NumberField) Degree() int {
 
 func (k *NumberField) ClassNumber() int {
   if k.Degree() == 2 {
-    return classNumberImagQuad(k)
+  	if k.polynomial.Discriminant().Sign() < 0 {
+      return classNumberImagQuadSlow(k)
+    }
   }
   return -1
 }
