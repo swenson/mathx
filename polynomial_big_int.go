@@ -74,7 +74,7 @@ func xstring(i int) string {
 func eliminateSpaces(s string) string {
   t := ""
   for _, c := range s {
-    if c == ' ' {
+    if c != ' ' {
       t += string(c)
     }
   }
@@ -94,7 +94,6 @@ func ParseIntPoly(s string) *IntPolynomial {
     switch {
     case c == 'x':
       inX = true
-    case c == '^':
     case c >= '0' && c <= '9':
       if inX {
         degree += string(c)
@@ -102,16 +101,37 @@ func ParseIntPoly(s string) *IntPolynomial {
         coeff += string(c)
       }
     case c == '+' || c == '-':
+      if inX {
+        if len(degree) == 0 {
+          degree = "1"
+        }
+        if len(coeff) == 0 {
+          coeff = "1"
+        }
+      }
       inX = false
       if !firstChar {
         coeffs = setCoeff(coeffs, degree, coeff, neg)        
       }
+      coeff = ""
+      degree = ""
       neg = false
       if c == '-' {
         neg = true
       }
+    case c == '^':
+    default:
+      // Do nothing.
     }
     firstChar = false
+  }
+  if inX {
+    if len(degree) == 0 {
+      degree = "1"
+    }
+    if len(coeff) == 0 {
+      coeff = "1"
+    }
   }
   p := new(IntPolynomial)
   p.coeffs = setCoeff(coeffs, degree, coeff, neg)
@@ -124,13 +144,17 @@ func setCoeff(coeffs []big.Int, degreeS, coeff string, neg bool) []big.Int {
     coeffs = append(coeffs, *big.NewInt(0))
   }
   coeffs[degree].SetString(coeff, 10)
-  coeffs[degree].Neg(&coeffs[degree])
+  if neg {
+    coeffs[degree].Neg(&coeffs[degree])
+  }
   return coeffs
 }
 
 func (p *IntPolynomial) String() string {
   if p == nil {
     return "<nil>"
+  } else if p.Degree() == 0 {
+    return p.coeffs[0].String()
   }
   s := ""
   temp := big.NewInt(0)
@@ -140,7 +164,7 @@ func (p *IntPolynomial) String() string {
       s += xstring(i)
       continue
     } else if i == len(p.coeffs) - 1 {
-      s += c.String() + " * " + xstring(i)
+      s += c.String() + "*" + xstring(i)
       continue
     }
     if c.Sign() == 0 {

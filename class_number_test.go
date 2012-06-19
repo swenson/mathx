@@ -1,6 +1,7 @@
 package ntag
 
 import (
+  "fmt"
   "testing"
 )
 
@@ -12,9 +13,21 @@ func TestRandomClassNumbers(t *testing.T) {
     h := testCase.classNumber
     k := MakeNumberField(p)
     hGot := k.ClassNumber()
-    if h2 != h {
-      fmt.Printf("%s expected class number %d got %d\n", p.String(), h, h2)
-      t.Fail()
+    if hGot != h {
+      fmt.Printf("%s expected class number %d got %d\n", p.String(), h, hGot)
+      fmt.Println("Discriminant:", p.Discriminant())
+      t.FailNow()
+    }
+  }
+}
+
+func TestParsePolynomial(t *testing.T) {
+  testCases := []string{"x^2 + 5*x - 1001", "x^2", "-1*x", "2*x + 1", "x + 1", "x", "1", "2"}
+  for _, testCase := range testCases {
+    p := ParseIntPoly(testCase).String()
+    if p != testCase {
+      fmt.Printf("Parsed %s but got %s\n", testCase, p)
+      t.FailNow()
     }
   }
 }
