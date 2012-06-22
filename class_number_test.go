@@ -16,8 +16,23 @@ package ntag
 
 import (
 	"fmt"
+	"math"
 	"testing"
 )
+
+func dEquals(a, b float64) bool {
+	return math.Abs(a-b) < 1e-6
+}
+
+func TestRegulator(t *testing.T) {
+	p := ParseIntPoly("x^2 - 3*x + 1")
+	gotr := p.regulatorRealQuad()
+	r := 0.481211825059603 // From Sage.
+	if !dEquals(r, gotr) {
+		fmt.Printf("Poly %s regulator %f but got %f\n", p, r, gotr)
+		t.FailNow()
+	}
+}
 
 func TestRandomClassNumbers(t *testing.T) {
 	for _, testCase := range classNumberTestCases {
