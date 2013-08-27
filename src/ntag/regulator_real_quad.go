@@ -16,121 +16,74 @@
 package ntag
 
 import (
-	"fmt"
 	"math"
 	"math/big"
-
-//	"time"
 )
 
-func discTest(A, B, D *big.Int) bool {
-	a2 := big.NewInt(0).Mul(A, A)
-	b2 := big.NewInt(0).Mul(B, B)
-	b2.Mul(b2, D)
-	a2.Sub(a2, b2)
-	fmt.Printf("%v^2 - %v * %v^2 = %v\n", A, D, B, a2)
-	if a2.BitLen() <= 10 {
-		aint := a2.Int64()
-		return aint == 4 || aint == -4 || aint == 1 || aint == -1
-	}
-	return false
-}
-
-func (poly *IntPolynomial) fundamentalUnitRealQuad() (*big.Int, *big.Int) {
-	D := poly.Discriminant()
-	fmt.Printf("D = %v\n", D)
-	if D.BitLen() <= 10 {
-		dint := D.Int64()
-		if dint == -3 || dint == 5 {
-			return big.NewInt(1), big.NewInt(1)
-		}
-	}
-
-	A0 := big.NewInt(1)
-	B0 := big.NewInt(1)
-
-	A1 := big.NewInt(1) // 2 + D - 1
-	A1.Add(A1, D)
-	B1 := big.NewInt(2)
-
-	if discTest(A1, B1, D) {
-		return A1, B1
-	}
-
-	An := big.NewInt(0)
-	Bn := big.NewInt(0)
-	D1 := big.NewInt(0).Sub(D, big.NewInt(1))
-	two := big.NewInt(2)
-	temp := big.NewInt(0)
-
-	for i := 0; i < 10; i++ {
-		//An := 2*A1 + (D-1)*A0
-		//Bn := 2*B1 + (D-1)*B0
-		An.Mul(A1, two)
-		temp.Mul(D1, A0)
-		An.Add(An, temp)
-		Bn.Mul(B1, two)
-		temp.Mul(D1, B0)
-		Bn.Add(Bn, temp)
-
-		r, _ := big.NewRat(1, 1).SetFrac(An, Bn).Float64()
-
-		fmt.Printf("An = %s, Bn = %s, An/Bn = %f, %f\n", An.String(), Bn.String(), r, math.Sqrt(float64(D.Int64())))
-		//time.Sleep(time.Duration(10000000))
-		if discTest(An, Bn, D) {
-			return An, Bn
-		}
-		A0.Set(A1)
-		A1.Set(An)
-		B0.Set(B1)
-		B1.Set(Bn)
-	}
-	return An, Bn
-}
-
-func toFloat(a *big.Int) float64 {
-	x, _ := big.NewRat(1, 1).SetInt(a).Float64()
-	return x
-}
-
-// cohen, 5.7.1,  p. 270
+// cohen, 5.7.2,  p. 270
 func (poly *IntPolynomial) regulatorRealQuad() float64 {
 	D := poly.Discriminant().Int64()
-	fmt.Printf("D = %d\n", D)
-	f := math.Sqrt(float64(poly.Discriminant().Int64()))
+	f := math.Sqrt(float64(D))
 	d := int64(math.Floor(f))
-	b, a := poly.coeffs[1].Int64(), poly.coeffs[2].Int64()
+	var b int64
+	if d&1 == D&1 {
+		b = d
+	} else {
+		b = d - 1
+	}
+	var u, v int64
 	u1 := -b
-	u2 := int64(2) * a
+	u2 := int64(2)
 	v1 := int64(1)
 	v2 := int64(0)
 	p := b
-	q := 2 * a
-step2:
-	A := (p + d) / q
-	fmt.Println("A", A)
-	p = A*q - p
-	q = (D - p*p) / q
-	//q = (D - p*p) / q
-
-	t := A*u2 + u1
-	u1 = u2
-	u2 = t
-
-	t = A*v2 + v1
-	v1 = v2
-	v2 = t
-
-	if q == 2*a && PosMod(p, 2*a) == PosMod(b, 2*a) {
-		u := u2 / a
-		if u < 0 {
-			u = -u
+	q := int64(2)
+	for {
+		A := (p + d) / q
+		t := p
+		p = A*q - p
+		if t == p && v2 != 0 {
+			u = (u2*u2 + v2*v2*D) / q
+			v = (2 * u2 * v2) / q
+			break
 		}
-		v := v2 / a
-		if v < 0 {
-			v = -v
+		u1, u2 = u2, A*u2+u1
+		v1, v2 = v2, A*v2+v1
+		t = q
+		q = (D - p*p) / q
+
+		if q == t && v2 != 0 {
+			u = (u1*u2 + D*v1*v2) / q
+			v = (u1*v2 + u2*v1) / q
+			break
 		}
-		return math.Log((float64(u) + float64(v)*f) / 2.0)
 	}
-	goto step2
+	squareparts := dumbSquareFactors(D)
+	g := big.NewInt(0).GCD(nil, nil, big.NewInt(u), big.NewInt(v*squareparts)).Int64()
+	return math.Log((math.Abs(float64(u/g)) + math.Abs(float64(v/g))*f) / 2.0)
+}
+
+func dumbSquareFactors(n int64) int64 {
+	out := int64(1)
+	for n%4 == 0 {
+		out <<= 1
+		n >>= 2
+	}
+	if n%1 == 0 {
+		n >>= 1
+	}
+	s := math.Sqrt(float64(n))
+	for p := 3; p <= s; p += 2 {
+		for n%p == 0 {
+			if (n/p)%p == 0 {
+				out *= p
+				n /= p
+			}
+			n /= p
+		}
+		if n == 1 {
+			break
+		}
+	}
+	return out
 }
