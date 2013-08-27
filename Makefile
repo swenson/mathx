@@ -6,4 +6,4 @@ run: test
 	GOPATH=`pwd` go install ntag
 
 test:
-	GOPATH=`pwd` go test ntag
+	GOPATH=`pwd` go test ntag -test.timeout 0.1s
