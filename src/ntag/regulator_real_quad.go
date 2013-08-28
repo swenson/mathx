@@ -17,13 +17,24 @@ package ntag
 
 import (
 	"math"
-	"math/big"
 )
 
 // cohen, 5.7.2,  p. 270
 func (poly *IntPolynomial) regulatorRealQuad() float64 {
 	D := poly.Discriminant().Int64()
 	f := math.Sqrt(float64(D))
+	c := -poly.coeffs[0].Int64()
+	// try all of the small elements
+	for x := int64(1); x < 100; x++ {
+		for y := int64(1); y < 100; y++ {
+			z := x*x - c*y*y
+			if z == 4 || z == -4 {
+				u := x
+				v := y
+				return math.Log((float64(u) + float64(v)*math.Sqrt(float64(c))) / 2.0)
+			}
+		}
+	}
 	d := int64(math.Floor(f))
 	var b int64
 	if d&1 == D&1 {
@@ -58,32 +69,5 @@ func (poly *IntPolynomial) regulatorRealQuad() float64 {
 			break
 		}
 	}
-	squareparts := dumbSquareFactors(D)
-	g := big.NewInt(0).GCD(nil, nil, big.NewInt(u), big.NewInt(v*squareparts)).Int64()
-	return math.Log((math.Abs(float64(u/g)) + math.Abs(float64(v/g))*f) / 2.0)
-}
-
-func dumbSquareFactors(n int64) int64 {
-	out := int64(1)
-	for n%4 == 0 {
-		out <<= 1
-		n >>= 2
-	}
-	if n%1 == 0 {
-		n >>= 1
-	}
-	s := math.Sqrt(float64(n))
-	for p := 3; p <= s; p += 2 {
-		for n%p == 0 {
-			if (n/p)%p == 0 {
-				out *= p
-				n /= p
-			}
-			n /= p
-		}
-		if n == 1 {
-			break
-		}
-	}
-	return out
+	return math.Log((math.Abs(float64(u)) + math.Abs(float64(v))*f) / 2.0)
 }
