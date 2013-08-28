@@ -1,3 +1,4 @@
+// Copyright (c) 2013 Christopher Swenson.
 // Copyright (c) 2012 Google, Inc. All Rights Reserved.
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +16,6 @@
 package ntag
 
 import (
-	"fmt"
 	"math"
 	"testing"
 )
@@ -26,13 +26,11 @@ func dEquals(a, b float64) bool {
 
 func TestRegulator(t *testing.T) {
 	for _, testCase := range regulatorTestCases {
-		fmt.Printf("Testing %s\n", testCase.polyString)
 		p := ParseIntPoly(testCase.polyString)
 		gotr := p.regulatorRealQuad()
 		r := testCase.regulator
 		if !dEquals(r, gotr) {
-			fmt.Printf("Poly %s regulator %f but got %f\n", p, r, gotr)
-			t.FailNow()
+			t.Errorf("Poly %s regulator %f but got %f\n", p, r, gotr)
 		}
 	}
 }
@@ -50,9 +48,7 @@ func TestRandomClassNumbers(t *testing.T) {
 		k := MakeNumberField(p)
 		hGot := k.ClassNumber()
 		if hGot != h {
-			fmt.Printf("%s expected class number %d got %d\n", p.String(), h, hGot)
-			fmt.Println("Discriminant:", p.Discriminant())
-			t.FailNow()
+			t.Errorf("%s expected class number %d got %d, discriminant %s\n", p.String(), h, hGot, p.Discriminant().String())
 		}
 	}
 }
@@ -62,8 +58,7 @@ func TestParsePolynomial(t *testing.T) {
 	for _, testCase := range testCases {
 		p := ParseIntPoly(testCase).String()
 		if p != testCase {
-			fmt.Printf("Parsed %s but got %s\n", testCase, p)
-			t.FailNow()
+			t.Errorf("Parsed %s but got %s\n", testCase, p)
 		}
 	}
 }
