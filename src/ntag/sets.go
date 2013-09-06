@@ -18,7 +18,7 @@ type Set struct {
 	elements map[int]bool
 }
 
-func IntSetFromSlice(nums []int) *Set {
+func NewIntSet(nums []int) *Set {
 	s := new(Set)
 	s.elements = make(map[int]bool)
 	for _, n := range nums {

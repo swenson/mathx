@@ -56,6 +56,10 @@ func classNumberImagQuadSlow(k *NumberField) int {
 // Compute the square root of a large number.
 // Uses Newton's Method.
 func Sqrt(z *big.Int) *big.Int {
+	if z.BitLen() <= 52 {
+		sqrt := int64(math.Sqrt(float64(z.Int64())))
+		return big.NewInt(sqrt)
+	}
 	if z.Sign() < 0 {
 		return nil
 	} else if z.Sign() == 0 {
@@ -68,7 +72,7 @@ func Sqrt(z *big.Int) *big.Int {
 	s := big.NewInt(0).Rsh(z, 1)
 	t := big.NewInt(0)
 
-	for s.Cmp(t) != 0 {
+	for i := 0; s.Cmp(t) != 0 && i < 100; i++ {
 		// compute iteration
 		t.Div(z, s)
 		t.Add(t, s)

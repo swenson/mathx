@@ -23,7 +23,7 @@ type IntPolynomial struct {
 	coeffs []big.Int
 }
 
-func MakeIntPolynomial64(coeffs ...int64) *IntPolynomial {
+func NewIntPolynomial64(coeffs ...int64) *IntPolynomial {
 	p := new(IntPolynomial)
 	p.coeffs = make([]big.Int, len(coeffs))
 	for i, c := range coeffs {
@@ -38,7 +38,7 @@ func (p *IntPolynomial) Degree() int {
 
 func (p *IntPolynomial) IsIrreducible() bool {
 	g := p.coeffs[0]
-	if p.coeffs[0].Sign() == 0 {
+	if g.Sign() == 0 {
 		return false
 	}
 	// check the gcd of the coefficients
@@ -46,13 +46,10 @@ func (p *IntPolynomial) IsIrreducible() bool {
 		if c.Sign() == 0 {
 			continue
 		}
-		g.GCD(nil, nil, &g, &c)
+		(&g).GCD(nil, nil, &g, &c)
 		if g.Cmp(intOne) == 0 {
-			return true
+			break
 		}
-	}
-	if g.Sign() == 0 {
-		return false
 	}
 	if g.Cmp(intOne) != 0 {
 		return false
@@ -70,6 +67,36 @@ func (p *IntPolynomial) IsIrreducible() bool {
 		b2.Sub(b2, ac4)
 		return !IsSquare(b2)
 	}
+	/*
+		// check the gcd of the coefficients
+		a0 := p.coeffs[0].Int64()
+		g.SetInt64(a0)
+		for i, c := range p.coeffs {
+			if i == 0 {
+				continue
+			}
+			if i == len(p.coeffs)-1 {
+				break
+			}
+			if c.Sign() == 0 {
+				continue
+			}
+			g.GCD(nil, nil, &g, &c)
+		}
+		if g.Cmp(intOne) != 0 {
+			sufficient := true
+			for _, primeExp := range Factorization64(g.Int64()) {
+				p := primeExp.prime
+				if a0%(p*p) == 0 {
+					sufficient = false
+					break
+				}
+			}
+			if sufficient {
+				return true
+			}
+		}
+	*/
 	// TODO: implement more cases
 	return true
 }
