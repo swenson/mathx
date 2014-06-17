@@ -7,3 +7,4 @@ run: test
 
 test:
 	GOPATH=`pwd` go test mathx -test.timeout 0.1s
+	GOPATH=`pwd` go test mathx/float -test.timeout 0.1s

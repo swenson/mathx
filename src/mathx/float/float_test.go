@@ -24,36 +24,18 @@ import (
 
 func TestFloatAdd(t *testing.T) {
   x := new(Float)
+  x.sign = true
+  x.exp = 1
+  x.mantissa = (*Int)(big.NewInt(1))
   y := new(Float)
+  y.sign = true
+  y.exp = 1
+  y.mantissa = (*Int)(big.NewInt(1))
   z := x.Add(y)
-  fmt.Println(z)
-  f := big.Int(z.mantissa)
-  if f.Sign() == 0 {
+
+  one := (*Int)(big.NewInt(1))
+  if z.mantissa.Cmp(one) != 0 || z.exp != 2 || !z.sign {
+    fmt.Printf("%s + %s = %s\n", x, y, z)
     t.FailNow()
   }
 }
-
-type A int
-type B A
-
-func (x *A) f() int {
-  return 42
-}
-
-func g(b B) int {
-  a := A(b)
-  if a.f() == 1 {
-    return 2
-  }
-  if A(b).f() == 1 {
-    return 2
-  }
-  return 1
-}
-
-/*func TestGG(t *testing.T) {
-  b := new(B)
-  if A(b).f() != 42 {
-    t.FailNow()
-  }
-}*/
