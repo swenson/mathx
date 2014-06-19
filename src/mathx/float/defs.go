@@ -41,13 +41,23 @@ func NewFloat(f float64) *Float {
 	x.precision = 52
 	// Convert from IEEE 754 double
 	bits := math.Float64bits(f)
-	if (bits >> 63) == 0 {
+	s := bits >> 63
+	e := int64((bits >> 52) & 0x7ff)
+	m := int64(bits & uint64((int64(1)<<52)-1))
+	if s == 0 && e == 0 && m == 0 {
+		x.sign = false
+		x.exp = 0
+		x.mantissa = NewInt(0)
+		return x
+	}
+
+	if s == 0 {
 		x.sign = true
 	} else {
 		x.sign = false
 	}
-	x.exp = int64((bits>>52)&0x7ff) - 1023 - 52
-	x.mantissa = NewInt((int64(1) << 52) | int64(bits&uint64((int64(1)<<52)-1)))
+	x.exp = e - 1023 - 52
+	x.mantissa = NewInt((int64(1) << 52) | m)
 	x.normalize()
 	return x
 }
@@ -121,6 +131,9 @@ func (z Float) String() string {
 		digit := fraction.Rsh(uint(-z.exp))
 		fraction = fraction.Sub(digit.Lsh(uint(-z.exp)))
 		digits += digit.String()
+	}
+	if digits == "" {
+		digits = "0"
 	}
 	return fmt.Sprintf("%s%s.%s", sign, whole.String(), digits)
 }

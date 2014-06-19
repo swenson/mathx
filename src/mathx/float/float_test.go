@@ -39,9 +39,19 @@ func TestFloatAdd(t *testing.T) {
 	}
 }
 
-func TestPrint23(t *testing.T) {
-	if NewFloat(2.3).String() != "+2.29999999999999982236431605997495353221893310546875" {
-		fmt.Printf("Expected +2.29999999999999982236431605997495353221893310546875 got %s\n", NewFloat(2.3).String())
-		t.FailNow()
+var floatStringTestCases = []struct {
+	num float64
+	str string
+}{
+	{0.0, "-0.0"},
+	{2.3, "+2.29999999999999982236431605997495353221893310546875"},
+}
+
+func TestFloatPrint(t *testing.T) {
+	for _, testCase := range floatStringTestCases {
+		if NewFloat(testCase.num).String() != testCase.str {
+			fmt.Printf("Expected %s got %s\n", testCase.str, NewFloat(testCase.num).String())
+			t.FailNow()
+		}
 	}
 }
