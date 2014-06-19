@@ -13,30 +13,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 package float
 
 import (
-  "math/big"
-  "fmt"
-  "testing"
+	"fmt"
+	. "mathx"
+	"testing"
 )
 
-
 func TestFloatAdd(t *testing.T) {
-  x := new(Float)
-  x.sign = true
-  x.exp = 1
-  x.mantissa = (*Int)(big.NewInt(1))
-  y := new(Float)
-  y.sign = true
-  y.exp = 1
-  y.mantissa = (*Int)(big.NewInt(1))
-  z := x.Add(y)
+	x := new(Float)
+	x.sign = true
+	x.exp = 1
+	x.mantissa = NewInt(1)
+	y := new(Float)
+	y.sign = true
+	y.exp = 1
+	y.mantissa = NewInt(1)
+	z := x.Add(y)
 
-  one := (*Int)(big.NewInt(1))
-  if z.mantissa.Cmp(one) != 0 || z.exp != 2 || !z.sign {
-    fmt.Printf("%s + %s = %s\n", x, y, z)
-    t.FailNow()
-  }
+	one := NewInt(1)
+	if z.mantissa.Cmp(one) != 0 || z.exp != 2 || !z.sign {
+		fmt.Printf("%s + %s = %s\n", x, y, z)
+		t.FailNow()
+	}
 }
