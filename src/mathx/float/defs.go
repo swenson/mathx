@@ -17,7 +17,7 @@ package float
 
 import (
 	"fmt"
-	"math/big"
+	"math"
 	. "mathx"
 )
 
@@ -36,8 +36,41 @@ type Float struct {
 	mantissa  *Int
 }
 
-func (x *Float) Add(y *Float) *Float {
+func NewFloat(f float64) *Float {
+	x := new(Float)
+	x.precision = 52
+	// Convert from IEEE 754 double
+	bits := math.Float64bits(f)
+	if (bits >> 63) == 0 {
+		x.sign = true
+	} else {
+		x.sign = false
+	}
+	x.exp = int64((bits>>52)&0x7ff) - 1023 - 52
+	x.mantissa = NewInt((int64(1) << 52) | int64(bits&uint64((int64(1)<<52)-1)))
+	x.normalize()
+	return x
+}
+
+func (x *Float) Copy() *Float {
+	y := NewFloat(0.0)
+	y.sign = x.sign
+	y.precision = x.precision
+	y.exp = x.exp
+	y.mantissa = x.mantissa.Copy()
+	return y
+}
+
+func (_x *Float) Add(_y *Float) *Float {
+	x := _x.Copy()
+	y := _y.Copy()
 	z := new(Float)
+
+	z.precision = x.precision
+	if z.precision > y.precision {
+		z.precision = y.precision
+	}
+
 	if x.sign && y.sign {
 		z.sign = true
 		for x.exp > y.exp {
@@ -72,6 +105,22 @@ func (z Float) String() string {
 		sign = "-"
 	}
 
-	m := (*big.Int)(z.mantissa)
-	return fmt.Sprintf("%s%se%d", sign, m.String(), z.exp)
+	var whole *Int
+	var fraction *Int
+
+	if z.exp < 0 {
+		whole = z.mantissa.Rsh(uint(-z.exp))
+		fraction = z.mantissa.Sub(whole.Lsh(uint(-z.exp)))
+	} else {
+		whole = NewInt(0)
+		fraction = z.mantissa
+	}
+	digits := ""
+	for fraction.Sign() != 0 {
+		fraction = fraction.Mul64(10)
+		digit := fraction.Rsh(uint(-z.exp))
+		fraction = fraction.Sub(digit.Lsh(uint(-z.exp)))
+		digits += digit.String()
+	}
+	return fmt.Sprintf("%s%s.%s", sign, whole.String(), digits)
 }

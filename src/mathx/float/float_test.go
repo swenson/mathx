@@ -38,3 +38,10 @@ func TestFloatAdd(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func TestPrint23(t *testing.T) {
+	if NewFloat(2.3).String() != "+2.29999999999999982236431605997495353221893310546875" {
+		fmt.Printf("Expected +2.29999999999999982236431605997495353221893310546875 got %s\n", NewFloat(2.3).String())
+		t.FailNow()
+	}
+}
