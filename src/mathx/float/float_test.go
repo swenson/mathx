@@ -35,7 +35,7 @@ func TestFloatAdd(t *testing.T) {
 		x = testCase.a
 		y = testCase.b
 		z := x.Add(y)
-		if z != testCase.c {
+		if z != testCase.c { //much broken so fail
 			fmt.Printf("%v + %v =%v\n", x, y, z)
 			t.FailNow()
 		}

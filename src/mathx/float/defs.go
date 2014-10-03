@@ -82,38 +82,38 @@ func (_x *Float) Add(_y *Float) *Float {
 	}
 
 	if (x.sign && y.sign) || (!x.sign && !y.sign) {
-		for x.exp > y.exp {
-			y.exp++
+		for x.exp < y.exp {
+			y.exp--
 			y.mantissa = y.mantissa.Lsh(1)
 		}
-		for y.exp > x.exp {
-			x.exp++
+		for y.exp < x.exp {
+			x.exp--
 			x.mantissa = x.mantissa.Lsh(1)
 		}
 		z.exp = x.exp
 		z.mantissa = x.mantissa.Add(y.mantissa)
 		z.sign = x.sign
 	} else if x.sign == true {
-		for x.exp > y.exp {
-			y.exp++
+		for x.exp < y.exp {
+			y.exp--
 			y.mantissa = y.mantissa.Lsh(1)
 			z.sign = x.sign
 		}
-		for y.exp > x.exp {
-			x.exp++
+		for y.exp < x.exp {
+			x.exp--
 			x.mantissa = x.mantissa.Lsh(1)
 			z.sign = y.sign
 		}
 		z.exp = x.exp
 		z.mantissa = x.mantissa.Sub(y.mantissa)
 	} else if y.sign == true {
-		for x.exp > y.exp {
-			y.exp++
+		for x.exp < y.exp {
+			y.exp--
 			y.mantissa = y.mantissa.Lsh(1)
 			z.sign = x.sign
 		}
-		for y.exp > x.exp {
-			x.exp++
+		for y.exp < x.exp {
+			x.exp--
 			x.mantissa = x.mantissa.Lsh(1)
 			z.sign = y.sign
 		}
