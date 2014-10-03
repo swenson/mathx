@@ -17,25 +17,28 @@ package float
 
 import (
 	"fmt"
-	. "mathx"
 	"testing"
 )
 
+var floatAddTestCases = []struct {
+	a *Float
+	b *Float
+	c *Float
+}{
+	{NewFloat(-1.0), NewFloat(2.5), NewFloat(1.5)},
+}
+
 func TestFloatAdd(t *testing.T) {
 	x := new(Float)
-	x.sign = true
-	x.exp = 1
-	x.mantissa = NewInt(1)
 	y := new(Float)
-	y.sign = true
-	y.exp = 1
-	y.mantissa = NewInt(1)
-	z := x.Add(y)
-
-	one := NewInt(1)
-	if z.mantissa.Cmp(one) != 0 || z.exp != 2 || !z.sign {
-		fmt.Printf("%s + %s = %s\n", x, y, z)
-		t.FailNow()
+	for _, testCase := range floatAddTestCases {
+		x = testCase.a
+		y = testCase.b
+		z := x.Add(y)
+		if z != testCase.c {
+			fmt.Printf("%v + %v =%v\n", x, y, z)
+			t.FailNow()
+		}
 	}
 }
 
