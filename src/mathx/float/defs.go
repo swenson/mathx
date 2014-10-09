@@ -53,8 +53,6 @@ func NewFloat(f float64) *Float {
 
 	if s == 0 {
 		x.sign = true
-	} else {
-		x.sign = false
 	}
 	x.exp = e - 1023 - 52
 	x.mantissa = NewInt((int64(1) << 52) | m)
@@ -81,20 +79,56 @@ func (_x *Float) Add(_y *Float) *Float {
 		z.precision = y.precision
 	}
 
-	if x.sign && y.sign {
-		z.sign = true
-		for x.exp > y.exp {
-			y.exp++
+	if (x.sign && y.sign) || (!x.sign && !y.sign) {
+		for x.exp < y.exp {
+			y.exp--
 			y.mantissa = y.mantissa.Lsh(1)
 		}
-		for y.exp > x.exp {
-			x.exp++
-			x.mantissa = y.mantissa.Lsh(1)
+		for y.exp < x.exp {
+			x.exp--
+			x.mantissa = x.mantissa.Lsh(1)
 		}
 		z.exp = x.exp
 		z.mantissa = x.mantissa.Add(y.mantissa)
+		z.sign = x.sign
+	} else if x.sign == true {
+		for x.exp < y.exp {
+			y.exp--
+			y.mantissa = y.mantissa.Lsh(1)
+			z.sign = x.sign
+		}
+		for y.exp < x.exp {
+			x.exp--
+			x.mantissa = x.mantissa.Lsh(1)
+			z.sign = y.sign
+		}
+		z.exp = x.exp
+		z.mantissa = x.mantissa.Sub(y.mantissa)
+	} else if y.sign == true {
+		for x.exp < y.exp {
+			y.exp--
+			y.mantissa = y.mantissa.Lsh(1)
+			z.sign = x.sign
+		}
+		for y.exp < x.exp {
+			x.exp--
+			x.mantissa = x.mantissa.Lsh(1)
+			z.sign = y.sign
+		}
+		z.exp = x.exp
+		z.mantissa = y.mantissa.Sub(x.mantissa)
 	}
+
 	return z.normalize()
+}
+
+func (_x *Float) Sub(_y *Float) *Float {
+	x := _x.Copy()
+	y := _y.Copy()
+	z := new(Float)
+	y.sign = !y.sign
+	z = x.Add(y)
+	return z
 }
 
 func (z *Float) normalize() *Float {
@@ -118,7 +152,7 @@ func (z Float) String() string {
 	var whole *Int
 	var fraction *Int
 
-	if z.exp < 0 {
+	if z.exp <= 0 {
 		whole = z.mantissa.Rsh(uint(-z.exp))
 		fraction = z.mantissa.Sub(whole.Lsh(uint(-z.exp)))
 	} else {
