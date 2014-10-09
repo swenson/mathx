@@ -26,7 +26,22 @@ var floatAddTestCases = []struct {
 	exp      int64
 	mantissa *Int
 }{
-	{NewFloat(-1.0), NewFloat(2.5), NewFloat(1.5), true, -1, NewInt(3)},
+	{NewFloat(1.125), NewFloat(40), NewFloat(41.125), true, -3, NewInt(329)},
+	{NewFloat(2), NewFloat(0.0009765625), NewFloat(2.0009765625), true, -10, NewInt(2049)},
+	{NewFloat(0.0087890625), NewFloat(1.75), NewFloat(1.7587890625), true, -10, NewInt(1801)},
+	{NewFloat(0.28125), NewFloat(0.46875), NewFloat(0.75), true, -2, NewInt(3)},
+	/*{NewFloat(5000), NewFloat(-4099), NewFloat(101), , ,NewInt()},
+	{NewFloat(), NewFloat(-0.05859375), NewFloat(), , ,NewInt()},
+	{NewFloat(0.00244140625), NewFloat(-), NewFloat(), , ,NewInt()},
+	{NewFloat(0.03125), NewFloat(-0.375), NewFloat(), , ,NewInt()},
+	{NewFloat(-1.1), NewFloat(2.4), NewFloat(1.5), true, -1, NewInt(3)},
+	{NewFloat(-), NewFloat(0.0015869140625), NewFloat(), , ,NewInt()},
+	{NewFloat(-0.0234375), NewFloat(), NewFloat(), , ,NewInt()},
+	{NewFloat(-0.0546875), NewFloat(0.34375), NewFloat(), , ,NewInt()},
+	{NewFloat(-), NewFloat(-), NewFloat(), , ,NewInt()},
+	{NewFloat(-), NewFloat(-0.002685546875), NewFloat(), , ,NewInt()},
+	{NewFloat(-0.001708984375), NewFloat(-), NewFloat(), , ,NewInt()},
+	{NewFloat(-0.875), NewFloat(-0.25), NewFloat(), , ,NewInt()}, */
 }
 
 func TestFloatAdd(t *testing.T) {
