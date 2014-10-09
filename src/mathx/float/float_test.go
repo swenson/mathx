@@ -1,6 +1,3 @@
-// Copyright (c) 2014 Christopher Swenson.
-// Copyright (c) 2012 Google, Inc. All Rights Reserved.
-
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -17,15 +14,19 @@ package float
 
 import (
 	"fmt"
+	. "mathx"
 	"testing"
 )
 
 var floatAddTestCases = []struct {
-	a *Float
-	b *Float
-	c *Float
+	a        *Float
+	b        *Float
+	c        *Float
+	sign     bool
+	exp      int64
+	mantissa *Int
 }{
-	{NewFloat(-1.0), NewFloat(2.5), NewFloat(1.5)},
+	{NewFloat(-1.0), NewFloat(2.5), NewFloat(1.5), true, -1, NewInt(3)},
 }
 
 func TestFloatAdd(t *testing.T) {
@@ -35,8 +36,10 @@ func TestFloatAdd(t *testing.T) {
 		x = testCase.a
 		y = testCase.b
 		z := x.Add(y)
-		if z != testCase.c { //much broken so fail
+		mantissaCmp := testCase.mantissa.Cmp(z.mantissa)
+		if z.sign != testCase.sign || z.exp != testCase.exp || mantissaCmp != 0 {
 			fmt.Printf("%v + %v =%v\n", x, y, z)
+			fmt.Printf("%t and %v and %v also %t and %v and %v\n", z.sign, z.exp, z.mantissa, testCase.sign, testCase.exp, testCase.mantissa)
 			t.FailNow()
 		}
 	}

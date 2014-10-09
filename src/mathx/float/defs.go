@@ -53,8 +53,6 @@ func NewFloat(f float64) *Float {
 
 	if s == 0 {
 		x.sign = true
-	} else {
-		x.sign = false
 	}
 	x.exp = e - 1023 - 52
 	x.mantissa = NewInt((int64(1) << 52) | m)
@@ -154,7 +152,7 @@ func (z Float) String() string {
 	var whole *Int
 	var fraction *Int
 
-	if z.exp < 0 {
+	if z.exp <= 0 {
 		whole = z.mantissa.Rsh(uint(-z.exp))
 		fraction = z.mantissa.Sub(whole.Lsh(uint(-z.exp)))
 	} else {
