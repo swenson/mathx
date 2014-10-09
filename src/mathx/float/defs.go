@@ -131,6 +131,37 @@ func (_x *Float) Sub(_y *Float) *Float {
 	return z
 }
 
+func (_x *Float) Mul(_y *Float) *Float {
+	x := _x.Copy()
+	y := _y.Copy()
+	z := new(Float)
+
+	z.precision = x.precision
+	if z.precision > y.precision {
+		z.precision = y.precision
+	}
+
+	if x.sign == y.sign {
+		z.sign = true
+	} else {
+		z.sign = false
+	}
+
+	for x.exp < y.exp {
+		y.exp--
+		y.mantissa = y.mantissa.Lsh(1)
+	}
+	for y.exp < x.exp {
+		x.exp--
+		x.mantissa = x.mantissa.Lsh(1)
+	}
+	z.exp = x.exp
+
+	z = x.Mul(y)
+
+	return z.normalize()
+}
+
 func (z *Float) normalize() *Float {
 	if z.mantissa.Sign() == 0 {
 		return z
