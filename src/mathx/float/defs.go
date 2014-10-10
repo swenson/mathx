@@ -148,8 +148,6 @@ func (_x *Float) Mul(_y *Float) *Float {
 	}
 
 	if x.sign == y.sign {
-		z.sign = true
-	} else {
 		z.sign = false
 	}
 
@@ -163,9 +161,46 @@ func (_x *Float) Mul(_y *Float) *Float {
 	}
 	z.exp = x.exp
 
-	z = x.Mul(y)
+	z.mantissa = x.mantissa.Mul(y.mantissa)
+	z.exp = 2 * z.exp
 
 	return z.normalize()
+}
+
+func (_x *Float) Div(_y *Float) *Float {
+	x := _x.Copy()
+	y := _y.Copy()
+	z := new(Float)
+
+	if y.mantissa.Sign() == 0 {
+		panic("Can not divide by zero")
+	}
+
+	z.precision = x.precision
+	if z.precision > y.precision {
+		z.precision = y.precision
+	}
+
+	return z.normalize()
+}
+
+func (_x *Float) Cmp(_y *Float) int {
+	x := _x.Copy()
+	y := _y.Copy()
+	x.Sub(y)
+	if x.mantissa.Sign() == 0 {
+		return 0
+	} else if x.sign == true {
+		return 1
+	} else if x.sign == false {
+		return -1
+	}
+}
+
+func (_z *Float) Neg() *Float {
+	z := _z.Copy()
+	z.sign = !z.sign
+	return z
 }
 
 func (z *Float) normalize() *Float {
