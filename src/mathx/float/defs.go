@@ -101,12 +101,12 @@ func (_x *Float) Add(_y *Float) *Float {
 		for x.exp < y.exp {
 			y.exp--
 			y.mantissa = y.mantissa.Lsh(1)
-			z.sign = x.sign
+			z.sign = y.sign
 		}
 		for y.exp < x.exp {
 			x.exp--
 			x.mantissa = x.mantissa.Lsh(1)
-			z.sign = y.sign
+			z.sign = x.sign
 		}
 		z.exp = x.exp
 		z.mantissa = x.mantissa.Sub(y.mantissa)
@@ -114,12 +114,12 @@ func (_x *Float) Add(_y *Float) *Float {
 		for x.exp < y.exp {
 			y.exp--
 			y.mantissa = y.mantissa.Lsh(1)
-			z.sign = x.sign
+			z.sign = y.sign
 		}
 		for y.exp < x.exp {
 			x.exp--
 			x.mantissa = x.mantissa.Lsh(1)
-			z.sign = y.sign
+			z.sign = x.sign
 		}
 		z.exp = x.exp
 		z.mantissa = y.mantissa.Sub(x.mantissa)
@@ -167,7 +167,7 @@ func (_x *Float) Mul(_y *Float) *Float {
 	return z.normalize()
 }
 
-func (_x *Float) Div(_y *Float) *Float {
+/*func (_x *Float) Div(_y *Float) *Float {
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
@@ -182,26 +182,34 @@ func (_x *Float) Div(_y *Float) *Float {
 	}
 
 	return z.normalize()
-}
+}*/
 
-func (_x *Float) Cmp(_y *Float) int {
+/*func (_x *Float) Cmp(_y *Float) int {
 	x := _x.Copy()
 	y := _y.Copy()
 	x.Sub(y)
+	var z int
 	if x.mantissa.Sign() == 0 {
-		return 0
+		z = 0
 	} else if x.sign == true {
-		return 1
+		z = 1
 	} else if x.sign == false {
-		return -1
+		z = -1
 	}
-}
+	return z
+}*/
 
-func (_z *Float) Neg() *Float {
+/*func (_z *Float) Neg() *Float {
 	z := _z.Copy()
 	z.sign = !z.sign
 	return z
-}
+}*/
+
+/*func (_z *Float) Abs() *Float {
+	z := _z.Copy()
+	z.sign = true
+	return z
+} */
 
 func (z *Float) normalize() *Float {
 	if z.mantissa.Sign() == 0 {
@@ -222,23 +230,26 @@ func (z Float) String() string {
 	}
 
 	var whole *Int
-	var fraction *Int
+	//	var fraction *Int
 
-	if z.exp >= 0 {
-		whole = z.mantissa.Lsh(uint(z.exp))
-		return fmt.Sprintf("%s%s", sign, whole.String())
+	if z.exp <= 0 {
+		whole = z.mantissa.Rsh(uint(-z.exp))
+		//	fraction = z.mantissa.Sub(whole.Lsh(uint(-z.exp)))
+	} else {
+		whole = NewInt(0)
+		//	fraction = z.mantissa
 	}
 
 	whole = z.mantissa.Rsh(uint(-z.exp))
 	fraction = z.mantissa.Sub(whole.Lsh(uint(-z.exp)))
 
 	digits := ""
-	for fraction.Sign() != 0 {
+	/*for fraction.Sign() != 0 {
 		fraction = fraction.Mul64(10)
 		digit := fraction.Rsh(uint(-z.exp))
 		fraction = fraction.Sub(digit.Lsh(uint(-z.exp)))
 		digits += digit.String()
-	}
+	}*/
 	if digits == "" {
 		digits = "0"
 	}
