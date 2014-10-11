@@ -178,7 +178,7 @@ func (_x *Float) Mul(_y *Float) *Float {
 	return z.normalize()
 }*/
 
-/*func (_x *Float) Cmp(_y *Float) int {
+func (_x *Float) Cmp(_y *Float) int {
 	x := _x.Copy()
 	y := _y.Copy()
 	x.Sub(y)
@@ -191,19 +191,19 @@ func (_x *Float) Mul(_y *Float) *Float {
 		z = -1
 	}
 	return z
-}*/
+}
 
-/*func (_z *Float) Neg() *Float {
+func (_z *Float) Neg() *Float {
 	z := _z.Copy()
 	z.sign = !z.sign
 	return z
-}*/
+}
 
-/*func (_z *Float) Abs() *Float {
+func (_z *Float) Abs() *Float {
 	z := _z.Copy()
 	z.sign = true
 	return z
-} */
+}
 
 func (z *Float) normalize() *Float {
 	if z.mantissa.Sign() == 0 {

@@ -42,7 +42,7 @@ var floatAddTestCases = []struct {
 	{NewFloat(-), NewFloat(-0.002685546875), NewFloat(), , ,NewInt()},
 	{NewFloat(-0.001708984375), NewFloat(-), NewFloat(), , ,NewInt()},
 	{NewFloat(-0.875), NewFloat(-0.25), NewFloat(), , ,NewInt()},
-	{NewFloat(-0.0), NewFloat(1), NewFloat(1), true, 1, NewInt(1)},*/
+	{NewFloat(-0.0), NewFloat(1), NewFloat(1), true, 1, NewInt(1)}, this bit fails */
 }
 
 func TestFloatAdd(t *testing.T) {
@@ -61,7 +61,7 @@ func TestFloatAdd(t *testing.T) {
 	}
 }
 
-/*func TestFloatSub(t *testing.T) {
+func TestFloatSub(t *testing.T) {
 	x := new(Float)
 	y := new(Float)
 	for _, testCase := range floatAddTestCases {
@@ -76,7 +76,7 @@ func TestFloatAdd(t *testing.T) {
 			t.FailNow()
 		}
 	}
-}*/
+}
 
 var floatStringTestCases = []struct {
 	num float64
