@@ -211,6 +211,11 @@ func (_z *Float) Abs() *Float {
 	return z
 }
 
+func (_z *Float) Set() *Float {
+	z := _z.Copy()
+	return z
+}
+
 func (z *Float) normalize() *Float {
 	if z.mantissa.Sign() == 0 {
 		return z
