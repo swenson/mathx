@@ -30,7 +30,7 @@ var floatAddTestCases = []struct {
 	{NewFloat(2), NewFloat(0.0009765625), NewFloat(2.0009765625), true, -10, NewInt(2049)},
 	{NewFloat(0.0087890625), NewFloat(1.75), NewFloat(1.7587890625), true, -10, NewInt(1801)},
 	{NewFloat(0.28125), NewFloat(0.46875), NewFloat(0.75), true, -2, NewInt(3)},
-	{NewFloat(5000), NewFloat(-4099), NewFloat(101), true, 1, NewInt(101)},
+	{NewFloat(5000), NewFloat(-4099), NewFloat(901), true, 0, NewInt(901)},
 	{NewFloat(2), NewFloat(-0.05859375), NewFloat(1.94140625), true, -8, NewInt(497)},
 	/*{NewFloat(0.00244140625), NewFloat(-20), NewFloat(-19.99755859375), false, -12, NewInt(20477)},
 	/*{NewFloat(0.03125), NewFloat(-0.375), NewFloat(), , ,NewInt()},
@@ -41,8 +41,8 @@ var floatAddTestCases = []struct {
 	{NewFloat(-), NewFloat(-), NewFloat(), , ,NewInt()},
 	{NewFloat(-), NewFloat(-0.002685546875), NewFloat(), , ,NewInt()},
 	{NewFloat(-0.001708984375), NewFloat(-), NewFloat(), , ,NewInt()},
-	{NewFloat(-0.875), NewFloat(-0.25), NewFloat(), , ,NewInt()}, */
-	{NewFloat(-0.0), NewFloat(1), NewFloat(1), true, 1, NewInt(1)},
+	{NewFloat(-0.875), NewFloat(-0.25), NewFloat(), , ,NewInt()},
+	{NewFloat(-0.0), NewFloat(1), NewFloat(1), true, 1, NewInt(1)},*/
 }
 
 func TestFloatAdd(t *testing.T) {
@@ -61,7 +61,7 @@ func TestFloatAdd(t *testing.T) {
 	}
 }
 
-func TestFloatSub(t *testing.T) {
+/*func TestFloatSub(t *testing.T) {
 	x := new(Float)
 	y := new(Float)
 	for _, testCase := range floatAddTestCases {
@@ -76,7 +76,7 @@ func TestFloatSub(t *testing.T) {
 			t.FailNow()
 		}
 	}
-}
+}*/
 
 var floatStringTestCases = []struct {
 	num float64
