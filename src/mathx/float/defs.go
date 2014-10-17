@@ -12,7 +12,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+//teeeeeeeeeest
 package float
 
 import (
@@ -167,10 +167,12 @@ func (_x *Float) Mul(_y *Float) *Float {
 	return z.normalize()
 }
 
-/*func (_x *Float) Div(_y *Float) *Float {
+func (_x *Float) Div(_y *Float) *Float {
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
+	stop := 1.0
+	realexp := y.exp
 
 	if y.mantissa.Sign() == 0 {
 		panic("Can not divide by zero")
@@ -179,10 +181,34 @@ func (_x *Float) Mul(_y *Float) *Float {
 	z.precision = x.precision
 	if z.precision > y.precision {
 		z.precision = y.precision
+	} //this is almost definitely wrong
+
+	//creating an accurate enough first guess
+	thirtytwo := NewFloat(-32.0)
+	fortyeight := NewFloat(48.0)
+	y.exp = y.mantissa.BitLen().Neg(y.exp)
+	z = y.Mul(thirtytwo).Add(fortyeight)
+	seventeen := NewFloat(0.17)
+	for seventeen.precision < z.precision {
+		seventeen.mantissa.Lsh(8).Add(0.17)
+		seventeen.precision = seventeen.precision + 8
 	}
+	z.Mul(seventeen)
+
+	thing := Log2(17) //the seventeen is hardcoded because it will ensure that the last digit's error is bounded sufficiently. It should not present issues overall in accuracy
+	thing = z.precision.Add(1).Div(thing).Log2(thing)
+	prez := new(Float)
+	for i := 0; i < thing; i++ {
+		prez = z
+		z = prez.Mul(y)
+		z = 1.0.Sub(prez).Mul(prez).Add(prez)
+	}
+	//fix exp before next step
+	z.exp = realexp
+	z.Mul(x)
 
 	return z.normalize()
-}*/
+}
 
 func (_x *Float) Cmp(_y *Float) int {
 	x := _x.Copy()
@@ -208,11 +234,6 @@ func (_z *Float) Neg() *Float {
 func (_z *Float) Abs() *Float {
 	z := _z.Copy()
 	z.sign = true
-	return z
-}
-
-func (_z *Float) Set() *Float {
-	z := _z.Copy()
 	return z
 }
 
