@@ -168,10 +168,10 @@ func (_x *Float) Mul(_y *Float) *Float {
 }
 
 func (_x *Float) Div(_y *Float) *Float {
+	//Theoretically this is the Newton Raphson method
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
-	stop := 1.0
 	realexp := y.exp
 
 	if y.mantissa.Sign() == 0 {
@@ -186,22 +186,28 @@ func (_x *Float) Div(_y *Float) *Float {
 	//creating an accurate enough first guess
 	thirtytwo := NewFloat(-32.0)
 	fortyeight := NewFloat(48.0)
-	y.exp = y.mantissa.BitLen().Neg(y.exp)
+	i := y.mantissa.BitLen()
+	y.exp = 0 - int64(i)
 	z = y.Mul(thirtytwo).Add(fortyeight)
 	seventeen := NewFloat(0.17)
+	seventeenagain := NewFloat(0.17)
 	for seventeen.precision < z.precision {
-		seventeen.mantissa.Lsh(8).Add(0.17)
+		seventeen.mantissa.Lsh(8).Add(seventeenagain.mantissa)
 		seventeen.precision = seventeen.precision + 8
 	}
 	z.Mul(seventeen)
 
-	thing := Log2(17) //the seventeen is hardcoded because it will ensure that the last digit's error is bounded sufficiently. It should not present issues overall in accuracy
-	thing = z.precision.Add(1).Div(thing).Log2(thing)
+	//create stopping point
+	var stop float64
+	stop = math.Log2((float64(z.precision) + 1) / (math.Log2(17))) //casting z.precision as a float64 should work up to 2^52 bits, hopefully
+	stopp := int(math.Ceil(stop))
+
+	one := NewFloat(1.0)
 	prez := new(Float)
-	for i := 0; i < thing; i++ {
+	for i := 0; i < stopp; i++ {
 		prez = z
 		z = prez.Mul(y)
-		z = 1.0.Sub(prez).Mul(prez).Add(prez)
+		z = one.Sub(prez).Mul(prez).Add(prez)
 	}
 	//fix exp before next step
 	z.exp = realexp

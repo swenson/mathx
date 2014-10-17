@@ -38,6 +38,10 @@ func (z *Int) Bit(n int) uint {
 	return (*big.Int)(z).Bit(n)
 }
 
+func (z *Int) BitLen() int {
+	return (*big.Int)(z).BitLen()
+}
+
 func (x *Int) Lsh(n uint) *Int {
 	z := big.NewInt(0)
 	return (*Int)((*big.Int)(z).Lsh((*big.Int)(x), n))
