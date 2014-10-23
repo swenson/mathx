@@ -79,7 +79,7 @@ func (_x *Float) Add(_y *Float) *Float {
 		z.precision = y.precision
 	}
 
-	if (x.sign && y.sign) || (!x.sign && !y.sign) {
+	if x.sign == y.sign {
 		for x.exp < y.exp {
 			y.exp--
 			y.mantissa = y.mantissa.Lsh(1)
@@ -141,7 +141,8 @@ func (_x *Float) Mul(_y *Float) *Float {
 		z.precision = y.precision
 	}
 
-	if x.sign == y.sign {
+	z.sign = true
+	if x.sign != y.sign {
 		z.sign = false
 	}
 
@@ -166,7 +167,6 @@ func (_x *Float) Div(_y *Float) *Float {
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
-	realexp := y.exp
 
 	if y.mantissa.Sign() == 0 {
 		panic("Can not divide by zero")
@@ -175,19 +175,21 @@ func (_x *Float) Div(_y *Float) *Float {
 	z.precision = x.precision
 	if z.precision > y.precision {
 		z.precision = y.precision
-	} //this is almost definitely wrong
+	}
 
 	//creating an accurate enough first guess
 	thirtytwo := NewFloat(-32.0)
 	fortyeight := NewFloat(48.0)
-	i := y.mantissa.BitLen()
-	y.exp = 0 - int64(i)
+	//i := y.mantissa.BitLen() //the problem is in here somewhere
+	//y.exp = 0 - int64(i)
 	z = y.Mul(thirtytwo).Add(fortyeight)
-	seventeen := NewFloat(0.17)
-	seventeenagain := NewFloat(0.17)
+	seventeen := NewFloat(0.0)
+	seventeen.precision = 0
+	repeatingchunk := NewFloat(15)
 	for seventeen.precision < z.precision {
-		seventeen.mantissa.Lsh(8).Add(seventeenagain.mantissa)
+		seventeen.mantissa = seventeen.mantissa.Lsh(8).Add(repeatingchunk.mantissa)
 		seventeen.precision = seventeen.precision + 8
+		seventeen.exp = seventeen.exp - 8
 	}
 	z.Mul(seventeen)
 
@@ -202,12 +204,28 @@ func (_x *Float) Div(_y *Float) *Float {
 		prez = z
 		z = prez.Mul(y)
 		z = one.Sub(prez).Mul(prez).Add(prez)
+		fmt.Printf("this is mantissa %v, this is exp %v, this is precision %v\n", z.mantissa, z.exp, z.precision)
 	}
-	//fix exp before next step
-	z.exp = realexp
 	z.Mul(x)
+	fmt.Printf("this is z.mantissa %v, this is z.exp %v, this is z.precision %v\n", z.mantissa, z.exp, z.precision)
 
 	return z.normalize()
+}
+
+func MakeSeventeen() *Float {
+	seventeen := NewFloat(0.0)
+	fmt.Printf("intialized at %v, precision is %v, exp is %v, mantissa is %v\n", seventeen, seventeen.precision, seventeen.exp, seventeen.mantissa)
+	seventeen.precision = 0
+	repeatingchunk := NewFloat(15)
+	fmt.Printf("immediately before for loop%v\n", seventeen)
+	for seventeen.precision < 64 {
+		seventeen.mantissa = seventeen.mantissa.Lsh(8).Add(repeatingchunk.mantissa) //HERE is the problem
+		seventeen.precision = seventeen.precision + 8
+		fmt.Printf("in for loop %v seventeen, %v mantissa, %v precision, %v exp\n", seventeen, seventeen.mantissa, seventeen.precision, seventeen.exp)
+		seventeen.exp = seventeen.exp - 8
+	}
+	fmt.Printf("after for loop, before return %v\n", seventeen.mantissa)
+	return seventeen
 }
 
 func (_x *Float) Cmp(_y *Float) int {
@@ -238,7 +256,7 @@ func (_z *Float) Abs() *Float {
 }
 
 func (z *Float) normalize() *Float {
-	if z.mantissa.Sign() == 0 {
+	if z.mantissa.Sign() == 0 { //why no copy?
 		return z
 	}
 
@@ -249,29 +267,41 @@ func (z *Float) normalize() *Float {
 	return z
 }
 
-func (z Float) String() string {
+func (x *Float) denormalize(y *Float) (*Float, *Float) {
+	for x.exp < y.exp {
+		y.exp--
+		y.mantissa = y.mantissa.Lsh(1)
+	}
+	for y.exp < x.exp {
+		x.exp--
+		x.mantissa = x.mantissa.Lsh(1)
+	}
+	return x, y
+}
+
+func (z Float) String() string { // why is it Float not *Float
 	sign := "+"
 	if !z.sign {
 		sign = "-"
 	}
 
 	var whole *Int
-	//	var fraction *Int
+	var fraction *Int
 
 	if z.exp <= 0 {
 		whole = z.mantissa.Rsh(uint(-z.exp))
-		//	fraction = z.mantissa.Sub(whole.Lsh(uint(-z.exp)))
+		fraction = z.mantissa.Sub(whole.Lsh(uint(-z.exp)))
 	} else {
 		whole = NewInt(0)
-		//	fraction = z.mantissa
+		fraction = z.mantissa
 	}
 	digits := ""
-	/*for fraction.Sign() != 0 {
+	for fraction.Sign() != 0 {
 		fraction = fraction.Mul64(10)
 		digit := fraction.Rsh(uint(-z.exp))
 		fraction = fraction.Sub(digit.Lsh(uint(-z.exp)))
 		digits += digit.String()
-	}*/
+	}
 	if digits == "" {
 		digits = "0"
 	}
