@@ -152,13 +152,14 @@ func (z Float) String() string {
 	var whole *Int
 	var fraction *Int
 
-	if z.exp <= 0 {
-		whole = z.mantissa.Rsh(uint(-z.exp))
-		fraction = z.mantissa.Sub(whole.Lsh(uint(-z.exp)))
-	} else {
-		whole = NewInt(0)
-		fraction = z.mantissa
+	if z.exp >= 0 {
+		whole = z.mantissa.Lsh(uint(z.exp))
+		return fmt.Sprintf("%s%s", sign, whole.String())
 	}
+
+	whole = z.mantissa.Rsh(uint(-z.exp))
+	fraction = z.mantissa.Sub(whole.Lsh(uint(-z.exp)))
+
 	digits := ""
 	for fraction.Sign() != 0 {
 		fraction = fraction.Mul64(10)
