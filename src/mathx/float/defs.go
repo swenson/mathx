@@ -168,6 +168,8 @@ func (_x *Float) Div(_y *Float) *Float {
 	y := _y.Copy()
 	z := new(Float)
 
+	fmt.Printf("%v %v %v %v\n", x.mantissa, x.exp, y.mantissa, y.exp)
+
 	if y.mantissa.Sign() == 0 {
 		panic("Can not divide by zero")
 	}
@@ -180,9 +182,13 @@ func (_x *Float) Div(_y *Float) *Float {
 	//creating an accurate enough first guess
 	thirtytwo := NewFloat(-32.0)
 	fortyeight := NewFloat(48.0)
-	//i := y.mantissa.BitLen() //the problem is in here somewhere
-	//y.exp = 0 - int64(i)
-	z = y.Mul(thirtytwo).Add(fortyeight)
+	i := y.mantissa.BitLen() //the problem is in here somewhere
+	tempexp := 0 - int64(i)
+	x.exp = tempexp - y.exp
+	y.exp = tempexp
+	fmt.Printf("x %v and y %v\n", x, y)
+	z = y.Mul(thirtytwo)
+	z = z.Add(fortyeight)
 	seventeen := NewFloat(0.0)
 	seventeen.precision = 0
 	repeatingchunk := NewFloat(15)
@@ -191,40 +197,46 @@ func (_x *Float) Div(_y *Float) *Float {
 		seventeen.precision = seventeen.precision + 8
 		seventeen.exp = seventeen.exp - 8
 	}
-	z.Mul(seventeen)
+	z = z.Mul(seventeen)
 
 	//create stopping point
 	var stop float64
 	stop = math.Log2((float64(z.precision) + 1) / (math.Log2(17))) //casting z.precision as a float64 should work up to 2^52 bits, hopefully
 	stopp := int(math.Ceil(stop))
-
+	fmt.Printf("%v\n", z.precision)
 	one := NewFloat(1.0)
 	prez := new(Float)
+	fmt.Printf("x = %v, y = %v, z1 = %v\n", x, y, z)
+
 	for i := 0; i < stopp; i++ {
 		prez = z
+		fmt.Printf("prez = %v\n", prez)
 		z = prez.Mul(y)
-		z = one.Sub(prez).Mul(prez).Add(prez)
-		fmt.Printf("this is mantissa %v, this is exp %v, this is precision %v\n", z.mantissa, z.exp, z.precision)
+		z = one.Sub(z)
+		z = z.Mul(prez)
+		z = z.Add(prez)
+		fmt.Printf("zn= %v, this is mantissa %v, this is exp %v, this is precision %v\n", z, z.mantissa, z.exp, z.precision)
 	}
-	z.Mul(x)
+	z = z.Mul(x)
 	fmt.Printf("this is z.mantissa %v, this is z.exp %v, this is z.precision %v\n", z.mantissa, z.exp, z.precision)
-
+	z = z.normalize()
+	fmt.Printf("%v\n", z)
 	return z.normalize()
 }
 
 func MakeSeventeen() *Float {
 	seventeen := NewFloat(0.0)
-	fmt.Printf("intialized at %v, precision is %v, exp is %v, mantissa is %v\n", seventeen, seventeen.precision, seventeen.exp, seventeen.mantissa)
+	//fmt.Printf("intialized at %v, precision is %v, exp is %v, mantissa is %v\n", seventeen, seventeen.precision, seventeen.exp, seventeen.mantissa)
 	seventeen.precision = 0
 	repeatingchunk := NewFloat(15)
-	fmt.Printf("immediately before for loop%v\n", seventeen)
+	//fmt.Printf("immediately before for loop%v\n", seventeen)
 	for seventeen.precision < 64 {
 		seventeen.mantissa = seventeen.mantissa.Lsh(8).Add(repeatingchunk.mantissa) //HERE is the problem
 		seventeen.precision = seventeen.precision + 8
-		fmt.Printf("in for loop %v seventeen, %v mantissa, %v precision, %v exp\n", seventeen, seventeen.mantissa, seventeen.precision, seventeen.exp)
+		//fmt.Printf("in for loop %v seventeen, %v mantissa, %v precision, %v exp\n", seventeen, seventeen.mantissa, seventeen.precision, seventeen.exp)
 		seventeen.exp = seventeen.exp - 8
 	}
-	fmt.Printf("after for loop, before return %v\n", seventeen.mantissa)
+	//fmt.Printf("after for loop, before return %v\n", seventeen.mantissa)
 	return seventeen
 }
 
