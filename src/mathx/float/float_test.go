@@ -121,7 +121,7 @@ var floatDivTestCases = []struct {
 	mantissa *Int
 }{
 	//{NewFloat(2), NewFloat(2), NewFloat(1), true, 1, NewInt(1)},
-	{NewFloat(20.000000), NewFloat(2.00000000), NewFloat(10), true, 1, NewInt(10)},
+	{NewFloat(20.0), NewFloat(2.0), NewFloat(10), true, 1, NewInt(10)},
 }
 
 func TestFloatDiv(t *testing.T) {
