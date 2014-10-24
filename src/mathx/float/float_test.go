@@ -105,12 +105,12 @@ func TestFloatMul(t *testing.T) {
 	}
 }
 
-func TestFloatMakeSeventeen(t *testing.T) {
+/*func TestFloatMakeSeventeen(t *testing.T) {
 	z := NewFloat(1.0)
 	z = MakeSeventeen()
 	fmt.Printf("this is z %v\n", z)
 	t.FailNow()
-}
+}*/
 
 var floatDivTestCases = []struct {
 	a        *Float
@@ -120,20 +120,24 @@ var floatDivTestCases = []struct {
 	exp      int64
 	mantissa *Int
 }{
-	//{NewFloat(2), NewFloat(2), NewFloat(1), true, 1, NewInt(1)},
-	{NewFloat(20.0), NewFloat(2.0), NewFloat(10), true, 1, NewInt(10)},
+	{NewFloat(2.0), NewFloat(2.0), NewFloat(1.0), true, 1, NewInt(1)},
+	{NewFloat(20.0), NewFloat(2.0), NewFloat(10.0), true, 1, NewInt(10)},
+	//{NewFloat(10.0), NewFloat(0.5), NewFloat(20.0), true, 1, NewInt(20)},
 }
 
 func TestFloatDiv(t *testing.T) {
-	x := new(Float)
-	y := new(Float)
+	precision := NewFloat(2)
+	precision.exp = precision.exp - 50
 	for _, testCase := range floatDivTestCases { //floatDivTestCases or floatMulTestCAses?
-		x = testCase.a
-		y = testCase.b
+		x := testCase.a
+		y := testCase.b
+		w := testCase.c
 		z := x.Div(y)
-		mantissaCmp := testCase.mantissa.Cmp(z.mantissa)
-		if z.sign != testCase.sign || z.exp != testCase.exp || mantissaCmp != 0 {
-			fmt.Printf("%t and %v and %v also %t and %v and %v\n", z.sign, z.exp, z.mantissa, testCase.sign, testCase.exp, testCase.mantissa)
+		z, w = z.denormalize(w)
+		diff := z.Sub(w)
+		yes := diff.Cmp(precision)
+		if z.sign != w.sign || z.exp != w.exp || yes >= 0 {
+			fmt.Printf("%t and %v and %v \n%t and %v and %v\n", z.sign, z.exp, z.mantissa, w.sign, w.exp, w.mantissa)
 			t.FailNow()
 		}
 	}

@@ -189,8 +189,12 @@ func (_x *Float) Div(_y *Float) *Float {
 	thirtytwo := NewFloat(-32.0)
 	fortyeight := NewFloat(48.0)
 	i := y.mantissa.BitLen() //the problem is in here somewhere
+	fmt.Printf("y.mantissa = %v, BitLen = %v, y.exp %v\n", y.mantissa, i, y.exp)
 	tempexp := 0 - int64(i)
-	x.exp = tempexp - y.exp
+	fmt.Printf("tempexp %v\n", tempexp)
+	fmt.Printf("x.exp before altered %v ", x.exp)
+	x.exp = x.exp + (tempexp - y.exp)
+	fmt.Printf("x.exp now = %v\n", x.exp)
 	y.exp = tempexp
 	fmt.Printf("x %v and y %v\n", x, y)
 	z = y.Mul(thirtytwo)
@@ -207,7 +211,7 @@ func (_x *Float) Div(_y *Float) *Float {
 
 	//create stopping point
 	var stop float64
-	stop = math.Log2((float64(z.precision) + 1) / (math.Log2(17))) //casting z.precision as a float64 should work up to 2^52 bits, hopefully
+	stop = math.Log2((float64(z.precision) + 1)) /// (math.Log2(17))) //casting z.precision as a float64 should work up to 2^52 bits, hopefully
 	stopp := int(math.Ceil(stop))
 	fmt.Printf("%v\n", z.precision)
 	one := NewFloat(1.0)
@@ -221,13 +225,13 @@ func (_x *Float) Div(_y *Float) *Float {
 		z = one.Sub(z)
 		z = z.Mul(prez)
 		z = z.Add(prez)
-		fmt.Printf("zn= %v, this is mantissa %v, this is exp %v, this is precision %v\n", z, z.mantissa, z.exp, z.precision)
+		fmt.Printf("HERE zn= %v\nthis is mantissa %v\nthis is exp %v, this is precision %v\n", z, z.mantissa, z.exp, z.precision)
 	}
 	z = z.Mul(x)
-	fmt.Printf("this is z.mantissa %v, this is z.exp %v, this is z.precision %v\n", z.mantissa, z.exp, z.precision)
+	fmt.Printf("HERE z= %v\nthis is z.mantissa %v\nthis is z.exp %v, this is z.precision %v\n", z, z.mantissa, z.exp, z.precision)
 	z = z.normalize()
 	fmt.Printf("%v\n", z)
-	return z.normalize()
+	return z //.normalize()
 }
 
 func MakeSeventeen() *Float {
