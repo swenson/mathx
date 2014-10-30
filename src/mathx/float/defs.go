@@ -121,7 +121,7 @@ func (_x *Float) Mul(_y *Float) *Float {
 	y := _y.Copy()
 	z := new(Float)
 
-	if (x.mantissa.Sign() == 0) || (y.mantissa.Sign == 0) {
+	if (x.mantissa.Sign() == 0) || (y.mantissa.Sign() == 0) {
 		return NewFloat(0.0)
 	}
 
