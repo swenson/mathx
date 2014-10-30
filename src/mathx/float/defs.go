@@ -73,13 +73,19 @@ func (_x *Float) Add(_y *Float) *Float {
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
+
+	if x.mantissa.Sign() == 0 {
+		return y
+	} else if y.mantissa.Sign() == 0 {
+		return x
+	}
+
 	z.precision = x.precision
 	if z.precision > y.precision {
 		z.precision = y.precision
 	}
 	x, y = x.denormalize(y)
 	z.exp = x.exp
-	//remember to figure out how 0 works
 	if x.sign == y.sign {
 		z.sign = x.sign
 		z.mantissa = x.mantissa.Add(y.mantissa)
@@ -92,7 +98,6 @@ func (_x *Float) Add(_y *Float) *Float {
 	} else {
 		panic("addition error: check sign and greater-than breakdown")
 	}
-	fmt.Printf("z sign %v, exp %v, mantissa %v\n", z.sign, z.exp, z.mantissa)
 	return z.normalize()
 }
 
@@ -109,6 +114,10 @@ func (_x *Float) Mul(_y *Float) *Float {
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
+
+	if (x.mantissa.Sign() == 0) || (y.mantissa.Sign == 0) {
+		return NewFloat(0.0)
+	}
 
 	z.precision = x.precision
 	if z.precision > y.precision {
