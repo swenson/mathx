@@ -73,52 +73,26 @@ func (_x *Float) Add(_y *Float) *Float {
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
-
 	z.precision = x.precision
 	if z.precision > y.precision {
 		z.precision = y.precision
 	}
-
+	x, y = x.denormalize(y)
+	z.exp = x.exp
+	//remember to figure out how 0 works
 	if x.sign == y.sign {
-		for x.exp < y.exp {
-			y.exp--
-			y.mantissa = y.mantissa.Lsh(1)
-		}
-		for y.exp < x.exp {
-			x.exp--
-			x.mantissa = x.mantissa.Lsh(1)
-		}
-		z.exp = x.exp
-		z.mantissa = x.mantissa.Add(y.mantissa)
 		z.sign = x.sign
-	} else if x.sign == true {
-		for x.exp < y.exp {
-			y.exp--
-			y.mantissa = y.mantissa.Lsh(1)
-			z.sign = y.sign
-		}
-		for y.exp < x.exp {
-			x.exp--
-			x.mantissa = x.mantissa.Lsh(1)
-			z.sign = x.sign
-		}
-		z.exp = x.exp
+		z.mantissa = x.mantissa.Add(y.mantissa)
+	} else if x.mantissa.Cmp(y.mantissa) == 1 {
+		z.sign = x.sign
 		z.mantissa = x.mantissa.Sub(y.mantissa)
-	} else if y.sign == true {
-		for x.exp < y.exp {
-			y.exp--
-			y.mantissa = y.mantissa.Lsh(1)
-			z.sign = y.sign
-		}
-		for y.exp < x.exp {
-			x.exp--
-			x.mantissa = x.mantissa.Lsh(1)
-			z.sign = x.sign
-		}
-		z.exp = x.exp
+	} else if x.mantissa.Cmp(y.mantissa) < 1 {
+		z.sign = y.sign
 		z.mantissa = y.mantissa.Sub(x.mantissa)
+	} else {
+		panic("addition error: check sign and greater-than breakdown")
 	}
-
+	fmt.Printf("z sign %v, exp %v, mantissa %v\n", z.sign, z.exp, z.mantissa)
 	return z.normalize()
 }
 
