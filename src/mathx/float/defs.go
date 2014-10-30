@@ -173,16 +173,10 @@ func (_x *Float) Div(_y *Float) *Float {
 
 	//creating an accurate enough first guess
 	i := y.mantissa.BitLen()
-	fmt.Printf("y.mantissa = %v, BitLen = %v, y.exp %v\n", y.mantissa, i, y.exp)
 	tempexp := 0 - int64(i)
-	//fmt.Printf("tempexp %v\n", tempexp)
-	//fmt.Printf("x.exp before altered %v ", x.exp)
 	x.exp = x.exp + (tempexp - y.exp)
-	//fmt.Printf("x.exp now = %v\n", x.exp)
 	y.exp = tempexp
-	fmt.Printf("x %v and y %v\n", x, y)
 	z = y.Mul(thirtytwo)
-	fmt.Printf("denominator * thirtytwo = z %v\n", z)
 	z = z.Add(fortyeight)
 	seventeen := NewFloat(0.0)
 	seventeen.sign = true
@@ -193,32 +187,23 @@ func (_x *Float) Div(_y *Float) *Float {
 		seventeen.precision = seventeen.precision + 8
 		seventeen.exp = seventeen.exp - 8
 	}
-	fmt.Printf("seventeen %v, z %v\n", seventeen, z)
 	z = z.Mul(seventeen)
-	fmt.Printf("seventeen * z %v\n", z)
 
 	//create stopping point
 	var stop float64
 	stop = math.Log2((float64(z.precision) + 1)) /// (math.Log2(17))) //casting z.precision as a float64 should work up to 2^52 bits, hopefully
 	stopp := int(math.Ceil(stop))
-	fmt.Printf("%v\n", z.precision)
 	prez := new(Float)
-	fmt.Printf("x = %v, y = %v, z1 = %v\n", x, y, z)
 
 	for i := 0; i < stopp; i++ {
 		prez = z
-		fmt.Printf("prez = %v\n", prez)
 		z = prez.Mul(y)
 		z = one.Sub(z)
 		z = z.Mul(prez)
 		z = z.Add(prez)
-		fmt.Printf("HERE zn= %v\nthis is mantissa %v\nthis is exp %v, this is precision %v\n", z, z.mantissa, z.exp, z.precision)
 	}
 	z = z.Mul(x)
-	//fmt.Printf("HERE z= %v\nthis is z.mantissa %v\nthis is z.exp %v, this is z.precision %v\n", z, z.mantissa, z.exp, z.precision)
-	z = z.normalize()
-	//fmt.Printf("%v\n", z)
-	return z //.normalize()
+	return z.normalize()
 }
 
 func MakeSeventeen() *Float {
