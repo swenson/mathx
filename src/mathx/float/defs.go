@@ -177,19 +177,15 @@ func (_x *Float) Div(_y *Float) *Float {
 	i := y.mantissa.BitLen()
 	fmt.Printf("y.mantissa = %v, BitLen = %v, y.exp %v\n", y.mantissa, i, y.exp)
 	tempexp := 0 - int64(i)
-	fmt.Printf("tempexp %v\n", tempexp)
-	fmt.Printf("x.exp before altered %v ", x.exp)
+	//fmt.Printf("tempexp %v\n", tempexp)
+	//fmt.Printf("x.exp before altered %v ", x.exp)
 	x.exp = x.exp + (tempexp - y.exp)
-	fmt.Printf("x.exp now = %v\n", x.exp)
+	//fmt.Printf("x.exp now = %v\n", x.exp)
 	y.exp = tempexp
-	fmt.Printf("x %v and y %v\n", x, y)
-	fmt.Printf("y %v, thirtytwo %v\n", y, thirtytwo)
+	//fmt.Printf("x %v and y %v\n", x, y)
 	z = y.Mul(thirtytwo)
-	fmt.Printf("z %v, thirtytwo %v\n", z, thirtytwo)
 	z = z.Add(fortyeight)
-	fmt.Printf("z %v, fortyeight %v\n", z, fortyeight)
 	seventeen := NewFloat(0.0)
-	//fmt.Printf("sign %v, mantissa %v, exp %v\n", seventeen.sign, seventeen.mantissa, seventeen.exp)
 	seventeen.sign = true
 	seventeen.precision = 0
 	repeatingchunk := NewFloat(15)
@@ -217,7 +213,7 @@ func (_x *Float) Div(_y *Float) *Float {
 		z = one.Sub(z)
 		z = z.Mul(prez)
 		z = z.Add(prez)
-		//fmt.Printf("HERE zn= %v\nthis is mantissa %v\nthis is exp %v, this is precision %v\n", z, z.mantissa, z.exp, z.precision)
+		fmt.Printf("HERE zn= %v\nthis is mantissa %v\nthis is exp %v, this is precision %v\n", z, z.mantissa, z.exp, z.precision)
 	}
 	z = z.Mul(x)
 	//fmt.Printf("HERE z= %v\nthis is z.mantissa %v\nthis is z.exp %v, this is z.precision %v\n", z, z.mantissa, z.exp, z.precision)
