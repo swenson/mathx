@@ -37,7 +37,7 @@ var floatAddTestCases = []struct {
 	{NewFloat(0.00244140625), NewFloat(-20), NewFloat(-19.99755859375), false, -11, NewInt(40955)},
 	{NewFloat(0.03125), NewFloat(-0.375), NewFloat(-0.34375), false, -5, NewInt(11)},
 	{NewFloat(-1.1), NewFloat(2.6), NewFloat(1.5), true, -1, NewInt(3)},
-	/*{NewFloat(-), NewFloat(0.0015869140625), NewFloat(), , ,NewInt()},
+	//{NewFloat(-), NewFloat(0.0015869140625), NewFloat(), , ,NewInt()},
 	/*{NewFloat(-0.0234375), NewFloat(), NewFloat(), , ,NewInt()},
 	/*{NewFloat(-0.0546875), NewFloat(0.34375), NewFloat(), , ,NewInt()},
 	/*{NewFloat(-), NewFloat(-), NewFloat(), , ,NewInt()},
