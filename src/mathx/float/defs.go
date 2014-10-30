@@ -139,6 +139,7 @@ func (_x *Float) Mul(_y *Float) *Float {
 	}
 	z.exp = x.exp
 
+	//x, y = x.denormalize(y)
 	z.mantissa = x.mantissa.Mul(y.mantissa)
 	z.exp = 2 * z.exp
 
@@ -157,10 +158,12 @@ func (_x *Float) Div(_y *Float) *Float {
 	y := _y.Copy()
 	z := new(Float)
 
-	fmt.Printf("%v %v %v %v\n", x.mantissa, x.exp, y.mantissa, y.exp)
-
 	if y.mantissa.Sign() == 0 {
 		panic("Can not divide by zero")
+	}
+	if y.sign == x.sign {
+		y.sign = true
+		x.sign = true
 	}
 	if y.sign == false {
 		y.sign = true
