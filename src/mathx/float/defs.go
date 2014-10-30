@@ -154,6 +154,7 @@ func (_x *Float) Mul(_y *Float) *Float {
 var (
 	thirtytwo  = NewFloat(-32.0)
 	fortyeight = NewFloat(48.0)
+	one        = NewFloat(1.0)
 )
 
 func (_x *Float) Div(_y *Float) *Float {
@@ -167,7 +168,10 @@ func (_x *Float) Div(_y *Float) *Float {
 	if y.mantissa.Sign() == 0 {
 		panic("Can not divide by zero")
 	}
-
+	if y.sign == false {
+		y.sign = true
+		x.sign = false
+	}
 	z.precision = x.precision //I don't this this works right
 	if z.precision > y.precision {
 		z.precision = y.precision
@@ -182,8 +186,9 @@ func (_x *Float) Div(_y *Float) *Float {
 	x.exp = x.exp + (tempexp - y.exp)
 	//fmt.Printf("x.exp now = %v\n", x.exp)
 	y.exp = tempexp
-	//fmt.Printf("x %v and y %v\n", x, y)
+	fmt.Printf("x %v and y %v\n", x, y)
 	z = y.Mul(thirtytwo)
+	fmt.Printf("denominator * thirtytwo = z %v\n", z)
 	z = z.Add(fortyeight)
 	seventeen := NewFloat(0.0)
 	seventeen.sign = true
@@ -196,13 +201,13 @@ func (_x *Float) Div(_y *Float) *Float {
 	}
 	fmt.Printf("seventeen %v, z %v\n", seventeen, z)
 	z = z.Mul(seventeen)
+	fmt.Printf("seventeen * z %v\n", z)
 
 	//create stopping point
 	var stop float64
 	stop = math.Log2((float64(z.precision) + 1)) /// (math.Log2(17))) //casting z.precision as a float64 should work up to 2^52 bits, hopefully
 	stopp := int(math.Ceil(stop))
 	fmt.Printf("%v\n", z.precision)
-	one := NewFloat(1.0)
 	prez := new(Float)
 	fmt.Printf("x = %v, y = %v, z1 = %v\n", x, y, z)
 
