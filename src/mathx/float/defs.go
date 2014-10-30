@@ -168,8 +168,13 @@ func (_x *Float) Mul(_y *Float) *Float {
 	return z.normalize()
 }
 
+var (
+	thirtytwo  = NewFloat(-32.0)
+	fortyeight = NewFloat(48.0)
+)
+
 func (_x *Float) Div(_y *Float) *Float {
-	//Theoretically this is the Newton Raphson method
+	//Div implements division by calculating the recipipricol of of the denominator and multiplying by the numerator using the Newton Raphson Method. (http://en.wikipedia.org/wiki/Division_algorithm)
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
@@ -180,15 +185,13 @@ func (_x *Float) Div(_y *Float) *Float {
 		panic("Can not divide by zero")
 	}
 
-	z.precision = x.precision
+	z.precision = x.precision //I don't this this works right
 	if z.precision > y.precision {
 		z.precision = y.precision
 	}
 
 	//creating an accurate enough first guess
-	thirtytwo := NewFloat(-32.0)
-	fortyeight := NewFloat(48.0)
-	i := y.mantissa.BitLen() //the problem is in here somewhere
+	i := y.mantissa.BitLen()
 	fmt.Printf("y.mantissa = %v, BitLen = %v, y.exp %v\n", y.mantissa, i, y.exp)
 	tempexp := 0 - int64(i)
 	fmt.Printf("tempexp %v\n", tempexp)
@@ -197,9 +200,14 @@ func (_x *Float) Div(_y *Float) *Float {
 	fmt.Printf("x.exp now = %v\n", x.exp)
 	y.exp = tempexp
 	fmt.Printf("x %v and y %v\n", x, y)
+	fmt.Printf("y %v, thirtytwo %v\n", y, thirtytwo)
 	z = y.Mul(thirtytwo)
+	fmt.Printf("z %v, thirtytwo %v\n", z, thirtytwo)
 	z = z.Add(fortyeight)
+	fmt.Printf("z %v, fortyeight %v\n", z, fortyeight)
 	seventeen := NewFloat(0.0)
+	//fmt.Printf("sign %v, mantissa %v, exp %v\n", seventeen.sign, seventeen.mantissa, seventeen.exp)
+	seventeen.sign = true
 	seventeen.precision = 0
 	repeatingchunk := NewFloat(15)
 	for seventeen.precision < z.precision {
@@ -207,6 +215,7 @@ func (_x *Float) Div(_y *Float) *Float {
 		seventeen.precision = seventeen.precision + 8
 		seventeen.exp = seventeen.exp - 8
 	}
+	fmt.Printf("seventeen %v, z %v\n", seventeen, z)
 	z = z.Mul(seventeen)
 
 	//create stopping point
@@ -225,12 +234,12 @@ func (_x *Float) Div(_y *Float) *Float {
 		z = one.Sub(z)
 		z = z.Mul(prez)
 		z = z.Add(prez)
-		fmt.Printf("HERE zn= %v\nthis is mantissa %v\nthis is exp %v, this is precision %v\n", z, z.mantissa, z.exp, z.precision)
+		//fmt.Printf("HERE zn= %v\nthis is mantissa %v\nthis is exp %v, this is precision %v\n", z, z.mantissa, z.exp, z.precision)
 	}
 	z = z.Mul(x)
-	fmt.Printf("HERE z= %v\nthis is z.mantissa %v\nthis is z.exp %v, this is z.precision %v\n", z, z.mantissa, z.exp, z.precision)
+	//fmt.Printf("HERE z= %v\nthis is z.mantissa %v\nthis is z.exp %v, this is z.precision %v\n", z, z.mantissa, z.exp, z.precision)
 	z = z.normalize()
-	fmt.Printf("%v\n", z)
+	//fmt.Printf("%v\n", z)
 	return z //.normalize()
 }
 
@@ -278,7 +287,7 @@ func (_z *Float) Abs() *Float {
 }
 
 func (z *Float) normalize() *Float {
-	if z.mantissa.Sign() == 0 { //why no copy?
+	if z.mantissa.Sign() == 0 {
 		return z
 	}
 
@@ -301,7 +310,7 @@ func (x *Float) denormalize(y *Float) (*Float, *Float) {
 	return x, y
 }
 
-func (z Float) String() string { // why is it Float not *Float
+func (z Float) String() string {
 	sign := "+"
 	if !z.sign {
 		sign = "-"
