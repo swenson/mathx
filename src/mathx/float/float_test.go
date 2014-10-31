@@ -41,10 +41,11 @@ var floatAddTestCases = []struct {
 	{NewFloat(-0.0234375), NewFloat(56.25), NewFloat(56.2265625), true, -7, NewInt(7197)},
 	{NewFloat(-0.0546875), NewFloat(0.34375), NewFloat(0.2890625), true, -7, NewInt(37)},
 	{NewFloat(-556), NewFloat(-66.42), NewFloat(-622.42), false, -46, NewInt(43798913751061627)},
-	/*{NewFloat(-), NewFloat(-0.002685546875), NewFloat(), , ,NewInt()},
-	{NewFloat(-0.001708984375), NewFloat(-), NewFloat(), , ,NewInt()},
-	{NewFloat(-0.875), NewFloat(-0.25), NewFloat(), , ,NewInt()},
-	{NewFloat(-0.0), NewFloat(1), NewFloat(1), true, 1, NewInt(1)}, this bit fails */
+	{NewFloat(-5.5), NewFloat(-0.002685546875), NewFloat(-5.502685546875), false, -12, NewInt(22539)},
+	{NewFloat(-0.001708984375), NewFloat(-48.75), NewFloat(-40.751708984375), false, -12, NewInt(199687)},
+	{NewFloat(-0.875), NewFloat(-0.25), NewFloat(-1.125), false, -3, NewInt(9)},
+	{NewFloat(0.0), NewFloat(1.0), NewFloat(1), true, 0, NewInt(1)},
+	{NewFloat(1.0), NewFloat(-1.0), NewFloat(0.0), false, 0, NewInt(0)},
 }
 
 func TestFloatAdd(t *testing.T) {
