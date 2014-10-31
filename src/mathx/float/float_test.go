@@ -37,10 +37,10 @@ var floatAddTestCases = []struct {
 	{NewFloat(0.00244140625), NewFloat(-20), NewFloat(-19.99755859375), false, -11, NewInt(40955)},
 	{NewFloat(0.03125), NewFloat(-0.375), NewFloat(-0.34375), false, -5, NewInt(11)},
 	{NewFloat(-1.1), NewFloat(2.6), NewFloat(1.5), true, -1, NewInt(3)},
-	//{NewFloat(-), NewFloat(0.0015869140625), NewFloat(), , ,NewInt()},
-	/*{NewFloat(-0.0234375), NewFloat(), NewFloat(), , ,NewInt()},
-	/*{NewFloat(-0.0546875), NewFloat(0.34375), NewFloat(), , ,NewInt()},
-	/*{NewFloat(-), NewFloat(-), NewFloat(), , ,NewInt()},
+	{NewFloat(-500.25), NewFloat(0.0015869140625), NewFloat(-500.2484130859375), false, -13, NewInt(4098035)},
+	{NewFloat(-0.0234375), NewFloat(56.25), NewFloat(56.2265625), true, -7, NewInt(7197)},
+	{NewFloat(-0.0546875), NewFloat(0.34375), NewFloat(0.2890625), true, -7, NewInt(37)},
+	{NewFloat(-556), NewFloat(-66.42), NewFloat(-622.42), false, -46, NewInt(43798913751061627)},
 	/*{NewFloat(-), NewFloat(-0.002685546875), NewFloat(), , ,NewInt()},
 	{NewFloat(-0.001708984375), NewFloat(-), NewFloat(), , ,NewInt()},
 	{NewFloat(-0.875), NewFloat(-0.25), NewFloat(), , ,NewInt()},
@@ -151,7 +151,7 @@ func TestFloatDiv(t *testing.T) {
 	precision := NewFloat(2)
 	precision.exp = precision.exp - 50
 	for _, testCase := range floatDivTestCases { //floatDivTestCases or floatMulTestCAses?
-		fmt.Printf("\u001b[2J") //this will clear stdout so the failure will only print the failed iteration and not all pervious testcases
+		//fmt.Printf("\u001b[2J") //this will clear stdout so the failure will only print the failed iteration and not all pervious testcases
 		x := testCase.a
 		y := testCase.b
 		w := testCase.c
