@@ -129,17 +129,8 @@ func (_x *Float) Mul(_y *Float) *Float {
 		z.sign = false
 	}
 
-	for x.exp < y.exp {
-		y.exp--
-		y.mantissa = y.mantissa.Lsh(1)
-	}
-	for y.exp < x.exp {
-		x.exp--
-		x.mantissa = x.mantissa.Lsh(1)
-	}
+	x, y = x.denormalize(y)
 	z.exp = x.exp
-
-	//x, y = x.denormalize(y)
 	z.mantissa = x.mantissa.Mul(y.mantissa)
 	z.exp = 2 * z.exp
 
@@ -169,12 +160,12 @@ func (_x *Float) Div(_y *Float) *Float {
 		y.sign = true
 		x.sign = false
 	}
-	z.precision = x.precision //I don't this this works right
+	z.precision = x.precision
 	if z.precision > y.precision {
 		z.precision = y.precision
 	}
 
-	//creating an accurate enough first guess
+	//create an accurate enough first guess
 	i := y.mantissa.BitLen()
 	tempexp := 0 - int64(i)
 	x.exp = x.exp + (tempexp - y.exp)
@@ -194,7 +185,7 @@ func (_x *Float) Div(_y *Float) *Float {
 
 	//create stopping point
 	var stop float64
-	stop = math.Log2((float64(z.precision) + 1)) /// (math.Log2(17))) //casting z.precision as a float64 should work up to 2^52 bits, hopefully
+	stop = math.Log2((float64(z.precision) + 1)) / (math.Log2(17)) //casting z.precision as a float64 should work up to 2^52 bits, hopefully
 	stopp := int(math.Ceil(stop))
 	prez := new(Float)
 
@@ -211,17 +202,13 @@ func (_x *Float) Div(_y *Float) *Float {
 
 func MakeSeventeen() *Float {
 	seventeen := NewFloat(0.0)
-	//fmt.Printf("intialized at %v, precision is %v, exp is %v, mantissa is %v\n", seventeen, seventeen.precision, seventeen.exp, seventeen.mantissa)
 	seventeen.precision = 0
 	repeatingchunk := NewFloat(15)
-	//fmt.Printf("immediately before for loop%v\n", seventeen)
 	for seventeen.precision < 64 {
-		seventeen.mantissa = seventeen.mantissa.Lsh(8).Add(repeatingchunk.mantissa) //HERE is the problem
+		seventeen.mantissa = seventeen.mantissa.Lsh(8).Add(repeatingchunk.mantissa)
 		seventeen.precision = seventeen.precision + 8
-		//fmt.Printf("in for loop %v seventeen, %v mantissa, %v precision, %v exp\n", seventeen, seventeen.mantissa, seventeen.precision, seventeen.exp)
 		seventeen.exp = seventeen.exp - 8
 	}
-	//fmt.Printf("after for loop, before return %v\n", seventeen.mantissa)
 	return seventeen
 }
 
