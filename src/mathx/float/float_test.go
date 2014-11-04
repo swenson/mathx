@@ -82,26 +82,53 @@ func TestFloatSub(t *testing.T) {
 }
 
 var floatMulTestCases = []struct {
-	a        *Float
-	b        *Float
-	c        *Float //I don't think this variable does anything
-	sign     bool
-	exp      int64
-	mantissa *Int
+	a *Float
+	b *Float
+	c *Float //I don't think this variable does anything
 }{
-	{NewFloat(2), NewFloat(0.5), NewFloat(1), true, 0, NewInt(1)},
+	//{NewFloat(2.0), NewFloat(0.5), NewFloat(1.0)},
+	{NewFloat(14.25), NewFloat(3.87), NewFloat(55.1475)},            //ABC++
+	{NewFloat(34.98), NewFloat(0.63), NewFloat(22.0374)},            //AbC
+	{NewFloat(3.65), NewFloat(0.115), NewFloat(0.41975)},            //Abc
+	{NewFloat(0.76767676), NewFloat(500.45), NewFloat(210.0638875)}, //aBC
+	{NewFloat(0.214), NewFloat(4.164), NewFloat(0.891096)},          //aBc
+	{NewFloat(0.00134), NewFloat(0.81), NewFloat(0.0010854)},        //abc
+	{NewFloat(923.83), NewFloat(-6.253), NewFloat(-5776.70899)},     //ABC+-
+	{NewFloat(92.71), NewFloat(-0.045), NewFloat(-4.17195)},         //AbC
+	{NewFloat(67.77), NewFloat(-0.0017), NewFloat(-0.115209)},       //Abc
+	{NewFloat(0.176), NewFloat(-52.0), NewFloat(-9.152)},            //aBC
+	{NewFloat(0.00095), NewFloat(-9.45), NewFloat(-0.0089775)},      //aBc
+	{NewFloat(0.012), NewFloat(-0.0075), NewFloat(-0.00009)},        //abc
+	//{NewFloat(-93.0), NewFloat(1000.0), NewFloat(-93000.0)},         //ABC-+
+	{NewFloat(-1.5), NewFloat(0.8), NewFloat(-1.2)}, //AbC
+	/*{NewFloat(), NewFloat(), NewFloat()}, //Abc
+	{NewFloat(), NewFloat(), NewFloat()}, //aBC
+	{NewFloat(), NewFloat(), NewFloat()}, //aBc
+	{NewFloat(), NewFloat(), NewFloat()}, //abc
+	{NewFloat(), NewFloat(), NewFloat()}, //ABC--
+	{NewFloat(), NewFloat(), NewFloat()}, //AbC
+	{NewFloat(), NewFloat(), NewFloat()}, //Abc
+	{NewFloat(), NewFloat(), NewFloat()}, //aBC
+	{NewFloat(), NewFloat(), NewFloat()}, //aBc
+	{NewFloat(), NewFloat(), NewFloat()}, //abc
+	{NewFloat(0.0), NewFloat(1.0), NewFloat(0.0)},
+	*/
 }
 
 func TestFloatMul(t *testing.T) {
-	x := new(Float)
-	y := new(Float)
+	precision := NewFloat(2)
+	precision.exp = precision.exp - 50
 	for _, testCase := range floatMulTestCases {
-		x = testCase.a
-		y = testCase.b
+		//fmt.Printf("\u001b[2J") //this will clear stdout so the failure will only print the failed iteration and not all pervious testcases
+		x := testCase.a
+		y := testCase.b
+		w := testCase.c
 		z := x.Mul(y)
-		mantissaCmp := testCase.mantissa.Cmp(z.mantissa)
-		if z.sign != testCase.sign || z.exp != testCase.exp || mantissaCmp != 0 {
-			fmt.Printf("%t and %v and %v also %t and %v and %v\n", z.sign, z.exp, z.mantissa, testCase.sign, testCase.exp, testCase.mantissa)
+		z, w = z.denormalize(w)
+		diff := z.Sub(w).Abs()
+		yes := diff.Cmp(precision)
+		if z.sign != w.sign || z.exp != w.exp || yes <= 0 {
+			fmt.Printf("%t and %v and %v \n%t and %v and %v\n\n%v dne %v\n", z.sign, z.exp, z.mantissa, w.sign, w.exp, w.mantissa, z, w)
 			t.FailNow()
 		}
 	}
