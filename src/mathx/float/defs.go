@@ -70,6 +70,12 @@ func (x *Float) Copy() *Float {
 }
 
 func (_x *Float) Add(_y *Float) *Float {
+	if _x.mantissa.Sign() == 0 {
+		return _y
+	} else if _y.mantissa.Sign() == 0 {
+		return _x
+	}
+
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
