@@ -121,7 +121,8 @@ func (_x *Float) Mul(_y *Float) *Float {
 	y := _y.Copy()
 	z := new(Float)
 
-	if (x.mantissa.Sign() == 0) || (y.mantissa.Sign() == 0) {
+	if x.mantissa.Sign() == 0 || y.mantissa.Sign() == 0 {
+		fmt.Printf("if x or y = 0 then %v * %v\n", x, y)
 		return NewFloat(0.0)
 	}
 
@@ -135,11 +136,13 @@ func (_x *Float) Mul(_y *Float) *Float {
 		z.sign = false
 	}
 
+	//fmt.Printf("x = %v * y = %v\n", x, y)
 	x, y = x.denormalize(y)
 	z.exp = x.exp
 	z.mantissa = x.mantissa.Mul(y.mantissa)
 	z.exp = 2 * z.exp
 
+	//fmt.Printf("z = %v\n", z)
 	return z.normalize()
 }
 
