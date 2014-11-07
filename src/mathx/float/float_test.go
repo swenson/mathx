@@ -87,32 +87,32 @@ var floatMulTestCases = []struct {
 	c *Float //I don't think this variable does anything
 }{
 	//{NewFloat(2.0), NewFloat(0.5), NewFloat(1.0)},
-	{NewFloat(14.25), NewFloat(3.87), NewFloat(55.1475)},            //ABC++
-	{NewFloat(34.98), NewFloat(0.63), NewFloat(22.0374)},            //AbC
-	{NewFloat(3.65), NewFloat(0.115), NewFloat(0.41975)},            //Abc
-	{NewFloat(0.76767676), NewFloat(500.45), NewFloat(210.0638875)}, //aBC
-	{NewFloat(0.214), NewFloat(4.164), NewFloat(0.891096)},          //aBc
-	{NewFloat(0.00134), NewFloat(0.81), NewFloat(0.0010854)},        //abc
-	{NewFloat(923.83), NewFloat(-6.253), NewFloat(-5776.70899)},     //ABC+-
-	{NewFloat(92.71), NewFloat(-0.045), NewFloat(-4.17195)},         //AbC
-	{NewFloat(67.77), NewFloat(-0.0017), NewFloat(-0.115209)},       //Abc
-	{NewFloat(0.176), NewFloat(-52.0), NewFloat(-9.152)},            //aBC
-	{NewFloat(0.00095), NewFloat(-9.45), NewFloat(-0.0089775)},      //aBc
-	{NewFloat(0.012), NewFloat(-0.0075), NewFloat(-0.00009)},        //abc
-	//{NewFloat(-93.0), NewFloat(1000.0), NewFloat(-93000.0)},         //ABC-+
-	{NewFloat(-1.5), NewFloat(0.8), NewFloat(-1.2)}, //AbC
-	/*{NewFloat(), NewFloat(), NewFloat()}, //Abc
-	{NewFloat(), NewFloat(), NewFloat()}, //aBC
-	{NewFloat(), NewFloat(), NewFloat()}, //aBc
-	{NewFloat(), NewFloat(), NewFloat()}, //abc
-	{NewFloat(), NewFloat(), NewFloat()}, //ABC--
-	{NewFloat(), NewFloat(), NewFloat()}, //AbC
-	{NewFloat(), NewFloat(), NewFloat()}, //Abc
-	{NewFloat(), NewFloat(), NewFloat()}, //aBC
-	{NewFloat(), NewFloat(), NewFloat()}, //aBc
-	{NewFloat(), NewFloat(), NewFloat()}, //abc
+	{NewFloat(14.25), NewFloat(3.87), NewFloat(55.1475)},                  //ABC++
+	{NewFloat(34.98), NewFloat(0.63), NewFloat(22.0374)},                  //AbC
+	{NewFloat(3.65), NewFloat(0.115), NewFloat(0.41975)},                  //Abc
+	{NewFloat(0.76767676), NewFloat(500.45), NewFloat(210.0638875)},       //aBC
+	{NewFloat(0.214), NewFloat(4.164), NewFloat(0.891096)},                //aBc
+	{NewFloat(0.00134), NewFloat(0.81), NewFloat(0.0010854)},              //abc
+	{NewFloat(923.83), NewFloat(-6.253), NewFloat(-5776.70899)},           //ABC+-
+	{NewFloat(92.71), NewFloat(-0.045), NewFloat(-4.17195)},               //AbC
+	{NewFloat(67.77), NewFloat(-0.0017), NewFloat(-0.115209)},             //Abc
+	{NewFloat(0.176), NewFloat(-52.0), NewFloat(-9.152)},                  //aBC
+	{NewFloat(0.00095), NewFloat(-9.45), NewFloat(-0.0089775)},            //aBc
+	{NewFloat(0.012), NewFloat(-0.0075), NewFloat(-0.00009)},              //abc
+	{NewFloat(-93.0), NewFloat(1000.0), NewFloat(-93000.0)},               //ABC-+
+	{NewFloat(-1.5), NewFloat(0.8), NewFloat(-1.2)},                       //AbC
+	{NewFloat(-45.34), NewFloat(0.0097), NewFloat(-0.439798)},             //Abc
+	{NewFloat(-0.077), NewFloat(7800.3333333), NewFloat(-600.6256666641)}, //aBC
+	{NewFloat(-0.0000056), NewFloat(10.99), NewFloat(-0.000061544)},       //aBc
+	{NewFloat(-0.257), NewFloat(0.45), NewFloat(-0.11565)},                //abc
+	{NewFloat(-75.903), NewFloat(-999.99), NewFloat(75902.24097)},         //ABC--
+	{NewFloat(-5044.5), NewFloat(-0.0035), NewFloat(17.65575)},            //AbC
+	{NewFloat(-427.272727), NewFloat(-0.0003), NewFloat(0.1281818181)},    //Abc
+	{NewFloat(-0.0057), NewFloat(-784.665), NewFloat(4.4725905)},          //aBC
+	{NewFloat(-0.000075), NewFloat(-50.89), NewFloat(0.00381675)},         //aBc
+	{NewFloat(-0.99999), NewFloat(-0.000001), NewFloat(0.00000099999)},    //abc
 	{NewFloat(0.0), NewFloat(1.0), NewFloat(0.0)},
-	*/
+	{NewFloat(10.0), NewFloat(0.0), NewFloat(0.0)},
 }
 
 func TestFloatMul(t *testing.T) {
