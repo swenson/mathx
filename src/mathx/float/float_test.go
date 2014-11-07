@@ -196,7 +196,7 @@ func TestFloatDiv(t *testing.T) {
 	}
 }
 
-/*var floatStringTestCases = []struct {
+var floatStringTestCases = []struct {
 	num float64
 	str string
 }{
@@ -216,4 +216,4 @@ func TestFloatPrint(t *testing.T) {
 			t.FailNow()
 		}
 	}
-}*/
+}
