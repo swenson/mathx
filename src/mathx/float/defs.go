@@ -135,12 +135,12 @@ func (_x *Float) Mul(_y *Float) *Float {
 	if x.sign != y.sign {
 		z.sign = false
 	}
-	//fmt.Printf("x = %v * y = %v\n", x, y)
+	fmt.Printf("x = %v * y = %v\n", x, y)
 	x, y = x.denormalize(y)
 	z.exp = 2 * x.exp
 	z.mantissa = x.mantissa.Mul(y.mantissa)
 
-	//fmt.Printf("z = %v\n", z)
+	fmt.Printf("z = %v\n", z.normalize())
 	return z.normalize()
 }
 
@@ -222,7 +222,7 @@ func MakeSeventeen() *Float {
 func (_x *Float) Cmp(_y *Float) int {
 	x := _x.Copy()
 	y := _y.Copy()
-	x.Sub(y)
+	x = x.Sub(y)
 	var z int
 	if x.mantissa.Sign() == 0 {
 		z = 0
