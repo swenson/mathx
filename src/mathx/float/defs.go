@@ -135,12 +135,10 @@ func (_x *Float) Mul(_y *Float) *Float {
 	if x.sign != y.sign {
 		z.sign = false
 	}
-
 	//fmt.Printf("x = %v * y = %v\n", x, y)
 	x, y = x.denormalize(y)
-	z.exp = x.exp
+	z.exp = 2 * x.exp
 	z.mantissa = x.mantissa.Mul(y.mantissa)
-	z.exp = 2 * z.exp
 
 	//fmt.Printf("z = %v\n", z)
 	return z.normalize()
@@ -194,7 +192,7 @@ func (_x *Float) Div(_y *Float) *Float {
 
 	//create stopping point
 	var stop float64
-	stop = math.Log2((float64(z.precision) + 1)) / (math.Log2(17)) //casting z.precision as a float64 should work up to 2^52 bits, hopefully
+	stop = math.Log2((float64(z.precision) + 1)) /// (math.Log2(17)) //casting z.precision as a float64 should work up to 2^52 bits, hopefully
 	stopp := int(math.Ceil(stop))
 	prez := new(Float)
 

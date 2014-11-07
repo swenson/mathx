@@ -125,8 +125,8 @@ func TestFloatMul(t *testing.T) {
 		z := x.Mul(y)
 		z, w = z.denormalize(w)
 		diff := z.Sub(w).Abs()
-		yes := diff.Cmp(precision)                          //DOESN'T WORK FOR ZERO, zero will always be less than the precision
-		if z.sign != w.sign || z.exp != w.exp || yes <= 0 { //it should be yes >= 0
+		bad := diff.Cmp(precision)                          //DOESN'T WORK FOR ZERO, zero will always be less than the precision
+		if z.sign != w.sign || z.exp != w.exp || bad <= 0 { //it should be yes >= 0
 			fmt.Printf("%t and %v and %v \n%t and %v and %v\n\n%v dne %v\n", z.sign, z.exp, z.mantissa, w.sign, w.exp, w.mantissa, z, w)
 			t.FailNow()
 		}
@@ -185,8 +185,8 @@ func TestFloatDiv(t *testing.T) {
 		z := x.Div(y)
 		z, w = z.denormalize(w)
 		diff := z.Sub(w).Abs()
-		yes := diff.Cmp(precision)
-		if z.sign != w.sign || z.exp != w.exp || yes <= 0 {
+		bad := diff.Cmp(precision)
+		if z.sign != w.sign || z.exp != w.exp || bad > 0 {
 			fmt.Printf("%t and %v and %v \n%t and %v and %v\n\n%v dne %v\n", z.sign, z.exp, z.mantissa, w.sign, w.exp, w.mantissa, z, w)
 			t.FailNow()
 		}
