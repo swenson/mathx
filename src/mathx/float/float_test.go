@@ -88,21 +88,21 @@ var floatMulTestCases = []struct {
 	c     *Float
 }{
 	{"1", NewFloat(2.0), NewFloat(0.5), NewFloat(1.0)},
-	{"2", NewFloat(14.25), NewFloat(3.87), NewFloat(55.1475)}, //ABC++
-	{"3", NewFloat(34.98), NewFloat(0.63), NewFloat(22.0374)}, //AbC
-	{"4", NewFloat(3.65), NewFloat(0.115), NewFloat(0.41975)}, //Abc
-	//{"5", NewFloat(0.76767676), NewFloat(500.45), NewFloat(210.0638875)}, //aBC
-	{"6", NewFloat(0.214), NewFloat(4.164), NewFloat(0.891096)},   //aBc
-	{"7", NewFloat(0.00134), NewFloat(0.81), NewFloat(0.0010854)}, //abc
-	//{"8", NewFloat(923.83), NewFloat(-6.253), NewFloat(-5776.70899)}, //ABC+-
-	{"9", NewFloat(92.71), NewFloat(-0.045), NewFloat(-4.17195)},     //AbC
-	{"10", NewFloat(67.77), NewFloat(-0.0017), NewFloat(-0.115209)},  //Abc
-	{"11", NewFloat(0.176), NewFloat(-52.0), NewFloat(-9.152)},       //aBC
-	{"12", NewFloat(0.00095), NewFloat(-9.45), NewFloat(-0.0089775)}, //aBc
-	{"13", NewFloat(0.012), NewFloat(-0.0075), NewFloat(-0.00009)},   //abc
-	//{"14", NewFloat(-93.0), NewFloat(1000.0), NewFloat(-93000.0)},               //ABC-+
-	{"15", NewFloat(-1.5), NewFloat(0.8), NewFloat(-1.2)},           //AbC
-	{"16", NewFloat(-45.34), NewFloat(0.0097), NewFloat(-0.439798)}, //Abc
+	{"2", NewFloat(14.25), NewFloat(3.87), NewFloat(55.1475)},            //ABC++
+	{"3", NewFloat(34.98), NewFloat(0.63), NewFloat(22.0374)},            //AbC
+	{"4", NewFloat(3.65), NewFloat(0.115), NewFloat(0.41975)},            //Abc
+	{"5", NewFloat(0.76767676), NewFloat(500.45), NewFloat(210.0638875)}, //aBC
+	{"6", NewFloat(0.214), NewFloat(4.164), NewFloat(0.891096)},          //aBc
+	{"7", NewFloat(0.00134), NewFloat(0.81), NewFloat(0.0010854)},        //abc
+	{"8", NewFloat(923.83), NewFloat(-6.253), NewFloat(-5776.70899)},     //ABC+-
+	{"9", NewFloat(92.71), NewFloat(-0.045), NewFloat(-4.17195)},         //AbC
+	{"10", NewFloat(67.77), NewFloat(-0.0017), NewFloat(-0.115209)},      //Abc
+	{"11", NewFloat(0.176), NewFloat(-52.0), NewFloat(-9.152)},           //aBC
+	{"12", NewFloat(0.00095), NewFloat(-9.45), NewFloat(-0.0089775)},     //aBc
+	{"13", NewFloat(0.012), NewFloat(-0.0075), NewFloat(-0.00009)},       //abc
+	{"14", NewFloat(-93.0), NewFloat(1000.0), NewFloat(-93000.0)},        //ABC-+
+	{"15", NewFloat(-1.5), NewFloat(0.8), NewFloat(-1.2)},                //AbC
+	{"16", NewFloat(-45.34), NewFloat(0.0097), NewFloat(-0.439798)},      //Abc
 	//{"17", NewFloat(-0.077), NewFloat(7800.3333333), NewFloat(-600.6256666641)}, //aBC
 	{"18", NewFloat(-0.0000056), NewFloat(10.99), NewFloat(-0.000061544)}, //aBc
 	{"19", NewFloat(-0.257), NewFloat(0.45), NewFloat(-0.11565)},          //abc

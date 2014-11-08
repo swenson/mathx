@@ -56,8 +56,7 @@ func NewFloat(f float64) *Float {
 	}
 	x.exp = e - 1023 - 52
 	x.mantissa = NewInt((int64(1) << 52) | m)
-	x.normalize()
-	return x
+	return x.normalize()
 }
 
 func (x *Float) Copy() *Float {
@@ -79,12 +78,6 @@ func (_x *Float) Add(_y *Float) *Float {
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
-
-	if x.mantissa.Sign() == 0 {
-		return y
-	} else if y.mantissa.Sign() == 0 {
-		return x
-	}
 
 	z.precision = x.precision
 	if z.precision > y.precision {
@@ -117,14 +110,14 @@ func (_x *Float) Sub(_y *Float) *Float {
 }
 
 func (_x *Float) Mul(_y *Float) *Float {
+	if _x.mantissa.Sign() == 0 || _y.mantissa.Sign() == 0 {
+		fmt.Printf("if x or y = 0 then %v * %v\n", _x, _y)
+		return NewFloat(0.0)
+	}
+
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
-
-	if x.mantissa.Sign() == 0 || y.mantissa.Sign() == 0 {
-		fmt.Printf("if x or y = 0 then %v * %v\n", x, y)
-		return NewFloat(0.0)
-	}
 
 	z.precision = x.precision
 	if z.precision > y.precision {
@@ -246,11 +239,12 @@ func (_z *Float) Abs() *Float {
 	return z
 }
 
-func (z *Float) normalize() *Float {
-	if z.mantissa.Sign() == 0 {
-		return z
+func (_z *Float) normalize() *Float {
+	if _z.mantissa.Sign() == 0 {
+		return _z
 	}
 
+	z := _z.Copy()
 	for z.mantissa.Bit(0) == 0 {
 		z.mantissa = z.mantissa.Rsh(1)
 		z.exp++
@@ -258,7 +252,9 @@ func (z *Float) normalize() *Float {
 	return z
 }
 
-func (x *Float) denormalize(y *Float) (*Float, *Float) {
+func (_x *Float) denormalize(_y *Float) (*Float, *Float) {
+	x := _x.Copy()
+	y := _y.Copy()
 	for x.exp < y.exp {
 		y.exp--
 		y.mantissa = y.mantissa.Lsh(1)
