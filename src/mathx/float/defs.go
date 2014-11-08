@@ -111,7 +111,7 @@ func (_x *Float) Sub(_y *Float) *Float {
 
 func (_x *Float) Mul(_y *Float) *Float {
 	if _x.mantissa.Sign() == 0 || _y.mantissa.Sign() == 0 {
-		fmt.Printf("if x or y = 0 then %v * %v\n", _x, _y)
+		//fmt.Printf("if x or y = 0 then %v * %v\n", _x, _y)
 		return NewFloat(0.0)
 	}
 
@@ -128,12 +128,12 @@ func (_x *Float) Mul(_y *Float) *Float {
 	if x.sign != y.sign {
 		z.sign = false
 	}
-	fmt.Printf("x = %v * y = %v\n", x, y)
+	//fmt.Printf("x = %v * y = %v\n", x, y)
 	x, y = x.denormalize(y)
 	z.exp = 2 * x.exp
 	z.mantissa = x.mantissa.Mul(y.mantissa)
 
-	fmt.Printf("z = %v\n", z.normalize())
+	//fmt.Printf("z = %v\n", z.normalize())
 	return z.normalize()
 }
 
