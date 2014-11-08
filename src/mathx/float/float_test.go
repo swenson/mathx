@@ -91,7 +91,7 @@ var floatMulTestCases = []struct {
 	{"2", NewFloat(14.25), NewFloat(3.87), NewFloat(55.1475)}, //ABC++
 	{"3", NewFloat(34.98), NewFloat(0.63), NewFloat(22.0374)}, //AbC
 	{"4", NewFloat(3.65), NewFloat(0.115), NewFloat(0.41975)}, //Abc
-	//{"5", NewFloat(0.76767676), NewFloat(500.45), NewFloat(210.0638875)}, //aBC
+	//{"5", NewFloat(0.76767676), NewFloat(500.45), NewFloat(384.18383454)},       //aBC
 	{"6", NewFloat(0.214), NewFloat(4.164), NewFloat(0.891096)},                 //aBc
 	{"7", NewFloat(0.00134), NewFloat(0.81), NewFloat(0.0010854)},               //abc
 	{"8", NewFloat(923.83), NewFloat(-6.253), NewFloat(-5776.70899)},            //ABC+-
@@ -128,7 +128,7 @@ func TestFloatMul(t *testing.T) {
 		diff := z.Sub(w).Abs()
 		bad := diff.Cmp(precision)
 		if z.sign != w.sign || z.exp != w.exp || bad == 1 {
-			fmt.Printf("ident %v\n %t and %v and %v \n%t and %v and %v\n\n%v dne %v\n", testCase.ident, z.sign, z.exp, z.mantissa, w.sign, w.exp, w.mantissa, z, w)
+			fmt.Printf("ident %v\n%t and %v and %v \n%t and %v and %v\n\n%v dne %v\n", testCase.ident, z.sign, z.exp, z.mantissa, w.sign, w.exp, w.mantissa, z, w)
 			fmt.Printf("bad %v, ident %v\n", bad, testCase.ident)
 			t.FailNow()
 		}
@@ -145,7 +145,7 @@ func TestFloatMul(t *testing.T) {
 var floatDivTestCases = []struct {
 	a *Float
 	b *Float
-	c *Float //I don't think this variable does anything
+	c *Float
 }{
 	{NewFloat(4.0), NewFloat(2.0), NewFloat(2.0)},
 	{NewFloat(20.0), NewFloat(2.0), NewFloat(10.0)},
