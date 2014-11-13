@@ -79,6 +79,12 @@ func (_x *Float) Add(_y *Float) *Float {
 	y := _y.Copy()
 	z := new(Float)
 
+	if x.mantissa.Sign() == 0 {
+		return y
+	} else if y.mantissa.Sign() == 0 {
+		return x
+	}
+
 	z.precision = x.precision
 	if z.precision > y.precision {
 		z.precision = y.precision
@@ -119,6 +125,10 @@ func (_x *Float) Mul(_y *Float) *Float {
 	y := _y.Copy()
 	z := new(Float)
 
+	if (x.mantissa.Sign() == 0) || (y.mantissa.Sign() == 0) {
+		return NewFloat(0.0)
+	}
+
 	z.precision = x.precision
 	if z.precision > y.precision {
 		z.precision = y.precision
@@ -128,12 +138,12 @@ func (_x *Float) Mul(_y *Float) *Float {
 	if x.sign != y.sign {
 		z.sign = false
 	}
-	//fmt.Printf("x = %v * y = %v\n", x, y)
-	x, y = x.denormalize(y)
-	z.exp = 2 * x.exp
-	z.mantissa = x.mantissa.Mul(y.mantissa)
 
-	//fmt.Printf("z = %v\n", z.normalize())
+	x, y = x.denormalize(y)
+	z.exp = x.exp
+	z.mantissa = x.mantissa.Mul(y.mantissa)
+	z.exp = 2 * z.exp
+
 	return z.normalize()
 }
 
@@ -215,7 +225,9 @@ func MakeSeventeen() *Float {
 func (_x *Float) Cmp(_y *Float) int {
 	x := _x.Copy()
 	y := _y.Copy()
+
 	x = x.Sub(y)
+
 	var z int
 	if x.mantissa.Sign() == 0 {
 		z = 0
@@ -239,12 +251,11 @@ func (_z *Float) Abs() *Float {
 	return z
 }
 
-func (_z *Float) normalize() *Float {
-	if _z.mantissa.Sign() == 0 {
-		return _z
+func (z *Float) normalize() *Float {
+	if z.mantissa.Sign() == 0 {
+		return z
 	}
 
-	z := _z.Copy()
 	for z.mantissa.Bit(0) == 0 {
 		z.mantissa = z.mantissa.Rsh(1)
 		z.exp++
@@ -252,9 +263,7 @@ func (_z *Float) normalize() *Float {
 	return z
 }
 
-func (_x *Float) denormalize(_y *Float) (*Float, *Float) {
-	x := _x.Copy()
-	y := _y.Copy()
+func (x *Float) denormalize(y *Float) (*Float, *Float) {
 	for x.exp < y.exp {
 		y.exp--
 		y.mantissa = y.mantissa.Lsh(1)
