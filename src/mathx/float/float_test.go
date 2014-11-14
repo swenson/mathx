@@ -196,6 +196,31 @@ func TestFloatDiv(t *testing.T) {
 	}
 }
 
+var floatSqrtTestCases = []struct {
+	a *Float
+	b *Float
+	c int64
+}{
+	{NewFloat(4.0), NewFloat(2.0), 8},
+}
+
+func TestFloatSqrt(t *testing.T) {
+	precision := NewFloat(2)
+	for _, testCase := range floatSqrtTestCases {
+		x := testCase.a
+		rootx := testCase.b
+		z := x.Sqrt(testCase.c)
+		z, rootx = z.denormalize(rootx)
+		diff := z.Sub(rootx).Abs()
+		precision.exp = testCase.c
+		bad := diff.Cmp(precision)
+		if z.sign != rootx.sign || bad == 1 { // might need one more condition
+			fmt.Printf("%v dne %v\n", z, rootx)
+			t.FailNow()
+		}
+	}
+}
+
 /*var floatStringTestCases = []struct {
 >>>>>>> 9592ea38ce42476a2a93d67b9d417201c949c93e
 	num float64

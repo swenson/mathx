@@ -29,6 +29,13 @@ const (
 	RoundDown
 )
 
+var (
+	thirtytwo  = NewFloat(-32.0) //for Div()
+	fortyeight = NewFloat(48.0)  //for Div()
+	one        = NewFloat(1.0)   //for Div()
+	two        = NewFloat(2.0)   //for Sqrt()
+)
+
 type Float struct {
 	sign      bool
 	precision uint64
@@ -79,12 +86,6 @@ func (_x *Float) Add(_y *Float) *Float {
 	y := _y.Copy()
 	z := new(Float)
 
-	if x.mantissa.Sign() == 0 {
-		return y
-	} else if y.mantissa.Sign() == 0 {
-		return x
-	}
-
 	z.precision = x.precision
 	if z.precision > y.precision {
 		z.precision = y.precision
@@ -125,10 +126,6 @@ func (_x *Float) Mul(_y *Float) *Float {
 	y := _y.Copy()
 	z := new(Float)
 
-	if (x.mantissa.Sign() == 0) || (y.mantissa.Sign() == 0) {
-		return NewFloat(0.0)
-	}
-
 	z.precision = x.precision
 	if z.precision > y.precision {
 		z.precision = y.precision
@@ -146,12 +143,6 @@ func (_x *Float) Mul(_y *Float) *Float {
 
 	return z.normalize()
 }
-
-var (
-	thirtytwo  = NewFloat(-32.0)
-	fortyeight = NewFloat(48.0)
-	one        = NewFloat(1.0)
-)
 
 func (_x *Float) Div(_y *Float) *Float {
 	//Div implements division by calculating the recipipricol of of the denominator and multiplying by the numerator using the Newton Raphson Method. (http://en.wikipedia.org/wiki/Division_algorithm)
@@ -220,6 +211,24 @@ func MakeSeventeen() *Float {
 		seventeen.exp = seventeen.exp - 8
 	}
 	return seventeen
+}
+
+func (_z *Float) Sqrt(_y int64) *Float {
+	number := _z.Copy()
+	accuracy := two
+	accuracy.exp = accuracy.exp - _y
+	z := NewFloat(1.0) //there's gotta be a better way to do this
+	prez := z
+	denominator := z
+	delta := z.Mul(z).Sub(number)
+	for delta.Cmp(accuracy) == 1 { //if the difference between the correct answer and the current guess is larger than the required accuracy, iterate
+		prez = z
+		denominator = two.Mul(prez)
+		z = prez.Mul(prez).Sub(number).Div(denominator)
+		z = prez.Sub(z)
+		delta = z.Mul(z).Sub(number)
+	}
+	return z.normalize()
 }
 
 func (_x *Float) Cmp(_y *Float) int {
