@@ -149,6 +149,9 @@ func (_x *Float) Div(_y *Float) *Float {
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
+	thirty2 := thirtytwo.Copy()
+	forty8 := fortyeight.Copy()
+	one1 := one.Copy()
 
 	if y.mantissa.Sign() == 0 {
 		panic("Can not divide by zero")
@@ -165,14 +168,16 @@ func (_x *Float) Div(_y *Float) *Float {
 	if z.precision > y.precision {
 		z.precision = y.precision
 	}
-
+	thirty2.precision = z.precision
+	forty8.precision = z.precision
+	one1.precision = z.precision
 	//create an accurate enough first guess
 	i := y.mantissa.BitLen()
 	tempexp := 0 - int64(i)
 	x.exp = x.exp + (tempexp - y.exp)
 	y.exp = tempexp
-	z = y.Mul(thirtytwo)
-	z = z.Add(fortyeight)
+	z = y.Mul(thirty2)
+	z = z.Add(forty8)
 	seventeen := NewFloat(0.0)
 	seventeen.sign = true
 	seventeen.precision = 0
@@ -193,7 +198,7 @@ func (_x *Float) Div(_y *Float) *Float {
 	for i := 0; i < stopp; i++ {
 		prez = z
 		z = prez.Mul(y)
-		z = one.Sub(z)
+		z = one1.Sub(z)
 		z = z.Mul(prez)
 		z = z.Add(prez)
 	}
@@ -223,22 +228,35 @@ func (_z *Float) Sqrt() *Float {
 	number := _z.Copy()
 	accuracy := NewFloat(1.0)
 	accuracy.exp += number.exp - int64(number.precision) + int64(number.mantissa.BitLen())
-	accuracy.precision = number.precision
+	accuracy.precision = 2 * number.precision
+	accuracy.exp = accuracy.exp - int64(accuracy.precision) //this will make sure that the loop compares the accuracy to z, not z^2
+	number.precision = 2 * number.precision
 	z := NewFloat(1.0) //there's gotta be a better way to do this
-	prez := NewFloat(1.0)
+	z.precision = 2 * z.precision
+	two2 := two.Copy()
+	two2.precision = number.precision
 	denominator := NewFloat(1.0)
-	delta := z.Mul(z).Sub(number)
-	delta = delta.Abs()
+	denominator.precision = 2 * denominator.precision
+	delta := z.Mul(z).Sub(number).Abs()
+	fmt.Printf("delta.precision %v\n", delta.precision)
 	for delta.Cmp(accuracy) == 1 { //if the difference between the correct answer and the current guess is larger than the required accuracy, iterate
-		prez = z
-		denominator = two.Mul(prez)
+		prez := z
+		denominator = two2.Mul(prez)
+		//fmt.Printf("denominator.precision %v\n", denominator.precision)
 		z = prez.Mul(prez)
+		//fmt.Printf("z.precision after Mul %v\n", z.precision)
 		z = z.Sub(number)
+		//fmt.Printf("z.precision after Sub(number) %v\n", z.precision)
 		z = z.Div(denominator)
+		//fmt.Printf("z.precision after Div(denominator) %v\n", z.precision)
 		z = prez.Sub(z)
-		delta = z.Mul(z).Sub(number)
-		delta = delta.Abs()
-		fmt.Printf("bitlength of z %v\n", z.mantissa.BitLen())
+		//fmt.Printf("z.precision after prez.Sub(z) %v\n", z.precision)
+		delta = z.Mul(z).Sub(number).Abs()
+		//fmt.Printf("delta.precision %v\n", delta.precision)
+		//panic("because fuck you")
+		//fmt.Printf("bitlength of z %v, z value %v \n", z.mantissa.BitLen(), z)
+		//fmt.Printf("delta %v\naccur %v\n", delta, accuracy)
+		//fmt.Printf("accur.precision %v\ndelta.precision %v\n", accuracy.precision, delta.precision)
 	}
 	return z.normalize()
 }
@@ -272,7 +290,7 @@ func (_z *Float) Abs() *Float {
 	return z
 }
 
-func (z *Float) Truncate() *Float {
+func (z *Float) truncate() *Float {
 	chop := z.mantissa.BitLen() - (2 * int(z.precision))
 	if chop > 0 {
 		z.mantissa = z.mantissa.Rsh(uint(chop))
@@ -286,13 +304,12 @@ func (z *Float) normalize() *Float {
 		return z
 	}
 
-	z.Truncate()
+	z.truncate()
 
 	for z.mantissa.Bit(0) == 0 {
 		z.mantissa = z.mantissa.Rsh(1)
 		z.exp++
 	}
-	fmt.Printf("bitlength %v and exponent %v and precision %v\n", z.mantissa.BitLen(), z.exp, z.precision)
 	return z
 }
 
