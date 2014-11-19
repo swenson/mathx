@@ -205,9 +205,17 @@ var floatSqrtTestCases = []struct {
 	{NewFloat(0.5), NewFloat(0.707106781186547524400844362104849039284835937688474036588339)},
 	{NewFloat(389023489345.2349823489), NewFloat(623717.4755810798847757521684870209731127345501774299345835044)},
 	{NewFloat(0.0), NewFloat(0.0)},
+	{NewFloat(0.0000000000034), NewFloat(0.000001843908891458577462000454856352558631449361009744492801)},
+	{NewFloat(100.0), NewFloat(10.0)},
+	{NewFloat(234901236105.21378943509845), NewFloat(484666.1078569593867853431923603526948650657327099065112700745)},
+	{NewFloat(1.0), NewFloat(1.0)},
+	{NewFloat(0.999999999999999999), NewFloat(0.999999999999999999499999999999999999874999999999999999937500)},
+	{NewFloat(1.000000000000000000000000000001), NewFloat(1.00000000000000000000000000000049999999999999999999999999999987500000000000000000000000000006250000000000000000000000000)},
+	{NewFloat(0.25), NewFloat(0.5)},
 }
 
 //add a negative number
+
 func TestFloatSqrt(t *testing.T) {
 	for _, testCase := range floatSqrtTestCases {
 		x := testCase.a
@@ -215,7 +223,9 @@ func TestFloatSqrt(t *testing.T) {
 		z := x.Sqrt()
 		z, rootx = z.denormalize(rootx)
 		diff := z.Sub(rootx).Abs()
-		accuracy := NewFloat(float64(x.precision))
+		accuracy := NewFloat(1.0)
+		accuracy.exp += z.exp - int64(z.precision) + int64(z.mantissa.BitLen())
+		accuracy.precision = z.precision
 		bad := diff.Cmp(accuracy)
 		if z.sign != rootx.sign || bad == 1 { // might need one more condition
 			fmt.Printf("%v dne %v\n", z, rootx)
