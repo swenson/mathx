@@ -1,4 +1,5 @@
 // Copyright (c) 2014 Christopher Swenson.
+// Copyright (c) 2014 Georgia Reh.
 // Copyright (c) 2012 Google, Inc. All Rights Reserved.
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -142,9 +143,6 @@ func (_x *Float) Div(_y *Float) *Float {
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
-	thirtytwo := NewFloat(-32.0)
-	fortyeight := NewFloat(48.0)
-	one := NewFloat(1.0)
 
 	if y.mantissa.Sign() == 0 {
 		panic("Can not divide by zero")
@@ -161,9 +159,14 @@ func (_x *Float) Div(_y *Float) *Float {
 	if z.precision > y.precision {
 		z.precision = y.precision
 	}
+
+	thirtytwo := NewFloat(-32.0)
+	fortyeight := NewFloat(48.0)
+	one := NewFloat(1.0)
 	thirtytwo.precision = z.precision
 	fortyeight.precision = z.precision
 	one.precision = z.precision
+
 	//create an accurate enough first guess
 	i := y.mantissa.BitLen()
 	tempexp := 0 - int64(i)
@@ -235,21 +238,14 @@ func (_z *Float) Sqrt() *Float {
 	for delta.Cmp(accuracy) == 1 { //if the difference between the correct answer and the current guess is larger than the required accuracy, iterate
 		prez := z
 		denominator = two.Mul(prez)
-		//fmt.Printf("denominator.precision %v\n", denominator.precision)
 		z = prez.Mul(prez)
-		//fmt.Printf("z.precision after Mul %v\n", z.precision)
 		z = z.Sub(number)
-		//fmt.Printf("z.precision after Sub(number) %v\n", z.precision)
 		z = z.Div(denominator)
 		//fmt.Printf("z.precision after Div(denominator) %v\n", z.precision)
 		z = prez.Sub(z)
-		//fmt.Printf("z.precision after prez.Sub(z) %v\n", z.precision)
 		delta = z.Mul(z).Sub(number).Abs()
-		//fmt.Printf("delta.precision %v\n", delta.precision)
-		//panic("because fuck you")
 		//fmt.Printf("bitlength of z %v, z value %v \n", z.mantissa.BitLen(), z)
-		//fmt.Printf("delta %v\naccur %v\n", delta, accuracy)
-		//fmt.Printf("accur.precision %v\ndelta.precision %v\n", accuracy.precision, delta.precision)
+		//fmt.Printf("delta %v\naccur %v\naccur.precision %v\ndelta.precision %v\n", delta, accuracy, accuracy.precision, delta.precision)
 	}
 	return z.normalize()
 }

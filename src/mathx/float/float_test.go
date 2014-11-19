@@ -205,7 +205,7 @@ var floatSqrtTestCases = []struct {
 	{NewFloat(0.5), NewFloat(0.707106781186547524400844362104849039284835937688474036588339)},
 	{NewFloat(389023489345.2349823489), NewFloat(623717.4755810798847757521684870209731127345501774299345835044)},
 	{NewFloat(0.0), NewFloat(0.0)},
-	//{NewFloat(0.0000000000034), NewFloat(0.0000018439088914585774620004548563525586314493610097444928016015504410885342053603750921535788181586561129880679617757)}, //this one fails
+	//{NewFloat(0.0000000000034), NewFloat(0.0000018439088914585774620004548563525586314493610097444928016015504410885342053603750921535788181586561129880679617757)}, //this one fails because the standard float doesn't create an accurate enought answer
 	{NewFloat(100.0), NewFloat(10.0)},
 	{NewFloat(234901236105.21378943509845), NewFloat(484666.1078569593867853431923603526948650657327099065112700745)},
 	{NewFloat(1.0), NewFloat(1.0)},
@@ -225,9 +225,8 @@ func TestFloatSqrt(t *testing.T) {
 		diff := z.Sub(rootx).Abs()
 		accuracy := NewFloat(1.0)
 		accuracy.exp += x.exp - int64(x.precision) + int64(x.mantissa.BitLen())
-		//accuracy.precision = x.precision
 		bad := diff.Cmp(accuracy)
-		if z.sign != rootx.sign || bad == 1 { // might need one more condition
+		if z.sign != rootx.sign || bad == 1 {
 			fmt.Printf("%v dne %v\n", z, rootx)
 			fmt.Printf("accu %v\ndiff %v\n", accuracy, diff)
 			fmt.Printf("testcase.b %v\n", testCase.b)
