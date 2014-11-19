@@ -29,13 +29,6 @@ const (
 	RoundDown
 )
 
-var (
-	thirtytwo  = NewFloat(-32.0) //for Div()
-	fortyeight = NewFloat(48.0)  //for Div()
-	one        = NewFloat(1.0)   //for Div() and Sqrt()
-	two        = NewFloat(2.0)   //for Sqrt()
-)
-
 type Float struct {
 	sign      bool
 	precision uint64
@@ -149,9 +142,9 @@ func (_x *Float) Div(_y *Float) *Float {
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
-	thirty2 := thirtytwo.Copy()
-	forty8 := fortyeight.Copy()
-	one1 := one.Copy()
+	thirtytwo := NewFloat(-32.0)
+	fortyeight := NewFloat(48.0)
+	one := NewFloat(1.0)
 
 	if y.mantissa.Sign() == 0 {
 		panic("Can not divide by zero")
@@ -168,16 +161,16 @@ func (_x *Float) Div(_y *Float) *Float {
 	if z.precision > y.precision {
 		z.precision = y.precision
 	}
-	thirty2.precision = z.precision
-	forty8.precision = z.precision
-	one1.precision = z.precision
+	thirtytwo.precision = z.precision
+	fortyeight.precision = z.precision
+	one.precision = z.precision
 	//create an accurate enough first guess
 	i := y.mantissa.BitLen()
 	tempexp := 0 - int64(i)
 	x.exp = x.exp + (tempexp - y.exp)
 	y.exp = tempexp
-	z = y.Mul(thirty2)
-	z = z.Add(forty8)
+	z = y.Mul(thirtytwo)
+	z = z.Add(fortyeight)
 	seventeen := NewFloat(0.0)
 	seventeen.sign = true
 	seventeen.precision = 0
@@ -198,7 +191,7 @@ func (_x *Float) Div(_y *Float) *Float {
 	for i := 0; i < stopp; i++ {
 		prez = z
 		z = prez.Mul(y)
-		z = one1.Sub(z)
+		z = one.Sub(z)
 		z = z.Mul(prez)
 		z = z.Add(prez)
 	}
@@ -233,15 +226,15 @@ func (_z *Float) Sqrt() *Float {
 	number.precision = 2 * number.precision
 	z := NewFloat(1.0) //there's gotta be a better way to do this
 	z.precision = 2 * z.precision
-	two2 := two.Copy()
-	two2.precision = number.precision
+	two := NewFloat(2.0)
+	two.precision = number.precision
 	denominator := NewFloat(1.0)
 	denominator.precision = 2 * denominator.precision
 	delta := z.Mul(z).Sub(number).Abs()
 	fmt.Printf("delta.precision %v\n", delta.precision)
 	for delta.Cmp(accuracy) == 1 { //if the difference between the correct answer and the current guess is larger than the required accuracy, iterate
 		prez := z
-		denominator = two2.Mul(prez)
+		denominator = two.Mul(prez)
 		//fmt.Printf("denominator.precision %v\n", denominator.precision)
 		z = prez.Mul(prez)
 		//fmt.Printf("z.precision after Mul %v\n", z.precision)
