@@ -32,7 +32,7 @@ const (
 var (
 	thirtytwo  = NewFloat(-32.0) //for Div()
 	fortyeight = NewFloat(48.0)  //for Div()
-	one        = NewFloat(1.0)   //for Div()
+	one        = NewFloat(1.0)   //for Div() and Sqrt()
 	two        = NewFloat(2.0)   //for Sqrt()
 )
 
@@ -213,20 +213,32 @@ func MakeSeventeen() *Float {
 	return seventeen
 }
 
-func (_z *Float) Sqrt(_y int64) *Float {
+func (_z *Float) Sqrt() *Float {
+	if _z.mantissa.Sign() == 0 {
+		return _z
+	}
+	if _z.sign == false {
+		panic("Square root of negative numbers is undefined\n")
+	}
 	number := _z.Copy()
-	accuracy := two
-	accuracy.exp = accuracy.exp - _y
+	accuracy := NewFloat(1.0)
+	accuracy.exp += number.exp - int64(number.precision) + int64(number.mantissa.BitLen())
+	accuracy.precision = number.precision
 	z := NewFloat(1.0) //there's gotta be a better way to do this
-	prez := z
-	denominator := z
+	prez := NewFloat(1.0)
+	denominator := NewFloat(1.0)
 	delta := z.Mul(z).Sub(number)
+	delta = delta.Abs()
 	for delta.Cmp(accuracy) == 1 { //if the difference between the correct answer and the current guess is larger than the required accuracy, iterate
 		prez = z
 		denominator = two.Mul(prez)
-		z = prez.Mul(prez).Sub(number).Div(denominator)
+		z = prez.Mul(prez)
+		z = z.Sub(number)
+		z = z.Div(denominator)
 		z = prez.Sub(z)
 		delta = z.Mul(z).Sub(number)
+		delta = delta.Abs()
+		fmt.Printf("bitlength of z %v\n", z.mantissa.BitLen())
 	}
 	return z.normalize()
 }
@@ -260,26 +272,38 @@ func (_z *Float) Abs() *Float {
 	return z
 }
 
+func (z *Float) Truncate() *Float {
+	chop := z.mantissa.BitLen() - (2 * int(z.precision))
+	if chop > 0 {
+		z.mantissa = z.mantissa.Rsh(uint(chop))
+		z.exp += int64(chop)
+	}
+	return z
+}
+
 func (z *Float) normalize() *Float {
 	if z.mantissa.Sign() == 0 {
 		return z
 	}
 
+	z.Truncate()
+
 	for z.mantissa.Bit(0) == 0 {
 		z.mantissa = z.mantissa.Rsh(1)
 		z.exp++
 	}
+	fmt.Printf("bitlength %v and exponent %v and precision %v\n", z.mantissa.BitLen(), z.exp, z.precision)
 	return z
 }
 
 func (x *Float) denormalize(y *Float) (*Float, *Float) {
 	for x.exp < y.exp {
-		y.exp--
-		y.mantissa = y.mantissa.Lsh(1)
+		y.mantissa = y.mantissa.Lsh(uint(y.exp - x.exp))
+		y.exp = x.exp
 	}
 	for y.exp < x.exp {
-		x.exp--
-		x.mantissa = x.mantissa.Lsh(1)
+		x.mantissa = x.mantissa.Lsh(uint(x.exp - y.exp))
+		x.exp = y.exp
 	}
 	return x, y
 }

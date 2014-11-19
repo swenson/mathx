@@ -199,21 +199,24 @@ func TestFloatDiv(t *testing.T) {
 var floatSqrtTestCases = []struct {
 	a *Float
 	b *Float
-	c int64
 }{
-	{NewFloat(4.0), NewFloat(2.0), 8},
+	{NewFloat(4.0), NewFloat(2.0)},
+	{NewFloat(2.0), NewFloat(1.414213562373095048801688724209698078569671875376948073176679)},
+	{NewFloat(0.5), NewFloat(0.707106781186547524400844362104849039284835937688474036588339)},
+	{NewFloat(389023489345.2349823489), NewFloat(623717.4755810798847757521684870209731127345501774299345835044)},
+	{NewFloat(0.0), NewFloat(0.0)},
 }
 
+//add a negative number
 func TestFloatSqrt(t *testing.T) {
-	precision := NewFloat(2)
 	for _, testCase := range floatSqrtTestCases {
 		x := testCase.a
 		rootx := testCase.b
-		z := x.Sqrt(testCase.c)
+		z := x.Sqrt()
 		z, rootx = z.denormalize(rootx)
 		diff := z.Sub(rootx).Abs()
-		precision.exp = testCase.c
-		bad := diff.Cmp(precision)
+		accuracy := NewFloat(float64(x.precision))
+		bad := diff.Cmp(accuracy)
 		if z.sign != rootx.sign || bad == 1 { // might need one more condition
 			fmt.Printf("%v dne %v\n", z, rootx)
 			t.FailNow()
