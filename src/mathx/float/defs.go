@@ -145,7 +145,7 @@ func (_x *Float) Div(_y *Float) *Float {
 	z := new(Float)
 
 	if y.mantissa.Sign() == 0 {
-		panic("Can not divide by zero")
+		panic("division by zero is undefined\n")
 	}
 	if y.sign == x.sign {
 		y.sign = true
@@ -219,7 +219,7 @@ func (_z *Float) Sqrt() *Float {
 		return _z
 	}
 	if _z.sign == false {
-		panic("Square root of negative numbers is undefined\n")
+		panic("square root of a negative number is undefined\n")
 	}
 	number := _z.Copy()
 	accuracy := NewFloat(1.0)
@@ -234,7 +234,7 @@ func (_z *Float) Sqrt() *Float {
 	denominator := NewFloat(1.0)
 	denominator.precision = 2 * denominator.precision
 	delta := z.Mul(z).Sub(number).Abs()
-	fmt.Printf("delta.precision %v\n", delta.precision)
+	//fmt.Printf("delta.precision %v\n", delta.precision)
 	for delta.Cmp(accuracy) == 1 { //if the difference between the correct answer and the current guess is larger than the required accuracy, iterate
 		prez := z
 		denominator = two.Mul(prez)

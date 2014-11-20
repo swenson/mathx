@@ -196,6 +196,20 @@ func TestFloatDiv(t *testing.T) {
 	}
 }
 
+func TestFloatDivZero(t *testing.T) {
+	x := NewFloat(10.0)
+	y := NewFloat(0.0)
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Panicking because %v\n", r)
+			fmt.Print("TestFloatDivZero recovers from panic\n")
+		} else {
+			t.FailNow()
+		}
+	}()
+	x.Div(y)
+}
+
 var floatSqrtTestCases = []struct {
 	a *Float
 	b *Float
@@ -234,6 +248,23 @@ func TestFloatSqrt(t *testing.T) {
 		}
 	}
 }
+
+func TestFloatSqrtNeg(t *testing.T) {
+	x := NewFloat(-10.0)
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Panicking because %v\n", r)
+			fmt.Print("TestFloatSqrtNeg recovers from panic\n")
+		} else {
+			t.FailNow()
+		}
+	}()
+	x.Sqrt()
+}
+
+/*func TestTheTest(t *testing.T) {
+	t.FailNow()
+} */
 
 /*var floatStringTestCases = []struct {
 >>>>>>> 9592ea38ce42476a2a93d67b9d417201c949c93e
