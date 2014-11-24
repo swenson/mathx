@@ -26,8 +26,6 @@ var floatAddTestCases = []struct {
 	exp      int64
 	mantissa *Int
 }{
-	//16 cases, positive negative, between zero and one and greater than one
-	//Can not use Cmp() for testing because it relies on Sub() and consquently Add(), which would be circular logic
 	{NewFloat(1.125), NewFloat(40), NewFloat(41.125), true, -3, NewInt(329)},
 	{NewFloat(2), NewFloat(0.0009765625), NewFloat(2.0009765625), true, -10, NewInt(2049)},
 	{NewFloat(0.0087890625), NewFloat(1.75), NewFloat(1.7587890625), true, -10, NewInt(1801)},
@@ -88,30 +86,30 @@ var floatMulTestCases = []struct {
 	c     *Float
 }{
 	{"1", NewFloat(2.0), NewFloat(0.5), NewFloat(1.0)},
-	{"2", NewFloat(14.25), NewFloat(3.87), NewFloat(55.1475)},                   //ABC++
-	{"3", NewFloat(34.98), NewFloat(0.63), NewFloat(22.0374)},                   //AbC
-	{"4", NewFloat(3.65), NewFloat(0.115), NewFloat(0.41975)},                   //Abc
-	{"5", NewFloat(0.76767676), NewFloat(500.45), NewFloat(384.18383454)},       //aBC
-	{"6", NewFloat(0.214), NewFloat(4.164), NewFloat(0.891096)},                 //aBc
-	{"7", NewFloat(0.00134), NewFloat(0.81), NewFloat(0.0010854)},               //abc
-	{"8", NewFloat(923.83), NewFloat(-6.253), NewFloat(-5776.70899)},            //ABC+-
-	{"9", NewFloat(92.71), NewFloat(-0.045), NewFloat(-4.17195)},                //AbC
-	{"10", NewFloat(67.77), NewFloat(-0.0017), NewFloat(-0.115209)},             //Abc
-	{"11", NewFloat(0.176), NewFloat(-52.0), NewFloat(-9.152)},                  //aBC
-	{"12", NewFloat(0.00095), NewFloat(-9.45), NewFloat(-0.0089775)},            //aBc
-	{"13", NewFloat(0.012), NewFloat(-0.0075), NewFloat(-0.00009)},              //abc
-	{"14", NewFloat(-93.0), NewFloat(1000.0), NewFloat(-93000.0)},               //ABC-+
-	{"15", NewFloat(-1.5), NewFloat(0.8), NewFloat(-1.2)},                       //AbC
-	{"16", NewFloat(-45.34), NewFloat(0.0097), NewFloat(-0.439798)},             //Abc
-	{"17", NewFloat(-0.077), NewFloat(7800.3333333), NewFloat(-600.6256666641)}, //aBC
-	{"18", NewFloat(-0.0000056), NewFloat(10.99), NewFloat(-0.000061544)},       //aBc
-	{"19", NewFloat(-0.257), NewFloat(0.45), NewFloat(-0.11565)},                //abc
-	{"20", NewFloat(-75.903), NewFloat(-999.99), NewFloat(75902.24097)},         //ABC--
-	{"21", NewFloat(-5044.5), NewFloat(-0.0035), NewFloat(17.65575)},            //AbC
-	{"22", NewFloat(-427.272727), NewFloat(-0.0003), NewFloat(0.1281818181)},    //Abc
-	{"23", NewFloat(-0.0057), NewFloat(-784.665), NewFloat(4.4725905)},          //aBC
-	{"24", NewFloat(-0.000075), NewFloat(-50.89), NewFloat(0.00381675)},         //aBc
-	{"25", NewFloat(-0.99999), NewFloat(-0.000001), NewFloat(0.00000099999)},    //abc
+	{"2", NewFloat(14.25), NewFloat(3.87), NewFloat(55.1475)},
+	{"3", NewFloat(34.98), NewFloat(0.63), NewFloat(22.0374)},
+	{"4", NewFloat(3.65), NewFloat(0.115), NewFloat(0.41975)},
+	{"5", NewFloat(0.76767676), NewFloat(500.45), NewFloat(384.18383454)},
+	{"6", NewFloat(0.214), NewFloat(4.164), NewFloat(0.891096)},
+	{"7", NewFloat(0.00134), NewFloat(0.81), NewFloat(0.0010854)},
+	{"8", NewFloat(923.83), NewFloat(-6.253), NewFloat(-5776.70899)},
+	{"9", NewFloat(92.71), NewFloat(-0.045), NewFloat(-4.17195)},
+	{"10", NewFloat(67.77), NewFloat(-0.0017), NewFloat(-0.115209)},
+	{"11", NewFloat(0.176), NewFloat(-52.0), NewFloat(-9.152)},
+	{"12", NewFloat(0.00095), NewFloat(-9.45), NewFloat(-0.0089775)},
+	{"13", NewFloat(0.012), NewFloat(-0.0075), NewFloat(-0.00009)},
+	{"14", NewFloat(-93.0), NewFloat(1000.0), NewFloat(-93000.0)},
+	{"15", NewFloat(-1.5), NewFloat(0.8), NewFloat(-1.2)},
+	{"16", NewFloat(-45.34), NewFloat(0.0097), NewFloat(-0.439798)},
+	{"17", NewFloat(-0.077), NewFloat(7800.3333333), NewFloat(-600.6256666641)},
+	{"18", NewFloat(-0.0000056), NewFloat(10.99), NewFloat(-0.000061544)},
+	{"19", NewFloat(-0.257), NewFloat(0.45), NewFloat(-0.11565)},
+	{"20", NewFloat(-75.903), NewFloat(-999.99), NewFloat(75902.24097)},
+	{"21", NewFloat(-5044.5), NewFloat(-0.0035), NewFloat(17.65575)},
+	{"22", NewFloat(-427.272727), NewFloat(-0.0003), NewFloat(0.1281818181)},
+	{"23", NewFloat(-0.0057), NewFloat(-784.665), NewFloat(4.4725905)},
+	{"24", NewFloat(-0.000075), NewFloat(-50.89), NewFloat(0.00381675)},
+	{"25", NewFloat(-0.99999), NewFloat(-0.000001), NewFloat(0.00000099999)},
 	{"26", NewFloat(0.0), NewFloat(1.0), NewFloat(0.0)},
 	{"27", NewFloat(10.0), NewFloat(0.0), NewFloat(0.0)},
 }
@@ -135,13 +133,6 @@ func TestFloatMul(t *testing.T) {
 	}
 }
 
-/*func TestFloatMakeSeventeen(t *testing.T) {
-	z := NewFloat(1.0)
-	z = MakeSeventeen()
-	fmt.Printf("this is z %v\n", z)
-	t.FailNow()
-}*/
-
 var floatDivTestCases = []struct {
 	a *Float
 	b *Float
@@ -151,36 +142,33 @@ var floatDivTestCases = []struct {
 	{NewFloat(20.0), NewFloat(2.0), NewFloat(10.0)},
 	{NewFloat(10.0), NewFloat(0.5), NewFloat(20.0)},
 	{NewFloat(10.0), NewFloat(12.0), NewFloat(0.83333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333)},
-	{NewFloat(0.125), NewFloat(20.0), NewFloat(0.0062500)},                                                                                                  //aBc ++
-	{NewFloat(0.75), NewFloat(0.25), NewFloat(3.0)},                                                                                                         //abC ++
-	{NewFloat(0.25), NewFloat(0.5), NewFloat(0.5)},                                                                                                          //abc ++
-	{NewFloat(3454534), NewFloat(-987), NewFloat(-3500.03444782168186423505572441742654508611955420466058763931104356636271529888551165146909827760891590)}, //ABC +-
-	{NewFloat(92), NewFloat(-500), NewFloat(-0.184)},                                                                                                        //ABc +-
-	{NewFloat(87), NewFloat(-0.33), NewFloat(-263.6363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636)}, //AbC +-
-	{NewFloat(0.9045), NewFloat(-45.0), NewFloat(-0.0201)},                                                                                                  //aBc +-
-	{NewFloat(0.875), NewFloat(-0.2), NewFloat(-4.375)},                                                                                                     //abC +-
-	{NewFloat(0.01), NewFloat(-0.74), NewFloat(-0.013513513513513513513513513513513513513513513513513513513513)},                                            //abc +-
-	{NewFloat(-14.0), NewFloat(9.0), NewFloat(-1.55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555)}, //ABC -+
-	{NewFloat(-55.55), NewFloat(110.0), NewFloat(-0.505)},                                                                                                   //ABc -+
-	{NewFloat(-12.5), NewFloat(0.8), NewFloat(-15.625)},                                                                                                     //AbC -+
-	{NewFloat(-0.00000001), NewFloat(40), NewFloat(-0.00000000025)},                                                                                         //aBc -+
-	{NewFloat(-0.625), NewFloat(0.125), NewFloat(-5.0)},                                                                                                     //abC -+
-	{NewFloat(-0.45), NewFloat(0.9), NewFloat(-0.5)},                                                                                                        //abc -+
-	{NewFloat(-400.0), NewFloat(-87.0), NewFloat(4.597701149425287356321839080459770114942528735632183908045977011494252873563218390804597701149425287356)}, //ABC --
-	{NewFloat(-87), NewFloat(-500), NewFloat(0.174)},                                                                                                        //ABc --
-	{NewFloat(-8284.45), NewFloat(-0.98), NewFloat(8453.5204081632653061224489795918367346938775510204081632653061224489795918367346938775510204081632653)}, //AbC --
-	{NewFloat(-0.23232323), NewFloat(-4.125), NewFloat(0.056320783030303030303030303030303030303030303030303030303030303030303030303030303030303030303030)}, //aBc --
-	{NewFloat(-0.7823), NewFloat(-0.11287), NewFloat(6.930982546292194560113404801984584034730220607778860636130061)},                                       //abC --
-	{NewFloat(-0.234234678), NewFloat(-0.789879234), NewFloat(0.296544924739722933392119028666602469511180996562317525111693)},                              //abc --
+	{NewFloat(0.125), NewFloat(20.0), NewFloat(0.0062500)},
+	{NewFloat(0.75), NewFloat(0.25), NewFloat(3.0)},
+	{NewFloat(0.25), NewFloat(0.5), NewFloat(0.5)},
+	{NewFloat(3454534), NewFloat(-987), NewFloat(-3500.03444782168186423505572441742654508611955420466058763931104356636271529888551165146909827760891590)},
+	{NewFloat(92), NewFloat(-500), NewFloat(-0.184)},
+	{NewFloat(87), NewFloat(-0.33), NewFloat(-263.6363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636363636)},
+	{NewFloat(0.9045), NewFloat(-45.0), NewFloat(-0.0201)},
+	{NewFloat(0.875), NewFloat(-0.2), NewFloat(-4.375)},
+	{NewFloat(0.01), NewFloat(-0.74), NewFloat(-0.013513513513513513513513513513513513513513513513513513513513)},
+	{NewFloat(-14.0), NewFloat(9.0), NewFloat(-1.55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555)},
+	{NewFloat(-55.55), NewFloat(110.0), NewFloat(-0.505)},
+	{NewFloat(-12.5), NewFloat(0.8), NewFloat(-15.625)},
+	{NewFloat(-0.00000001), NewFloat(40), NewFloat(-0.00000000025)},
+	{NewFloat(-0.625), NewFloat(0.125), NewFloat(-5.0)},
+	{NewFloat(-0.45), NewFloat(0.9), NewFloat(-0.5)},
+	{NewFloat(-400.0), NewFloat(-87.0), NewFloat(4.597701149425287356321839080459770114942528735632183908045977011494252873563218390804597701149425287356)},
+	{NewFloat(-87), NewFloat(-500), NewFloat(0.174)},
+	{NewFloat(-8284.45), NewFloat(-0.98), NewFloat(8453.5204081632653061224489795918367346938775510204081632653061224489795918367346938775510204081632653)},
+	{NewFloat(-0.23232323), NewFloat(-4.125), NewFloat(0.056320783030303030303030303030303030303030303030303030303030303030303030303030303030303030303030)},
+	{NewFloat(-0.7823), NewFloat(-0.11287), NewFloat(6.930982546292194560113404801984584034730220607778860636130061)},
+	{NewFloat(-0.234234678), NewFloat(-0.789879234), NewFloat(0.296544924739722933392119028666602469511180996562317525111693)},
 }
-
-//don't foreget to add a divide by zero
 
 func TestFloatDiv(t *testing.T) {
 	precision := NewFloat(2)
 	precision.exp = precision.exp - 30
 	for _, testCase := range floatDivTestCases {
-		//fmt.Printf("\u001b[2J") //this will clear stdout so the failure will only print the failed iteration and not all pervious testcases
 		x := testCase.a
 		y := testCase.b
 		w := testCase.c
@@ -219,7 +207,6 @@ var floatSqrtTestCases = []struct {
 	{NewFloat(0.5), NewFloat(0.707106781186547524400844362104849039284835937688474036588339)},
 	{NewFloat(389023489345.2349823489), NewFloat(623717.4755810798847757521684870209731127345501774299345835044)},
 	{NewFloat(0.0), NewFloat(0.0)},
-	//{NewFloat(0.0000000000034), NewFloat(0.0000018439088914585774620004548563525586314493610097444928016015504410885342053603750921535788181586561129880679617757)}, //this one fails because the standard float doesn't create an accurate enought answer
 	{NewFloat(100.0), NewFloat(10.0)},
 	{NewFloat(234901236105.21378943509845), NewFloat(484666.1078569593867853431923603526948650657327099065112700745)},
 	{NewFloat(1.0), NewFloat(1.0)},
@@ -227,8 +214,6 @@ var floatSqrtTestCases = []struct {
 	{NewFloat(1.000000000000000000000000000001), NewFloat(1.00000000000000000000000000000049999999999999999999999999999987500000000000000000000000000006250000000000000000000000000)},
 	{NewFloat(0.25), NewFloat(0.5)},
 }
-
-//add a negative number
 
 func TestFloatSqrt(t *testing.T) {
 	for _, testCase := range floatSqrtTestCases {
@@ -267,7 +252,6 @@ func TestFloatSqrtNeg(t *testing.T) {
 } */
 
 /*var floatStringTestCases = []struct {
->>>>>>> 9592ea38ce42476a2a93d67b9d417201c949c93e
 	num float64
 	str string
 }{
