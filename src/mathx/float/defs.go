@@ -95,8 +95,6 @@ func (_x *Float) Add(_y *Float) *Float {
 	} else if x.mantissa.Cmp(y.mantissa) < 1 {
 		z.sign = y.sign
 		z.mantissa = y.mantissa.Sub(x.mantissa)
-	} else {
-		panic("addition error: check sign and greater-than breakdown")
 	}
 	return z.normalize()
 }
@@ -112,7 +110,6 @@ func (_x *Float) Sub(_y *Float) *Float {
 
 func (_x *Float) Mul(_y *Float) *Float {
 	if _x.mantissa.Sign() == 0 || _y.mantissa.Sign() == 0 {
-		//fmt.Printf("if x or y = 0 then %v * %v\n", _x, _y)
 		return NewFloat(0.0)
 	}
 
@@ -167,7 +164,7 @@ func (_x *Float) Div(_y *Float) *Float {
 	fortyeight.precision = z.precision
 	one.precision = z.precision
 
-	//create an accurate enough first guess
+	//Create an accurate enough initial guess
 	i := y.mantissa.BitLen()
 	tempexp := 0 - int64(i)
 	x.exp = x.exp + (tempexp - y.exp)
@@ -185,9 +182,9 @@ func (_x *Float) Div(_y *Float) *Float {
 	}
 	z = z.Mul(seventeen)
 
-	//create stopping point
+	//Create stopping point for the for loop
 	var stop float64
-	stop = math.Log2((float64(z.precision) + 1)) /// (math.Log2(17)) //casting z.precision as a float64 should work up to 2^52 bits, hopefully
+	stop = math.Log2((float64(z.precision) + 1))
 	stopp := int(math.Ceil(stop))
 	prez := new(Float)
 
@@ -202,19 +199,8 @@ func (_x *Float) Div(_y *Float) *Float {
 	return z.normalize()
 }
 
-func MakeSeventeen() *Float {
-	seventeen := NewFloat(0.0)
-	seventeen.precision = 0
-	repeatingchunk := NewFloat(15)
-	for seventeen.precision < 64 {
-		seventeen.mantissa = seventeen.mantissa.Lsh(8).Add(repeatingchunk.mantissa)
-		seventeen.precision = seventeen.precision + 8
-		seventeen.exp = seventeen.exp - 8
-	}
-	return seventeen
-}
-
 func (_z *Float) Sqrt() *Float {
+	//Sqrt uses Newton's Method
 	if _z.mantissa.Sign() == 0 {
 		return _z
 	}
@@ -225,27 +211,23 @@ func (_z *Float) Sqrt() *Float {
 	accuracy := NewFloat(1.0)
 	accuracy.exp += number.exp - int64(number.precision) + int64(number.mantissa.BitLen())
 	accuracy.precision = 2 * number.precision
-	accuracy.exp = accuracy.exp - int64(accuracy.precision) //this will make sure that the loop compares the accuracy to z, not z^2
+	accuracy.exp = accuracy.exp - int64(accuracy.precision) //this will make sure that the loop compares z^2 to accuracy^2
 	number.precision = 2 * number.precision
-	z := NewFloat(1.0) //there's gotta be a better way to do this
+	z := NewFloat(1.0)
 	z.precision = 2 * z.precision
 	two := NewFloat(2.0)
 	two.precision = number.precision
 	denominator := NewFloat(1.0)
 	denominator.precision = 2 * denominator.precision
 	delta := z.Mul(z).Sub(number).Abs()
-	//fmt.Printf("delta.precision %v\n", delta.precision)
-	for delta.Cmp(accuracy) == 1 { //if the difference between the correct answer and the current guess is larger than the required accuracy, iterate
+	for delta.Cmp(accuracy) == 1 { //if the difference between the correct answer and the current guess is larger than the required accuracy, repeat
 		prez := z
 		denominator = two.Mul(prez)
 		z = prez.Mul(prez)
 		z = z.Sub(number)
 		z = z.Div(denominator)
-		//fmt.Printf("z.precision after Div(denominator) %v\n", z.precision)
 		z = prez.Sub(z)
 		delta = z.Mul(z).Sub(number).Abs()
-		//fmt.Printf("bitlength of z %v, z value %v \n", z.mantissa.BitLen(), z)
-		//fmt.Printf("delta %v\naccur %v\naccur.precision %v\ndelta.precision %v\n", delta, accuracy, accuracy.precision, delta.precision)
 	}
 	return z.normalize()
 }
