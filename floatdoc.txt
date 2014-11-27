@@ -1,0 +1,45 @@
+
+
+func NewFloat
+func NewInt(x floatb4) *Float
+NewFloat allocates and returns a new float set to x.
+
+funct (*Float) Abs
+func (x *Float) Abs() (z *Float)
+Abs sets z to |x| (the absolute value of x) and returnz z.
+
+func (*Float) Add
+func (x *Float) Add(y *Float) (z *Float)
+Add sets z to the sum x+y and returns z
+
+func (*Float) Cmp
+func (x *Float) Cmp(y *Float) (r int)
+Cmp compares x and y and returns:
+-1 if x < y
+0 if x == y
+1 if x > y
+
+func (*Float) Copy
+func (x *Float) Copy() (z *Float)
+Copy allocates and returns a new float set to x.
+
+func (*Float) Div
+func (x *Float) Div(y *Float) (z *Float)
+Div sets z to the quotient x/y for y!=0 and returns z. If y == 0, the function panics. Div implements Newton-Raphson division.
+
+func (*Float) Mul
+func (x *Float) Mul(y *Float) (z *Float)
+Mul sets z to the product of x*y and returns z.
+
+func (*Float) Neg
+func (z *Float) Neg() (z *Float)
+Neg sets z to -x and returns z.
+
+func(*Float) Sqrt
+func (x *Float) Sqrt() (z *Float)
+Sqrt sets z to square root of x and returns z.
+
+func (*Float) Sub
+func (x *Float) Sub(y *Float) (z *Float)
+Sub set z to the difference x-y and returns z.
+
