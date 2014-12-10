@@ -188,7 +188,7 @@ func TestFloatDivZero(t *testing.T) {
 	x := NewFloat(10.0)
 	y := NewFloat(0.0)
 	defer func() {
-		if r := recover(); r != nil {
+		if r := recover(); r == "division by zero is undefined\n" {
 			fmt.Printf("Panicking because %v\n", r)
 			fmt.Print("TestFloatDivZero recovers from panic\n")
 		} else {
@@ -237,7 +237,7 @@ func TestFloatSqrt(t *testing.T) {
 func TestFloatSqrtNeg(t *testing.T) {
 	x := NewFloat(-10.0)
 	defer func() {
-		if r := recover(); r != nil {
+		if r := recover(); r == "square root of a negative number is undefined\n" {
 			fmt.Printf("Panicking because %v\n", r)
 			fmt.Print("TestFloatSqrtNeg recovers from panic\n")
 		} else {
