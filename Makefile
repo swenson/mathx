@@ -1,10 +1,7 @@
-default: run
+default: test
 
-.PHONY: default run test
-
-run: test
-	GOPATH=`pwd` go install mathx
+.PHONY: default test
 
 test:
-	GOPATH=`pwd` go test mathx -test.timeout 10s
-	GOPATH=`pwd` go test mathx/float -test.timeout 10s
+	go test -test.timeout 10s
+	go test ./float -test.timeout 10s

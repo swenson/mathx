@@ -14,8 +14,9 @@ package float
 
 import (
 	"fmt"
-	. "mathx"
 	"testing"
+
+	. "github.com/swenson/mathx"
 )
 
 var floatAddTestCases = []struct {

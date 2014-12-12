@@ -19,7 +19,8 @@ package float
 import (
 	"fmt"
 	"math"
-	. "mathx"
+
+	. "github.com/swenson/mathx"
 )
 
 type RoundingMode int
