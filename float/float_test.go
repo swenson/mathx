@@ -247,29 +247,3 @@ func TestFloatSqrtNeg(t *testing.T) {
 	}()
 	x.Sqrt()
 }
-
-/*func TestTheTest(t *testing.T) {
-	t.FailNow()
-} */
-
-/*var floatStringTestCases = []struct {
-	num float64
-	str string
-}{
-	{0.0, "-0"},
-	{1 / 17.0, "+0.05882352941176470506601248189326724968850612640380859375"},
-	{1.0, "+1"},
-	{1.1, "+1.100000000000000088817841970012523233890533447265625"},
-	{-1.1, "-1.100000000000000088817841970012523233890533447265625"},
-	{2.3, "+2.29999999999999982236431605997495353221893310546875"},
-	{-6568408355712890880, "-6568408355712890880"},
-}
-
-func TestFloatPrint(t *testing.T) {
-	for _, testCase := range floatStringTestCases {
-		if NewFloat(testCase.num).String() != testCase.str {
-			fmt.Printf("Expected %s got %s\n", testCase.str, NewFloat(testCase.num).String())
-			t.FailNow()
-		}
-	}
-}*/

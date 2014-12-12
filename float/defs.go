@@ -13,7 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//teeeeeeeeeest
+
 package float
 
 import (
@@ -137,7 +137,7 @@ func (_x *Float) Mul(_y *Float) *Float {
 }
 
 func (_x *Float) Div(_y *Float) *Float {
-	//Div implements division by calculating the recipipricol of of the denominator and multiplying by the numerator using the Newton Raphson Method. (http://en.wikipedia.org/wiki/Division_algorithm)
+	//Div implements division by calculating the reciprocal of of the denominator and multiplying by the numerator using the Newton Raphson Method. (http://en.wikipedia.org/wiki/Division_algorithm)
 	x := _x.Copy()
 	y := _y.Copy()
 	z := new(Float)
