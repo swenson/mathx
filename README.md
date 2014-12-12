@@ -1,6 +1,6 @@
 # mathx -- Number Theory, Algebra, and other mathematics for Go
 
-<a href="https://travis-ci.org/swenson/gomath"><img src="https://api.travis-ci.org/swenson/gomath.png" /></a>
+<a href="https://travis-ci.org/swenson/mathx"><img src="https://api.travis-ci.org/swenson/mathx.png" /></a>
 
 A simple number theory, algebra, and other mathematics functions for Go.
 
