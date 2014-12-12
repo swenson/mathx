@@ -1,12 +1,12 @@
-Gomath -- Number Theory, Algebra, and other mathematics for Go
---------------------------------------------------------------
+# mathx -- Number Theory, Algebra, and other mathematics for Go
 
-<img src="https://api.travis-ci.org/swenson/gomath.png" />
+<a href="https://travis-ci.org/swenson/gomath"><img src="https://api.travis-ci.org/swenson/gomath.png" /></a>
 
 A simple number theory, algebra, and other mathematics functions for Go.
 
-License
--------
+`go get github.com/swenson/mathx`
+
+## License
 
 All code in this repository, unless otherwise specified, is hereby
 licensed under the MIT Public License:
