@@ -76,6 +76,13 @@ func NewFloat(f float64) *Float {
 	return x.normalize()
 }
 
+// WithPrecision returns a copy of this with the precision set to the argument.
+func (f *Float) WithPrecision(p uint64) *Float {
+	g := f.copy()
+	g.precision = p
+	return g
+}
+
 func (f *Float) copy() *Float {
 	y := NewFloat(0.0)
 	y.sign = f.sign
@@ -178,12 +185,9 @@ func (f *Float) Div(_y *Float) *Float {
 		z.precision = y.precision
 	}
 
-	thirtytwo := NewFloat(-32.0)
-	fortyeight := NewFloat(48.0)
-	one := NewFloat(1.0)
-	thirtytwo.precision = z.precision
-	fortyeight.precision = z.precision
-	one.precision = z.precision
+	thirtytwo := NewFloat(-32.0).WithPrecision(z.precision)
+	fortyeight := NewFloat(48.0).WithPrecision(z.precision)
+	one := NewFloat(1.0).WithPrecision(z.precision)
 
 	//Create an accurate enough initial guess
 	i := y.mantissa.BitLen()
@@ -237,8 +241,7 @@ func (_z *Float) Sqrt() *Float {
 	number.precision = 2 * number.precision
 	z := NewFloat(1.0)
 	z.precision = 2 * z.precision
-	two := NewFloat(2.0)
-	two.precision = number.precision
+	two := NewFloat(2.0).WithPrecision(number.precision)
 	denominator := NewFloat(1.0)
 	denominator.precision = 2 * denominator.precision
 	delta := z.Mul(z).Sub(number).Abs()
