@@ -15,10 +15,12 @@
 
 package mathx
 
+// Set is a basic set of ints.
 type Set struct {
 	elements map[int]bool
 }
 
+// NewIntSet creates a new set of integers from the given slice.
 func NewIntSet(nums []int) *Set {
 	s := new(Set)
 	s.elements = make(map[int]bool)
@@ -28,6 +30,7 @@ func NewIntSet(nums []int) *Set {
 	return s
 }
 
+// Contains returns true of the number is in the set.
 func (s *Set) Contains(num int) bool {
 	_, ok := s.elements[num]
 	return ok

@@ -25,10 +25,13 @@ type factor64 struct {
 	exponent int
 }
 
+// Discriminant returns the discriminant of the polynomial defining this
+// number field.
 func (k *NumberField) Discriminant() *big.Int {
 	return k.polynomial.Discriminant()
 }
 
+// Discriminant returns the discriminant of this polynomial.
 func (p *IntPolynomial) Discriminant() *big.Int {
 	if p.Degree() == 2 {
 		c, b, a := p.coeffs[0], p.coeffs[1], p.coeffs[2]
@@ -62,6 +65,8 @@ func genPrimes(n int64) {
 	}
 }
 
+// Factorization64 returns the complete factorization of the given 64-bit
+// argument using trial division.
 func Factorization64(n int64) []factor64 {
 	sqrtN := int64(math.Floor(math.Sqrt(float64(n))))
 	genPrimes(sqrtN)
@@ -86,6 +91,7 @@ func Factorization64(n int64) []factor64 {
 	return factors
 }
 
+// IsSquareFree64 returns true if the 64-bit argument is square free.
 func IsSquareFree64(n int64) bool {
 	factors := Factorization64(n)
 	for _, f := range factors {
@@ -96,7 +102,7 @@ func IsSquareFree64(n int64) bool {
 	return true
 }
 
-// Always return the positive modulus.
+// PosMod returns a % b, but always positive.
 func PosMod(a, b int64) int64 {
 	m := a % b
 	if m < 0 {
@@ -105,6 +111,8 @@ func PosMod(a, b int64) int64 {
 	return m
 }
 
+// IsFundamentalDiscriminant returns true if the given discriminant is
+// fundamental.
 func IsFundamentalDiscriminant(D *big.Int) bool {
 	d := D.Int64()
 	absd := d

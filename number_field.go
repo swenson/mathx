@@ -15,20 +15,27 @@
 
 package mathx
 
+// NumberField represents the field of rational numbers adjoined with the root
+// of a polynomial. (WIP)
 type NumberField struct {
 	polynomial *IntPolynomial
 }
 
+// MakeNumberField creates the number field defined by the root of the given
+// number field.
 func MakeNumberField(poly *IntPolynomial) *NumberField {
 	k := new(NumberField)
 	k.polynomial = poly
 	return k
 }
 
+// Degree gives the degree of the polynomial defining the number field.
 func (k *NumberField) Degree() int {
 	return len(k.polynomial.coeffs) - 1
 }
 
+// ClassNumber computes the class number of the number field.
+// Currently only supports imaginary quadratic number fields.
 func (k *NumberField) ClassNumber() int {
 	if k.Degree() == 2 {
 		if k.polynomial.Discriminant().Sign() < 0 {

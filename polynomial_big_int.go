@@ -20,10 +20,13 @@ import (
 	"strconv"
 )
 
+// IntPolynomial represents an integer polynomial of arbitrary size.
 type IntPolynomial struct {
 	coeffs []big.Int
 }
 
+// NewIntPolynomial64 creates a new polynomial for the given
+// coefficients (assumed to be c0, c1, ...).
 func NewIntPolynomial64(coeffs ...int64) *IntPolynomial {
 	p := new(IntPolynomial)
 	p.coeffs = make([]big.Int, len(coeffs))
@@ -33,10 +36,13 @@ func NewIntPolynomial64(coeffs ...int64) *IntPolynomial {
 	return p
 }
 
+// Degree returns the degree of this polynomial.
 func (p *IntPolynomial) Degree() int {
 	return len(p.coeffs) - 1
 }
 
+// IsIrreducible returns true if this polynomial is irreducible.
+// It currently only works on degree <= 2.
 func (p *IntPolynomial) IsIrreducible() bool {
 	g := p.coeffs[0]
 	if g.Sign() == 0 {
@@ -122,9 +128,11 @@ func eliminateSpaces(s string) string {
 	return t
 }
 
+// ParseIntPoly parses the string representation of a polynomial,
+// e.g., "x^2 - 4*x + 3", into an IntPolynomial.
 func ParseIntPoly(s string) *IntPolynomial {
 	s = eliminateSpaces(s)
-	coeffs := make([]big.Int, 0)
+	var coeffs []big.Int
 
 	neg := false
 	inX := false

@@ -61,12 +61,12 @@ func NewFloat(f float64) *Float {
 	return x.normalize()
 }
 
-func (x *Float) Copy() *Float {
+func (x *Float) copy() *Float {
 	y := NewFloat(0.0)
 	y.sign = x.sign
 	y.precision = x.precision
 	y.exp = x.exp
-	y.mantissa = x.mantissa.Copy()
+	y.mantissa = x.mantissa
 	return y
 }
 
@@ -77,8 +77,8 @@ func (_x *Float) Add(_y *Float) *Float {
 		return _x
 	}
 
-	x := _x.Copy()
-	y := _y.Copy()
+	x := _x.copy()
+	y := _y.copy()
 	z := new(Float)
 
 	z.precision = x.precision
@@ -101,8 +101,8 @@ func (_x *Float) Add(_y *Float) *Float {
 }
 
 func (_x *Float) Sub(_y *Float) *Float {
-	x := _x.Copy()
-	y := _y.Copy()
+	x := _x.copy()
+	y := _y.copy()
 	z := new(Float)
 	y.sign = !y.sign
 	z = x.Add(y)
@@ -114,8 +114,8 @@ func (_x *Float) Mul(_y *Float) *Float {
 		return NewFloat(0.0)
 	}
 
-	x := _x.Copy()
-	y := _y.Copy()
+	x := _x.copy()
+	y := _y.copy()
 	z := new(Float)
 
 	z.precision = x.precision
@@ -138,8 +138,8 @@ func (_x *Float) Mul(_y *Float) *Float {
 
 func (_x *Float) Div(_y *Float) *Float {
 	//Div implements division by calculating the reciprocal of of the denominator and multiplying by the numerator using the Newton Raphson Method. (http://en.wikipedia.org/wiki/Division_algorithm)
-	x := _x.Copy()
-	y := _y.Copy()
+	x := _x.copy()
+	y := _y.copy()
 	z := new(Float)
 
 	if y.mantissa.Sign() == 0 {
@@ -208,7 +208,7 @@ func (_z *Float) Sqrt() *Float {
 	if _z.sign == false {
 		panic("square root of a negative number is undefined\n")
 	}
-	number := _z.Copy()
+	number := _z.copy()
 	accuracy := NewFloat(1.0)
 	accuracy.exp += number.exp - int64(number.precision) + int64(number.mantissa.BitLen())
 	accuracy.precision = 2 * number.precision
@@ -234,8 +234,8 @@ func (_z *Float) Sqrt() *Float {
 }
 
 func (_x *Float) Cmp(_y *Float) int {
-	x := _x.Copy()
-	y := _y.Copy()
+	x := _x.copy()
+	y := _y.copy()
 
 	x = x.Sub(y)
 
@@ -251,13 +251,13 @@ func (_x *Float) Cmp(_y *Float) int {
 }
 
 func (_z *Float) Neg() *Float {
-	z := _z.Copy()
+	z := _z.copy()
 	z.sign = !z.sign
 	return z
 }
 
 func (_z *Float) Abs() *Float {
-	z := _z.Copy()
+	z := _z.copy()
 	z.sign = true
 	return z
 }

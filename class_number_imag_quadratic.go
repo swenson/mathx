@@ -54,7 +54,7 @@ func classNumberImagQuadSlow(k *NumberField) int {
 	return h
 }
 
-// Compute the square root of a large number.
+// Sqrt computes the square root of this number.
 // Uses Newton's Method.
 func Sqrt(z *big.Int) *big.Int {
 	if z.BitLen() <= 52 {
@@ -83,7 +83,7 @@ func Sqrt(z *big.Int) *big.Int {
 	return s
 }
 
-// Tell if a number is a perfect square.
+// IsSquare returns true if this number is a perfect square.
 func IsSquare(z *big.Int) bool {
 	if z.Sign() < 0 {
 		return false
