@@ -76,24 +76,24 @@ func NewFloat(f float64) *Float {
 	return x.normalize()
 }
 
-func (x *Float) copy() *Float {
+func (f *Float) copy() *Float {
 	y := NewFloat(0.0)
-	y.sign = x.sign
-	y.precision = x.precision
-	y.exp = x.exp
-	y.mantissa = x.mantissa
+	y.sign = f.sign
+	y.precision = f.precision
+	y.exp = f.exp
+	y.mantissa = f.mantissa
 	return y
 }
 
 // Add returns this plus the argument.
-func (_x *Float) Add(_y *Float) *Float {
-	if _x.mantissa.Sign() == 0 {
+func (f *Float) Add(_y *Float) *Float {
+	if f.mantissa.Sign() == 0 {
 		return _y
 	} else if _y.mantissa.Sign() == 0 {
-		return _x
+		return f
 	}
 
-	x := _x.copy()
+	x := f.copy()
 	y := _y.copy()
 	z := new(Float)
 
@@ -117,8 +117,8 @@ func (_x *Float) Add(_y *Float) *Float {
 }
 
 // Sub returns this minus the argument.
-func (_x *Float) Sub(_y *Float) *Float {
-	x := _x.copy()
+func (f *Float) Sub(_y *Float) *Float {
+	x := f.copy()
 	y := _y.copy()
 	z := new(Float)
 	y.sign = !y.sign
@@ -127,12 +127,12 @@ func (_x *Float) Sub(_y *Float) *Float {
 }
 
 // Mul returns this times the argument.
-func (_x *Float) Mul(_y *Float) *Float {
-	if _x.mantissa.Sign() == 0 || _y.mantissa.Sign() == 0 {
+func (f *Float) Mul(_y *Float) *Float {
+	if f.mantissa.Sign() == 0 || _y.mantissa.Sign() == 0 {
 		return NewFloat(0.0)
 	}
 
-	x := _x.copy()
+	x := f.copy()
 	y := _y.copy()
 	z := new(Float)
 
@@ -156,9 +156,9 @@ func (_x *Float) Mul(_y *Float) *Float {
 
 // Div returns this divided by the argument.
 // If the argument is 0, this function will panic.
-func (_x *Float) Div(_y *Float) *Float {
+func (f *Float) Div(_y *Float) *Float {
 	//Div implements division by calculating the reciprocal of of the denominator and multiplying by the numerator using the Newton Raphson Method. (http://en.wikipedia.org/wiki/Division_algorithm)
-	x := _x.copy()
+	x := f.copy()
 	y := _y.copy()
 	z := new(Float)
 
@@ -256,8 +256,8 @@ func (_z *Float) Sqrt() *Float {
 
 // Cmp compares this to the argument (x), returning < 0 if this < x, == 0 if
 // this == x, and > 0 if this > x.
-func (_x *Float) Cmp(_y *Float) int {
-	x := _x.copy()
+func (f *Float) Cmp(_y *Float) int {
+	x := f.copy()
 	y := _y.copy()
 
 	x = x.Sub(y)
@@ -287,6 +287,7 @@ func (_z *Float) Abs() *Float {
 	return z
 }
 
+// This function modified its arguments!
 func (z *Float) truncate() *Float {
 	chop := z.mantissa.BitLen() - (2 * int(z.precision))
 	if chop > 0 {
@@ -296,6 +297,7 @@ func (z *Float) truncate() *Float {
 	return z
 }
 
+// This function modified its arguments!
 func (z *Float) normalize() *Float {
 	if z.mantissa.Sign() == 0 {
 		return z
@@ -310,16 +312,17 @@ func (z *Float) normalize() *Float {
 	return z
 }
 
-func (x *Float) denormalize(y *Float) (*Float, *Float) {
-	for x.exp < y.exp {
-		y.mantissa = y.mantissa.Lsh(uint(y.exp - x.exp))
-		y.exp = x.exp
+// This function modified its arguments!
+func (f *Float) denormalize(y *Float) (*Float, *Float) {
+	for f.exp < y.exp {
+		y.mantissa = y.mantissa.Lsh(uint(y.exp - f.exp))
+		y.exp = f.exp
 	}
-	for y.exp < x.exp {
-		x.mantissa = x.mantissa.Lsh(uint(x.exp - y.exp))
-		x.exp = y.exp
+	for y.exp < f.exp {
+		f.mantissa = f.mantissa.Lsh(uint(f.exp - y.exp))
+		f.exp = y.exp
 	}
-	return x, y
+	return f, y
 }
 
 // String returns a kind messy decimal string version of this.
