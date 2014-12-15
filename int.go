@@ -20,6 +20,11 @@ func NewInt(n int64) *Int {
 	return b
 }
 
+func NewIntFromString(s string, base int) (*Int, bool) {
+	b, err := new(big.Int).SetString(s, base)
+	return (*Int)(b), err
+}
+
 // internal only: return a copy. (Since the interface is immutable,
 // this function is not useful externally.)
 func (z *Int) copy() *Int {

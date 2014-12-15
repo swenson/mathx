@@ -70,7 +70,7 @@ func Sqrt(z *big.Int) *big.Int {
 	}
 
 	// initial guess
-	s := big.NewInt(0).Rsh(z, 1)
+	s := big.NewInt(0).Rsh(z, uint(z.BitLen()/2))
 	t := big.NewInt(0)
 
 	for i := 0; s.Cmp(t) != 0 && i < 100; i++ {
