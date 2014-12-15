@@ -16,7 +16,7 @@ import (
 	"fmt"
 	"testing"
 
-	. "github.com/swenson/mathx"
+	"github.com/swenson/mathx"
 )
 
 var floatAddTestCases = []struct {
@@ -25,26 +25,26 @@ var floatAddTestCases = []struct {
 	c        *Float
 	sign     bool
 	exp      int64
-	mantissa *Int
+	mantissa *mathx.Int
 }{
-	{NewFloat(1.125), NewFloat(40), NewFloat(41.125), true, -3, NewInt(329)},
-	{NewFloat(2), NewFloat(0.0009765625), NewFloat(2.0009765625), true, -10, NewInt(2049)},
-	{NewFloat(0.0087890625), NewFloat(1.75), NewFloat(1.7587890625), true, -10, NewInt(1801)},
-	{NewFloat(0.28125), NewFloat(0.46875), NewFloat(0.75), true, -2, NewInt(3)},
-	{NewFloat(5000), NewFloat(-4099), NewFloat(901), true, 0, NewInt(901)},
-	{NewFloat(2), NewFloat(-0.05859375), NewFloat(1.94140625), true, -8, NewInt(497)},
-	{NewFloat(0.00244140625), NewFloat(-20), NewFloat(-19.99755859375), false, -11, NewInt(40955)},
-	{NewFloat(0.03125), NewFloat(-0.375), NewFloat(-0.34375), false, -5, NewInt(11)},
-	{NewFloat(-1.1), NewFloat(2.6), NewFloat(1.5), true, -1, NewInt(3)},
-	{NewFloat(-500.25), NewFloat(0.0015869140625), NewFloat(-500.2484130859375), false, -13, NewInt(4098035)},
-	{NewFloat(-0.0234375), NewFloat(56.25), NewFloat(56.2265625), true, -7, NewInt(7197)},
-	{NewFloat(-0.0546875), NewFloat(0.34375), NewFloat(0.2890625), true, -7, NewInt(37)},
-	{NewFloat(-556), NewFloat(-66.42), NewFloat(-622.42), false, -46, NewInt(43798913751061627)},
-	{NewFloat(-5.5), NewFloat(-0.002685546875), NewFloat(-5.502685546875), false, -12, NewInt(22539)},
-	{NewFloat(-0.001708984375), NewFloat(-48.75), NewFloat(-40.751708984375), false, -12, NewInt(199687)},
-	{NewFloat(-0.875), NewFloat(-0.25), NewFloat(-1.125), false, -3, NewInt(9)},
-	{NewFloat(0.0), NewFloat(1.0), NewFloat(1), true, 0, NewInt(1)},
-	{NewFloat(1.0), NewFloat(-1.0), NewFloat(0.0), false, 0, NewInt(0)},
+	{NewFloat(1.125), NewFloat(40), NewFloat(41.125), true, -3, mathx.NewInt(329)},
+	{NewFloat(2), NewFloat(0.0009765625), NewFloat(2.0009765625), true, -10, mathx.NewInt(2049)},
+	{NewFloat(0.0087890625), NewFloat(1.75), NewFloat(1.7587890625), true, -10, mathx.NewInt(1801)},
+	{NewFloat(0.28125), NewFloat(0.46875), NewFloat(0.75), true, -2, mathx.NewInt(3)},
+	{NewFloat(5000), NewFloat(-4099), NewFloat(901), true, 0, mathx.NewInt(901)},
+	{NewFloat(2), NewFloat(-0.05859375), NewFloat(1.94140625), true, -8, mathx.NewInt(497)},
+	{NewFloat(0.00244140625), NewFloat(-20), NewFloat(-19.99755859375), false, -11, mathx.NewInt(40955)},
+	{NewFloat(0.03125), NewFloat(-0.375), NewFloat(-0.34375), false, -5, mathx.NewInt(11)},
+	{NewFloat(-1.1), NewFloat(2.6), NewFloat(1.5), true, -1, mathx.NewInt(3)},
+	{NewFloat(-500.25), NewFloat(0.0015869140625), NewFloat(-500.2484130859375), false, -13, mathx.NewInt(4098035)},
+	{NewFloat(-0.0234375), NewFloat(56.25), NewFloat(56.2265625), true, -7, mathx.NewInt(7197)},
+	{NewFloat(-0.0546875), NewFloat(0.34375), NewFloat(0.2890625), true, -7, mathx.NewInt(37)},
+	{NewFloat(-556), NewFloat(-66.42), NewFloat(-622.42), false, -46, mathx.NewInt(43798913751061627)},
+	{NewFloat(-5.5), NewFloat(-0.002685546875), NewFloat(-5.502685546875), false, -12, mathx.NewInt(22539)},
+	{NewFloat(-0.001708984375), NewFloat(-48.75), NewFloat(-40.751708984375), false, -12, mathx.NewInt(199687)},
+	{NewFloat(-0.875), NewFloat(-0.25), NewFloat(-1.125), false, -3, mathx.NewInt(9)},
+	{NewFloat(0.0), NewFloat(1.0), NewFloat(1), true, 0, mathx.NewInt(1)},
+	{NewFloat(1.0), NewFloat(-1.0), NewFloat(0.0), false, 0, mathx.NewInt(0)},
 }
 
 func TestFloatAdd(t *testing.T) {

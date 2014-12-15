@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"math"
 
-	. "github.com/swenson/mathx"
+	"github.com/swenson/mathx"
 )
 
 type RoundingMode int
@@ -35,7 +35,7 @@ type Float struct {
 	sign      bool
 	precision uint64
 	exp       int64
-	mantissa  *Int
+	mantissa  *mathx.Int
 }
 
 func NewFloat(f float64) *Float {
@@ -49,7 +49,7 @@ func NewFloat(f float64) *Float {
 	if s == 0 && e == 0 && m == 0 {
 		x.sign = false
 		x.exp = 0
-		x.mantissa = NewInt(0)
+		x.mantissa = mathx.NewInt(0)
 		return x
 	}
 
@@ -57,7 +57,7 @@ func NewFloat(f float64) *Float {
 		x.sign = true
 	}
 	x.exp = e - 1023 - 52
-	x.mantissa = NewInt((int64(1) << 52) | m)
+	x.mantissa = mathx.NewInt((int64(1) << 52) | m)
 	return x.normalize()
 }
 
@@ -303,14 +303,14 @@ func (z Float) String() string {
 		sign = "-"
 	}
 
-	var whole *Int
-	var fraction *Int
+	var whole *mathx.Int
+	var fraction *mathx.Int
 
 	if z.exp <= 0 {
 		whole = z.mantissa.Rsh(uint(-z.exp))
 		fraction = z.mantissa.Sub(whole.Lsh(uint(-z.exp)))
 	} else {
-		whole = NewInt(0)
+		whole = mathx.NewInt(0)
 		fraction = z.mantissa
 	}
 
