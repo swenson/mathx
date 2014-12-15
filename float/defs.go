@@ -14,6 +14,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/*
+Package float is for arbitrary-precision floating-point arithmetic.
+
+Currently supported:
+
+* Addition, subtraction, multiplication, division
+* Square root
+
+TODO: rounding, logarithms, exponentiation, and everything else.
+*/
 package float
 
 import (
@@ -23,14 +33,18 @@ import (
 	"github.com/swenson/mathx"
 )
 
+// RoundingMode represents the rounding requested.
 type RoundingMode int
 
 const (
-	_                    = iota
+	_ = iota
+	// RoundUp means take the ceiling after the operation.
 	RoundUp RoundingMode = 1 * iota
+	// RoundDown means take the floor after the operation.
 	RoundDown
 )
 
+// Float is the basic type of our arbitrary-precision floating-point numbers.
 type Float struct {
 	sign      bool
 	precision uint64
@@ -38,6 +52,7 @@ type Float struct {
 	mantissa  *mathx.Int
 }
 
+// NewFloat constructs a new Float from an IEEE 64-bit float64.
 func NewFloat(f float64) *Float {
 	x := new(Float)
 	x.precision = 52
@@ -70,6 +85,7 @@ func (x *Float) copy() *Float {
 	return y
 }
 
+// Add returns this plus the argument.
 func (_x *Float) Add(_y *Float) *Float {
 	if _x.mantissa.Sign() == 0 {
 		return _y
@@ -100,6 +116,7 @@ func (_x *Float) Add(_y *Float) *Float {
 	return z.normalize()
 }
 
+// Sub returns this minus the argument.
 func (_x *Float) Sub(_y *Float) *Float {
 	x := _x.copy()
 	y := _y.copy()
@@ -109,6 +126,7 @@ func (_x *Float) Sub(_y *Float) *Float {
 	return z
 }
 
+// Mul returns this times the argument.
 func (_x *Float) Mul(_y *Float) *Float {
 	if _x.mantissa.Sign() == 0 || _y.mantissa.Sign() == 0 {
 		return NewFloat(0.0)
@@ -136,6 +154,8 @@ func (_x *Float) Mul(_y *Float) *Float {
 	return z.normalize()
 }
 
+// Div returns this divided by the argument.
+// If the argument is 0, this function will panic.
 func (_x *Float) Div(_y *Float) *Float {
 	//Div implements division by calculating the reciprocal of of the denominator and multiplying by the numerator using the Newton Raphson Method. (http://en.wikipedia.org/wiki/Division_algorithm)
 	x := _x.copy()
@@ -200,6 +220,7 @@ func (_x *Float) Div(_y *Float) *Float {
 	return z.normalize()
 }
 
+// Sqrt returns the square root of this number.
 func (_z *Float) Sqrt() *Float {
 	//Sqrt uses Newton's Method
 	if _z.mantissa.Sign() == 0 {
@@ -233,6 +254,8 @@ func (_z *Float) Sqrt() *Float {
 	return z.normalize()
 }
 
+// Cmp compares this to the argument (x), returning < 0 if this < x, == 0 if
+// this == x, and > 0 if this > x.
 func (_x *Float) Cmp(_y *Float) int {
 	x := _x.copy()
 	y := _y.copy()
@@ -250,12 +273,14 @@ func (_x *Float) Cmp(_y *Float) int {
 	return z
 }
 
+// Neg returns the negation of this.
 func (_z *Float) Neg() *Float {
 	z := _z.copy()
 	z.sign = !z.sign
 	return z
 }
 
+// Abs returns the absolute value of this.
 func (_z *Float) Abs() *Float {
 	z := _z.copy()
 	z.sign = true
@@ -297,6 +322,9 @@ func (x *Float) denormalize(y *Float) (*Float, *Float) {
 	return x, y
 }
 
+// String returns a kind messy decimal string version of this.
+// It is utterly precise, and will use as many decimal digits
+// as are necessary to completely represent this number.
 func (z Float) String() string {
 	sign := "+"
 	if !z.sign {
