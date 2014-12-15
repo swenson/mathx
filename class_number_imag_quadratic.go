@@ -73,7 +73,7 @@ func Sqrt(z *big.Int) *big.Int {
 	s := big.NewInt(0).Rsh(z, uint(z.BitLen()/2))
 	t := big.NewInt(0)
 
-	for i := 0; s.Cmp(t) != 0 && i < 100; i++ {
+	for i := 0; s.Cmp(t) != 0 && i < z.BitLen()/2+10; i++ {
 		// compute iteration
 		t.Div(z, s)
 		t.Add(t, s)
