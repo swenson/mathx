@@ -54,41 +54,12 @@ func classNumberImagQuadSlow(k *NumberField) int {
 	return h
 }
 
-// Sqrt computes the square root of this number.
-// Uses Newton's Method.
-func Sqrt(z *big.Int) *big.Int {
-	if z.BitLen() <= 52 {
-		sqrt := int64(math.Sqrt(float64(z.Int64())))
-		return big.NewInt(sqrt)
-	}
-	if z.Sign() < 0 {
-		return nil
-	} else if z.Sign() == 0 {
-		return big.NewInt(0)
-	} else if z.Cmp(intOne) == 0 {
-		return big.NewInt(1)
-	}
-
-	// initial guess
-	s := big.NewInt(0).Rsh(z, uint(z.BitLen()/2))
-	t := big.NewInt(0)
-
-	for i := 0; s.Cmp(t) != 0 && i < z.BitLen()/2+10; i++ {
-		// compute iteration
-		t.Div(z, s)
-		t.Add(t, s)
-		t.Rsh(t, 1)
-		s, t = t, s
-	}
-	return s
-}
-
 // IsSquare returns true if this number is a perfect square.
 func IsSquare(z *big.Int) bool {
 	if z.Sign() < 0 {
 		return false
 	}
-	s := Sqrt(z)
-	s.Mul(s, s)
-	return s.Cmp(z) == 0
+	s := (*Int)(z).Sqrt()
+	s = s.Mul(s)
+	return s.Cmp((*Int)(z)) == 0
 }

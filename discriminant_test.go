@@ -41,7 +41,7 @@ func TestSqrt(t *testing.T) {
 	}
 	for _, numStr := range numbers {
 		n, _ := NewIntFromString(numStr, 10)
-		m := (*Int)(Sqrt((*big.Int)(n)))
+		m := n.Sqrt()
 		m1 := m.Add(NewInt(1))
 		if m.Mul(m).Cmp(n) >= 0 || m1.Mul(m1).Cmp(n) <= 0 {
 			t.Errorf("Sqrt(%s) returned %s", n, m)
