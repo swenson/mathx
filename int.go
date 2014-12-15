@@ -9,8 +9,9 @@ import (
 // Int is an immutable arbitrary-precision integer type, wrapping
 // the built-in math/big.Int (which is mutable). This package
 // also a simpler, two-argument API. For example:
-// 	a := mathx.NewInt(0)
-//  b := a.Add64(123)
+//
+//   a := mathx.NewInt(0)
+//   b := a.Add64(123)
 type Int big.Int
 
 // NewInt returns the arbitrary-precision version of its 64-bit argument.
@@ -54,49 +55,49 @@ func (z *Int) BitLen() int {
 }
 
 // Lsh returns this integer shifted left by n (that is, multiplied by 2^n).
-func (x *Int) Lsh(n uint) *Int {
-	z := big.NewInt(0)
-	return (*Int)((*big.Int)(z).Lsh((*big.Int)(x), n))
+func (z *Int) Lsh(n uint) *Int {
+	t := big.NewInt(0)
+	return (*Int)((*big.Int)(t).Lsh((*big.Int)(z), n))
 }
 
 // Rsh returns this integer shifted right by n (that is, divided by 2^n and truncated).
-func (x *Int) Rsh(n uint) *Int {
-	z := big.NewInt(0)
-	return (*Int)((*big.Int)(z).Rsh((*big.Int)(x), n))
+func (z *Int) Rsh(n uint) *Int {
+	t := big.NewInt(0)
+	return (*Int)((*big.Int)(t).Rsh((*big.Int)(z), n))
 }
 
 // Add returns this number added to the argument.
-func (x *Int) Add(y *Int) *Int {
-	z := big.NewInt(0)
-	return (*Int)((*big.Int)(z).Add((*big.Int)(x), (*big.Int)(y)))
+func (z *Int) Add(y *Int) *Int {
+	t := big.NewInt(0)
+	return (*Int)((*big.Int)(t).Add((*big.Int)(z), (*big.Int)(y)))
 }
 
 // Add64 returns this number added to the 64-bit argument.
-func (x *Int) Add64(y int64) *Int {
-	z := big.NewInt(y)
-	return (*Int)((*big.Int)(z).Add((*big.Int)(x), z))
+func (z *Int) Add64(y int64) *Int {
+	t := big.NewInt(y)
+	return (*Int)((*big.Int)(t).Add((*big.Int)(z), t))
 }
 
 // Sub returns this number minus the argument.
-func (x *Int) Sub(y *Int) *Int {
-	z := big.NewInt(0)
-	return (*Int)((*big.Int)(z).Sub((*big.Int)(x), (*big.Int)(y)))
+func (z *Int) Sub(y *Int) *Int {
+	t := big.NewInt(0)
+	return (*Int)((*big.Int)(t).Sub((*big.Int)(z), (*big.Int)(y)))
 }
 
 // Sub64 returns this number minus the 64-bit argument.
-func (x *Int) Sub64(y int64) *Int {
-	z := big.NewInt(y)
-	return (*Int)((*big.Int)(z).Sub((*big.Int)(x), z))
+func (z *Int) Sub64(y int64) *Int {
+	t := big.NewInt(y)
+	return (*Int)((*big.Int)(t).Sub((*big.Int)(z), t))
 }
 
 // Mul returns this number multiplied by the argument.
-func (x *Int) Mul(y *Int) *Int {
-	z := big.NewInt(0)
-	return (*Int)((*big.Int)(z).Mul((*big.Int)(x), (*big.Int)(y)))
+func (z *Int) Mul(y *Int) *Int {
+	t := big.NewInt(0)
+	return (*Int)((*big.Int)(t).Mul((*big.Int)(z), (*big.Int)(y)))
 }
 
 // Mul64 returns this number multiplied by the 64-bit argument.
-func (x *Int) Mul64(y int64) *Int {
-	z := big.NewInt(y)
-	return (*Int)((*big.Int)(z).Mul((*big.Int)(z), (*big.Int)(x)))
+func (z *Int) Mul64(y int64) *Int {
+	t := big.NewInt(y)
+	return (*Int)((*big.Int)(t).Mul((*big.Int)(t), (*big.Int)(z)))
 }

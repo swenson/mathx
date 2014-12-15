@@ -64,8 +64,8 @@ func TestParsePolynomial(t *testing.T) {
 }
 
 func TestClassNumber1(t *testing.T) {
-	class_number_1_nums := []int{-3, -4, -7, -8, -11, -19, -43, -67, -163}
-	class_number_1 := NewIntSet(class_number_1_nums)
+	classNumber1Nums := []int{-3, -4, -7, -8, -11, -19, -43, -67, -163}
+	classNumber1 := NewIntSet(classNumber1Nums)
 	for a := 1; a < 10; a++ {
 		for b := -10; b < 10; b++ {
 			for c := -10; c < 10; c++ {
@@ -81,7 +81,7 @@ func TestClassNumber1(t *testing.T) {
 				}
 				k := MakeNumberField(p)
 
-				if k.ClassNumber() == 1 && !class_number_1.Contains(int(p.Discriminant().Int64())) {
+				if k.ClassNumber() == 1 && !classNumber1.Contains(int(p.Discriminant().Int64())) {
 					t.Fail()
 				}
 			}
