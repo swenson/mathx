@@ -18,6 +18,20 @@ func TestPrimeGeneration(t *testing.T) {
 	}
 }
 
+func TestFacorization64(t *testing.T) {
+	num := int64(154297)
+	expected := []factor64{{11, 1}, {13, 2}, {83, 1}}
+	got := Factorization64(num)
+	if len(got) != len(expected) {
+		t.Fatal("Could not factor 154297")
+	}
+	for i, f := range expected {
+		if f != got[i] {
+			t.Fatal("Could not factor 15497")
+		}
+	}
+}
+
 func slowGenPrimes(n int64) {
 	if primes[len(primes)-1] >= n {
 		return
