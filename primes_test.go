@@ -18,6 +18,20 @@ func TestPrimeGeneration(t *testing.T) {
 	}
 }
 
+func BenchmarkPrimeSieve100(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		primes = []int64{2, 3}
+		genPrimes(100)
+	}
+}
+
+func BenchmarkPrimeDiv100(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		primes = []int64{2, 3}
+		slowGenPrimes(100)
+	}
+}
+
 func TestFacorization64(t *testing.T) {
 	num := int64(154297)
 	expected := []factor64{{11, 1}, {13, 2}, {83, 1}}
