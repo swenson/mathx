@@ -6,22 +6,30 @@ import (
 
 var primes = []int64{2, 3}
 
+// generate primes up to and including n by Sieve of Eratosthenes
 func genPrimes(n int64) {
 	if primes[len(primes)-1] >= n {
 		return
 	}
 
-	// Use the primes we already generated.
-	for q := primes[len(primes)-1] + 2; q <= n; q += 2 {
-		prime := true
-		for _, p := range primes {
-			if q%p == 0 {
-				prime = false
-				break
+	size := int((n / 2 / 64) + 1)
+	mem := make([]uint64, size, size)
+	primes = make([]int64, 0, int(math.Ceil(float64(n)/math.Log(float64(n)))))
+	primes = append(primes, 2)
+	maxn := int(n-1)/2 + 1
+
+	for i := 1; i < maxn; i++ {
+		loc := i >> 6
+		bit := uint(i & 63)
+
+		if mem[loc]&(uint64(1)<<bit) == 0 {
+			p := 2*i + 1
+			primes = append(primes, int64(p))
+			for j := i + p; j < maxn; j += p {
+				loc = j >> 6
+				bit = uint(j & 63)
+				mem[loc] |= uint64(1) << bit
 			}
-		}
-		if prime {
-			primes = append(primes, q)
 		}
 	}
 }
