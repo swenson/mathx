@@ -21,6 +21,8 @@ func NewInt(n int64) *Int {
 	return b
 }
 
+// NewIntFromString creates a new arbitrary-precision integer from
+// a string in the given base.
 func NewIntFromString(s string, base int) (*Int, bool) {
 	b, err := new(big.Int).SetString(s, base)
 	return (*Int)(b), err

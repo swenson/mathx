@@ -225,15 +225,15 @@ func (f *Float) Div(_y *Float) *Float {
 }
 
 // Sqrt returns the square root of this number.
-func (_z *Float) Sqrt() *Float {
+func (f *Float) Sqrt() *Float {
 	//Sqrt uses Newton's Method
-	if _z.mantissa.Sign() == 0 {
-		return _z
+	if f.mantissa.Sign() == 0 {
+		return f
 	}
-	if _z.sign == false {
+	if f.sign == false {
 		panic("square root of a negative number is undefined\n")
 	}
-	number := _z.copy()
+	number := f.copy()
 	accuracy := NewFloat(1.0)
 	accuracy.exp += number.exp - int64(number.precision) + int64(number.mantissa.BitLen())
 	accuracy.precision = 2 * number.precision
@@ -277,42 +277,42 @@ func (f *Float) Cmp(_y *Float) int {
 }
 
 // Neg returns the negation of this.
-func (_z *Float) Neg() *Float {
-	z := _z.copy()
+func (f *Float) Neg() *Float {
+	z := f.copy()
 	z.sign = !z.sign
 	return z
 }
 
 // Abs returns the absolute value of this.
-func (_z *Float) Abs() *Float {
-	z := _z.copy()
+func (f *Float) Abs() *Float {
+	z := f.copy()
 	z.sign = true
 	return z
 }
 
 // This function modified its arguments!
-func (z *Float) truncate() *Float {
-	chop := z.mantissa.BitLen() - (2 * int(z.precision))
+func (f *Float) truncate() *Float {
+	chop := f.mantissa.BitLen() - (2 * int(f.precision))
 	if chop > 0 {
-		z.mantissa = z.mantissa.Rsh(uint(chop))
-		z.exp += int64(chop)
+		f.mantissa = f.mantissa.Rsh(uint(chop))
+		f.exp += int64(chop)
 	}
-	return z
+	return f
 }
 
 // This function modified its arguments!
-func (z *Float) normalize() *Float {
-	if z.mantissa.Sign() == 0 {
-		return z
+func (f *Float) normalize() *Float {
+	if f.mantissa.Sign() == 0 {
+		return f
 	}
 
-	z.truncate()
+	f.truncate()
 
-	for z.mantissa.Bit(0) == 0 {
-		z.mantissa = z.mantissa.Rsh(1)
-		z.exp++
+	for f.mantissa.Bit(0) == 0 {
+		f.mantissa = f.mantissa.Rsh(1)
+		f.exp++
 	}
-	return z
+	return f
 }
 
 // This function modified its arguments!
@@ -331,31 +331,31 @@ func (f *Float) denormalize(y *Float) (*Float, *Float) {
 // String returns a kind messy decimal string version of this.
 // It is utterly precise, and will use as many decimal digits
 // as are necessary to completely represent this number.
-func (z Float) String() string {
+func (f Float) String() string {
 	sign := "+"
-	if !z.sign {
+	if !f.sign {
 		sign = "-"
 	}
 
 	var whole *mathx.Int
 	var fraction *mathx.Int
 
-	if z.exp <= 0 {
-		whole = z.mantissa.Rsh(uint(-z.exp))
-		fraction = z.mantissa.Sub(whole.Lsh(uint(-z.exp)))
+	if f.exp <= 0 {
+		whole = f.mantissa.Rsh(uint(-f.exp))
+		fraction = f.mantissa.Sub(whole.Lsh(uint(-f.exp)))
 	} else {
 		whole = mathx.NewInt(0)
-		fraction = z.mantissa
+		fraction = f.mantissa
 	}
 
-	whole = z.mantissa.Rsh(uint(-z.exp))
-	fraction = z.mantissa.Sub(whole.Lsh(uint(-z.exp)))
+	whole = f.mantissa.Rsh(uint(-f.exp))
+	fraction = f.mantissa.Sub(whole.Lsh(uint(-f.exp)))
 
 	digits := ""
 	for fraction.Sign() != 0 {
 		fraction = fraction.Mul64(10)
-		digit := fraction.Rsh(uint(-z.exp))
-		fraction = fraction.Sub(digit.Lsh(uint(-z.exp)))
+		digit := fraction.Rsh(uint(-f.exp))
+		fraction = fraction.Sub(digit.Lsh(uint(-f.exp)))
 		digits += digit.String()
 	}
 	if digits == "" {

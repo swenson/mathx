@@ -1,7 +1,7 @@
 // Copyright (c) 2014 Christopher Swenson.
 
 /*
-This package provides various math functionality to Go natively,
+Package mathx provides various math functionality to Go natively,
 with no third-party libraries.
 
 In particular:
