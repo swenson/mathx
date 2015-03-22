@@ -110,46 +110,50 @@ func imax(a int, b int) int {
 	return a
 }
 
+func leftExtend(a []uint8, length int) []uint8 {
+	if length <= len(a) {
+		return a
+	}
+	b := make([]uint8, length, length)
+	copy(b[length-len(a):], a)
+	return b
+}
+
+func rightExtend(a []uint8, length int) []uint8 {
+	if length <= len(a) {
+		return a
+	}
+	b := make([]uint8, length, length)
+	copy(b, a)
+	return b
+}
+
 func (d *Decimal) Add(e *Decimal) *Decimal {
 	s := new(Decimal)
 	if !d.neg && !e.neg {
 		wlen := imax(len(d.whole), len(e.whole)) + 1
 		s.whole = make([]uint8, wlen, wlen)
 		carry := uint8(0)
-		for i := 0; i < wlen; i++ {
-			j := len(d.whole) - i - 1
-			k := len(e.whole) - i - 1
-			a := uint8(0)
-			b := uint8(0)
-			if j >= 0 {
-				a = d.whole[j]
-			}
-			if j >= 0 {
-				b = e.whole[k]
-			}
+		dw := leftExtend(d.whole, wlen)
+		ew := leftExtend(e.whole, wlen)
+		for i := wlen - 1; i >= 0; i-- {
+			a := dw[i]
+			b := ew[i]
 			sum := a + b + carry
 			carry = sum / 10
 			sum = sum % 10
-			s.whole[len(s.whole)-i-1] = sum
+			s.whole[i] = sum
 		}
 		if carry != 0 {
 			panic("Addition didn't work correctly")
 		}
-		// normalize
-		for len(s.whole) > 1 && s.whole[0] == 0 {
-			s.whole = s.whole[1:]
-		}
 		flen := imax(len(d.fraction), len(e.fraction))
+		df := rightExtend(d.fraction, flen)
+		ef := rightExtend(e.fraction, flen)
 		s.fraction = make([]uint8, flen, flen)
 		for i := flen - 1; i >= 0; i-- {
-			a := uint8(0)
-			b := uint8(0)
-			if i < len(d.fraction) {
-				a = d.fraction[i]
-			}
-			if i < len(e.fraction) {
-				b = e.fraction[i]
-			}
+			a := df[i]
+			b := ef[i]
 			sum := a + b + carry
 			carry = sum / 10
 			sum = sum % 10
@@ -162,12 +166,10 @@ func (d *Decimal) Add(e *Decimal) *Decimal {
 			sum = sum % 10
 			s.whole[i] = sum
 			i--
-			if i < 0 {
-				n := make([]uint8, len(s.whole)+1, len(s.whole)+1)
-				copy(n[1:], s.whole)
-				s.whole = n
-				i++
-			}
+		}
+		// normalize
+		for len(s.whole) > 1 && s.whole[0] == 0 {
+			s.whole = s.whole[1:]
 		}
 	} else {
 		panic("Not implemented yet")
