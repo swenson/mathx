@@ -130,7 +130,8 @@ func rightExtend(a []uint8, length int) []uint8 {
 
 func (d *Decimal) Add(e *Decimal) *Decimal {
 	s := new(Decimal)
-	if !d.neg && !e.neg {
+	if d.neg == e.neg {
+		s.neg = d.neg
 		carry := uint8(0)
 		flen := imax(len(d.fraction), len(e.fraction))
 		df := rightExtend(d.fraction, flen)
