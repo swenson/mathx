@@ -280,45 +280,48 @@ func (d *Decimal) Sub(e *Decimal) *Decimal {
 
 // Add returns the sum of this plus its argument.
 func (d *Decimal) Add(e *Decimal) *Decimal {
+	if d.neg != e.neg {
+		// really subtraction in disguise
+		if d.neg {
+			return e.Sub(d.Neg())
+		}
+		return d.Sub(e.Neg())
+	}
 	s := new(Decimal)
-	if d.neg == e.neg {
-		s.neg = d.neg
-		carry := int8(0)
-		flen := imax(len(d.fraction), len(e.fraction))
-		df := rightExtend(d.fraction, flen)
-		ef := rightExtend(e.fraction, flen)
-		s.fraction = make([]int8, flen, flen)
-		for i := flen - 1; i >= 0; i-- {
-			a := df[i]
-			b := ef[i]
-			sum := a + b + carry
-			carry = sum / 10
-			sum = sum % 10
-			s.fraction[i] = sum
-		}
-		// carry into the whole part
-		wlen := imax(len(d.whole), len(e.whole)) + 1
-		s.whole = make([]int8, wlen, wlen)
-		dw := leftExtend(d.whole, wlen)
-		ew := leftExtend(e.whole, wlen)
-		for i := wlen - 1; i >= 0; i-- {
-			a := dw[i]
-			b := ew[i]
-			sum := a + b + carry
-			carry = sum / 10
-			sum = sum % 10
-			s.whole[i] = sum
-		}
-		if carry != 0 {
-			panic("Addition didn't work correctly")
-		}
+	s.neg = d.neg
+	carry := int8(0)
+	flen := imax(len(d.fraction), len(e.fraction))
+	df := rightExtend(d.fraction, flen)
+	ef := rightExtend(e.fraction, flen)
+	s.fraction = make([]int8, flen, flen)
+	for i := flen - 1; i >= 0; i-- {
+		a := df[i]
+		b := ef[i]
+		sum := a + b + carry
+		carry = sum / 10
+		sum = sum % 10
+		s.fraction[i] = sum
+	}
+	// carry into the whole part
+	wlen := imax(len(d.whole), len(e.whole)) + 1
+	s.whole = make([]int8, wlen, wlen)
+	dw := leftExtend(d.whole, wlen)
+	ew := leftExtend(e.whole, wlen)
+	for i := wlen - 1; i >= 0; i-- {
+		a := dw[i]
+		b := ew[i]
+		sum := a + b + carry
+		carry = sum / 10
+		sum = sum % 10
+		s.whole[i] = sum
+	}
+	if carry != 0 {
+		panic("Addition didn't work correctly")
+	}
 
-		// normalize
-		for len(s.whole) > 1 && s.whole[0] == 0 {
-			s.whole = s.whole[1:]
-		}
-	} else {
-		panic("Not implemented yet")
+	// normalize
+	for len(s.whole) > 1 && s.whole[0] == 0 {
+		s.whole = s.whole[1:]
 	}
 	return s
 }
