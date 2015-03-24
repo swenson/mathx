@@ -131,9 +131,22 @@ func rightExtend(a []uint8, length int) []uint8 {
 func (d *Decimal) Add(e *Decimal) *Decimal {
 	s := new(Decimal)
 	if !d.neg && !e.neg {
+		carry := uint8(0)
+		flen := imax(len(d.fraction), len(e.fraction))
+		df := rightExtend(d.fraction, flen)
+		ef := rightExtend(e.fraction, flen)
+		s.fraction = make([]uint8, flen, flen)
+		for i := flen - 1; i >= 0; i-- {
+			a := df[i]
+			b := ef[i]
+			sum := a + b + carry
+			carry = sum / 10
+			sum = sum % 10
+			s.fraction[i] = sum
+		}
+		// carry into the whole part
 		wlen := imax(len(d.whole), len(e.whole)) + 1
 		s.whole = make([]uint8, wlen, wlen)
-		carry := uint8(0)
 		dw := leftExtend(d.whole, wlen)
 		ew := leftExtend(e.whole, wlen)
 		for i := wlen - 1; i >= 0; i-- {
@@ -147,26 +160,7 @@ func (d *Decimal) Add(e *Decimal) *Decimal {
 		if carry != 0 {
 			panic("Addition didn't work correctly")
 		}
-		flen := imax(len(d.fraction), len(e.fraction))
-		df := rightExtend(d.fraction, flen)
-		ef := rightExtend(e.fraction, flen)
-		s.fraction = make([]uint8, flen, flen)
-		for i := flen - 1; i >= 0; i-- {
-			a := df[i]
-			b := ef[i]
-			sum := a + b + carry
-			carry = sum / 10
-			sum = sum % 10
-			s.fraction[i] = sum
-		}
-		i := len(s.whole) - 1
-		for carry > 0 {
-			sum := s.whole[i] + carry
-			carry = sum / 10
-			sum = sum % 10
-			s.whole[i] = sum
-			i--
-		}
+
 		// normalize
 		for len(s.whole) > 1 && s.whole[0] == 0 {
 			s.whole = s.whole[1:]
