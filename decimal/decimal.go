@@ -251,7 +251,7 @@ func (d *Decimal) Sub(e *Decimal) *Decimal {
 		s.fraction[i] = sum
 	}
 	// borrow into the whole part
-	wlen := imax(len(d.whole), len(e.whole)) + 1
+	wlen := imax(len(d.whole), len(e.whole))
 	s.whole = make([]int8, wlen, wlen)
 	dw := leftExtend(d.whole, wlen)
 	ew := leftExtend(e.whole, wlen)
