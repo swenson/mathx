@@ -1,8 +1,13 @@
-# mathx -- Number Theory, Algebra, and other mathematics for Go
+# mathx -- Extra math functionality for Go
 
 <a href="https://travis-ci.org/swenson/mathx"><img src="https://api.travis-ci.org/swenson/mathx.png" /></a>
 
-A simple number theory, algebra, and other mathematics functions for Go.
+An extended math library for Go.
+
+Support arbitrary precision floating-point number, decimals,
+number theory operations, algebraic operations, and others.
+
+Currently a work-in-progress, alpha quality.
 
 `go get github.com/swenson/mathx`
 
@@ -11,7 +16,7 @@ A simple number theory, algebra, and other mathematics functions for Go.
 All code in this repository, unless otherwise specified, is hereby
 licensed under the MIT Public License:
 
-Copyright (c) 2013 Christopher Swenson.
+Copyright (c) 2013–2015 Christopher Swenson.
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -33,4 +38,3 @@ Copyright (c) 2013 Christopher Swenson.
 	WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 	OTHER DEALINGS IN THE SOFTWARE.
-

@@ -13,17 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mathx
+package numtheory
 
 import (
 	"math"
+
+	"github.com/swenson/mathx/poly"
 )
 
 // cohen, 5.7.2,  p. 270
-func (poly *IntPolynomial) regulatorRealQuad() float64 {
-	D := poly.Discriminant().Int64()
+func regulatorRealQuad(poly *poly.IntPolynomial) float64 {
+	D := Discriminant(poly).Int64()
 	f := math.Sqrt(float64(D))
-	c := -poly.coeffs[0].Int64()
+	c := -poly.Coeff(0).Int64()
 	// try all of the small elements
 	for x := int64(1); x < 100; x++ {
 		for y := int64(1); y < 100; y++ {

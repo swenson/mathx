@@ -13,11 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mathx
+package numtheory
 
 import (
 	"math/big"
 	"testing"
+
+	"github.com/swenson/mathx"
 )
 
 func TestSqrt(t *testing.T) {
@@ -40,9 +42,9 @@ func TestSqrt(t *testing.T) {
 		"114580143581984719060280282563142542662414835420671277376461092447281111712587",
 	}
 	for _, numStr := range numbers {
-		n, _ := NewIntFromString(numStr, 10)
+		n, _ := mathx.NewIntFromString(numStr, 10)
 		m := n.Sqrt()
-		m1 := m.Add(NewInt(1))
+		m1 := m.Add(mathx.NewInt(1))
 		if m.Mul(m).Cmp(n) >= 0 || m1.Mul(m1).Cmp(n) <= 0 {
 			t.Errorf("Sqrt(%s) returned %s", n, m)
 		}
@@ -51,7 +53,7 @@ func TestSqrt(t *testing.T) {
 
 func TestFundamentalDiscriminantsSmall(t *testing.T) {
 	fundamentals := []int{1, 5, 8, 12, 13, 17, 21, 24, 28, 29, 33, -3, -4, -7, -8, -11, -15, -19, -20, -23, -24, -31}
-	good := NewIntSet(fundamentals)
+	good := mathx.NewIntSet(fundamentals)
 
 	for d := -31; d <= 33; d++ {
 		a := IsFundamentalDiscriminant(big.NewInt(int64(d)))

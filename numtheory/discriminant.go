@@ -13,10 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mathx
+package numtheory
 
 import (
 	"math/big"
+
+	"github.com/swenson/mathx/poly"
 )
 
 type factor64 struct {
@@ -27,17 +29,17 @@ type factor64 struct {
 // Discriminant returns the discriminant of the polynomial defining this
 // number field.
 func (k *NumberField) Discriminant() *big.Int {
-	return k.polynomial.Discriminant()
+	return Discriminant(k.polynomial)
 }
 
 // Discriminant returns the discriminant of this polynomial.
-func (p *IntPolynomial) Discriminant() *big.Int {
+func Discriminant(p *poly.IntPolynomial) *big.Int {
 	if p.Degree() == 2 {
-		c, b, a := p.coeffs[0], p.coeffs[1], p.coeffs[2]
-		b2 := big.NewInt(0).Mul(&b, &b)
+		c, b, a := p.Coeff(0), p.Coeff(1), p.Coeff(2)
+		b2 := big.NewInt(0).Mul(b, b)
 		ac4 := big.NewInt(4)
-		ac4 = ac4.Mul(ac4, &a)
-		ac4 = ac4.Mul(ac4, &c)
+		ac4 = ac4.Mul(ac4, a)
+		ac4 = ac4.Mul(ac4, c)
 		return b2.Sub(b2, ac4)
 	}
 	return nil

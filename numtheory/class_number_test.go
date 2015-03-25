@@ -13,11 +13,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mathx
+package numtheory
 
 import (
 	"math"
 	"testing"
+
+	"github.com/swenson/mathx"
+	"github.com/swenson/mathx/poly"
 )
 
 func dEquals(a, b float64) bool {
@@ -26,8 +29,8 @@ func dEquals(a, b float64) bool {
 
 func TestRegulator(t *testing.T) {
 	for _, testCase := range regulatorTestCases {
-		p := ParseIntPoly(testCase.polyString)
-		gotr := p.regulatorRealQuad()
+		p := poly.ParseIntPoly(testCase.polyString)
+		gotr := regulatorRealQuad(p)
 		r := testCase.regulator
 		if !dEquals(r, gotr) {
 			t.Errorf("Poly %s regulator %f but got %f\n", p, r, gotr)
@@ -37,18 +40,18 @@ func TestRegulator(t *testing.T) {
 
 func TestRandomClassNumbers(t *testing.T) {
 	for _, testCase := range classNumberTestCases {
-		p := ParseIntPoly(testCase.polyString)
+		p := poly.ParseIntPoly(testCase.polyString)
 		if p.Degree() > 2 {
 			continue
 		}
-		if p.Discriminant().Sign() > 0 {
+		if Discriminant(p).Sign() > 0 {
 			continue
 		}
 		h := testCase.classNumber
 		k := MakeNumberField(p)
 		hGot := k.ClassNumber()
 		if hGot != h {
-			t.Errorf("%s expected class number %d got %d, discriminant %s\n", p.String(), h, hGot, p.Discriminant().String())
+			t.Errorf("%s expected class number %d got %d, discriminant %s\n", p.String(), h, hGot, Discriminant(p).String())
 		}
 	}
 }
@@ -56,7 +59,7 @@ func TestRandomClassNumbers(t *testing.T) {
 func TestParsePolynomial(t *testing.T) {
 	testCases := []string{"x^2 + 5*x - 1001", "x^2", "-1*x", "2*x + 1", "x + 1", "x", "1", "2"}
 	for _, testCase := range testCases {
-		p := ParseIntPoly(testCase).String()
+		p := poly.ParseIntPoly(testCase).String()
 		if p != testCase {
 			t.Errorf("Parsed %s but got %s\n", testCase, p)
 		}
@@ -65,23 +68,23 @@ func TestParsePolynomial(t *testing.T) {
 
 func TestClassNumber1(t *testing.T) {
 	classNumber1Nums := []int{-3, -4, -7, -8, -11, -19, -43, -67, -163}
-	classNumber1 := NewIntSet(classNumber1Nums)
+	classNumber1 := mathx.NewIntSet(classNumber1Nums)
 	for a := 1; a < 10; a++ {
 		for b := -10; b < 10; b++ {
 			for c := -10; c < 10; c++ {
-				p := NewIntPolynomial64(int64(c), int64(b), int64(a))
+				p := poly.NewIntPolynomial64(int64(c), int64(b), int64(a))
 				if !p.IsIrreducible() {
 					continue
 				}
-				if p.Discriminant().Sign() > 0 {
+				if Discriminant(p).Sign() > 0 {
 					continue
 				}
-				if !IsFundamentalDiscriminant(p.Discriminant()) {
+				if !IsFundamentalDiscriminant(Discriminant(p)) {
 					continue
 				}
 				k := MakeNumberField(p)
 
-				if k.ClassNumber() == 1 && !classNumber1.Contains(int(p.Discriminant().Int64())) {
+				if k.ClassNumber() == 1 && !classNumber1.Contains(int(Discriminant(p).Int64())) {
 					t.Fail()
 				}
 			}

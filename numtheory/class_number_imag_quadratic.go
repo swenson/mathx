@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mathx
+package numtheory
 
 import (
 	"math"
@@ -52,14 +52,4 @@ func classNumberImagQuadSlow(k *NumberField) int {
 		}
 	}
 	return h
-}
-
-// IsSquare returns true if this number is a perfect square.
-func IsSquare(z *big.Int) bool {
-	if z.Sign() < 0 {
-		return false
-	}
-	s := (*Int)(z).Sqrt()
-	s = s.Mul(s)
-	return s.Cmp((*Int)(z)) == 0
 }

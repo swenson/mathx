@@ -13,12 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mathx
+package poly
 
 import (
 	"math/big"
 	"strconv"
+
+	"github.com/swenson/mathx"
 )
+
+var intOne = big.NewInt(1)
 
 // IntPolynomial represents an integer polynomial of arbitrary size.
 type IntPolynomial struct {
@@ -34,6 +38,10 @@ func NewIntPolynomial64(coeffs ...int64) *IntPolynomial {
 		p.coeffs[i].SetInt64(c)
 	}
 	return p
+}
+
+func (p *IntPolynomial) Coeff(i int) *big.Int {
+	return &p.coeffs[i]
 }
 
 // Degree returns the degree of this polynomial.
@@ -72,7 +80,7 @@ func (p *IntPolynomial) IsIrreducible() bool {
 		ac4.Mul(ac4, &a)
 		ac4.Mul(ac4, &c)
 		b2.Sub(b2, ac4)
-		return !IsSquare(b2)
+		return !mathx.IsSquare(b2)
 	}
 	/*
 		// check the gcd of the coefficients

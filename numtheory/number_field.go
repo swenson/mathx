@@ -13,17 +13,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mathx
+package numtheory
+
+import (
+	"github.com/swenson/mathx/poly"
+)
 
 // NumberField represents the field of rational numbers adjoined with the root
 // of a polynomial. (WIP)
 type NumberField struct {
-	polynomial *IntPolynomial
+	polynomial *poly.IntPolynomial
 }
 
 // MakeNumberField creates the number field defined by the root of the given
 // number field.
-func MakeNumberField(poly *IntPolynomial) *NumberField {
+func MakeNumberField(poly *poly.IntPolynomial) *NumberField {
 	k := new(NumberField)
 	k.polynomial = poly
 	return k
@@ -31,14 +35,14 @@ func MakeNumberField(poly *IntPolynomial) *NumberField {
 
 // Degree gives the degree of the polynomial defining the number field.
 func (k *NumberField) Degree() int {
-	return len(k.polynomial.coeffs) - 1
+	return k.polynomial.Degree()
 }
 
 // ClassNumber computes the class number of the number field.
 // Currently only supports imaginary quadratic number fields.
 func (k *NumberField) ClassNumber() int {
 	if k.Degree() == 2 {
-		if k.polynomial.Discriminant().Sign() < 0 {
+		if Discriminant(k.polynomial).Sign() < 0 {
 			return classNumberImagQuadSlow(k)
 		}
 	}
