@@ -325,3 +325,32 @@ func (d *Decimal) Add(e *Decimal) *Decimal {
 	}
 	return s
 }
+
+// Mul10exp multiplies this number by 10 raised to the given power,
+// effectively shifting the number left by the given number of digits.
+func (d *Decimal) Mul10exp(n uint) *Decimal {
+	wholeSize := len(d.whole) + int(n)
+	fractionSize := len(d.fraction) - int(n)
+	if fractionSize < 0 {
+		fractionSize = 0
+	}
+
+	out := &Decimal{
+		neg:      d.neg,
+		whole:    make([]int8, wholeSize, wholeSize),
+		fraction: make([]int8, fractionSize, fractionSize),
+	}
+	copyFrac := int(n)
+	if int(n) > len(d.fraction) {
+		copyFrac = len(d.fraction)
+	}
+	copy(out.whole, d.whole)
+	copy(out.whole[len(d.whole):], d.fraction[:copyFrac])
+	copy(out.fraction, d.fraction[copyFrac:])
+
+	// normalize
+	for len(out.whole) > 1 && out.whole[0] == 0 {
+		out.whole = out.whole[1:]
+	}
+	return out
+}

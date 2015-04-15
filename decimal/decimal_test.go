@@ -328,3 +328,32 @@ func TestSub(t *testing.T) {
 		}
 	}
 }
+
+func TestMul10exp(t *testing.T) {
+	cases := []struct {
+		a string
+		b uint
+		c string
+	}{
+		{"0", 0, "0"},
+		{"1", 1, "10"},
+		{"1.1", 1, "11"},
+		{"0.1", 1, "1"},
+		{"99.99", 1, "999.9"},
+		{"999.999", 10, "9999990000000"},
+	}
+
+	for _, c := range cases {
+		d, err := New(c.a)
+		if err != nil {
+			t.Fatalf("Error reading in perfectly ordinary decimal %+v: %s", c, err.Error())
+		}
+		out, err := New(c.c)
+		if err != nil {
+			t.Fatalf("Error reading in perfectly ordinary decimal %+v: %s", c, err.Error())
+		}
+		if out.String() != d.Mul10exp(c.b).String() {
+			t.Errorf("Error: expected %s.Mul10exp(%d) = %s, got %s", c.a, c.b, c.c, d.Mul10exp(c.b).String())
+		}
+	}
+}
