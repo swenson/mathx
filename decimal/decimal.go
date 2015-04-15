@@ -214,6 +214,8 @@ func (d *Decimal) Cmp(e *Decimal) int {
 			continue // have to keep going
 		}
 	}
+	panic("unreachable")
+	return -1 // unreachable, but necessary for Go 1.0 to compile
 }
 
 // Sub returns this minus its argument.
