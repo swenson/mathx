@@ -357,3 +357,49 @@ func TestMul10exp(t *testing.T) {
 		}
 	}
 }
+
+func TestCeil(t *testing.T) {
+	cases := []struct {
+		a string
+		b string
+	}{
+		{"0.0", "0"},
+		{"-1.0", "-1"},
+		{"-1.1", "-1"},
+		{"1.1", "2"},
+		{"99.99", "100"},
+		{"-99.99", "-99"},
+	}
+	for _, c := range cases {
+		d, err := New(c.a)
+		if err != nil {
+			t.Fatalf("Error reading in perfectly ordinary decimal %+v: %s", c, err.Error())
+		}
+		if c.b != d.Ceil().String() {
+			t.Errorf("Error: expected %s.Ceil() = %s, got %s", c.a, c.b, d.Ceil().String())
+		}
+	}
+}
+
+func TestFloor(t *testing.T) {
+	cases := []struct {
+		a string
+		b string
+	}{
+		{"0.0", "0"},
+		{"-1.0", "-1"},
+		{"-1.1", "-2"},
+		{"1.1", "1"},
+		{"99.99", "99"},
+		{"-99.99", "-100"},
+	}
+	for _, c := range cases {
+		d, err := New(c.a)
+		if err != nil {
+			t.Fatalf("Error reading in perfectly ordinary decimal %+v: %s", c, err.Error())
+		}
+		if c.b != d.Floor().String() {
+			t.Errorf("Error: expected %s.Floor() = %s, got %s", c.a, c.b, d.Floor().String())
+		}
+	}
+}

@@ -56,6 +56,12 @@ var zero = &Decimal{
 	fraction: []int8{},
 }
 
+var one = &Decimal{
+	neg:      false,
+	whole:    []int8{1},
+	fraction: []int8{},
+}
+
 var decimalRe = regexp.MustCompile(`-?([0-9]*)(\.[0-9]*)?`)
 
 func parseDigits(s string) []int8 {
@@ -351,6 +357,68 @@ func (d *Decimal) Mul10exp(n uint) *Decimal {
 	// normalize
 	for len(out.whole) > 1 && out.whole[0] == 0 {
 		out.whole = out.whole[1:]
+	}
+	return out
+}
+
+// Ceil returns the smallest integer greater than or equal to this.
+func (d *Decimal) Ceil() *Decimal {
+	out := &Decimal{
+		neg:      d.neg,
+		whole:    make([]int8, len(d.whole), len(d.whole)),
+		fraction: []int8{},
+	}
+	copy(out.whole, d.whole)
+	if len(d.fraction) == 0 {
+		return out
+	}
+	// check for all zeros
+	allZeroes := true
+	for _, d := range d.fraction {
+		if d == 0 {
+			continue
+		}
+		allZeroes = false
+		break
+	}
+	if allZeroes {
+		return out
+	}
+
+	// something in the fraction part, so round
+	if d.neg {
+		return out
+	}
+	return out.Add(one)
+}
+
+// Floor returns the largest integer less than or equal to this.
+func (d *Decimal) Floor() *Decimal {
+	out := &Decimal{
+		neg:      d.neg,
+		whole:    make([]int8, len(d.whole), len(d.whole)),
+		fraction: []int8{},
+	}
+	copy(out.whole, d.whole)
+	if len(d.fraction) == 0 {
+		return out
+	}
+	// check for all zeros
+	allZeroes := true
+	for _, d := range d.fraction {
+		if d == 0 {
+			continue
+		}
+		allZeroes = false
+		break
+	}
+	if allZeroes {
+		return out
+	}
+
+	// something in the fraction part, so round
+	if d.neg {
+		return out.Sub(one)
 	}
 	return out
 }
