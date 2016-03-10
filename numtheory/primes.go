@@ -162,7 +162,7 @@ func genPrimesAtkin(max int64) {
 			if n > max {
 				break
 			}
-			if list[n] {
+			if list[n>>1] {
 				n2 := n * n
 				c := int64(0)
 				for v := int64(0); c < max; v++ {
