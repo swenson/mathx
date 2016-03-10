@@ -6,14 +6,25 @@ import (
 
 func TestPrimeGeneration(t *testing.T) {
 	primes = []int64{2, 3}
-	genPrimes(30)
-	expected := []int64{2, 3, 5, 7, 11, 13, 17, 19, 23, 29}
+	genPrimes(200)
+	expected := []int64{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199}
 	if len(primes) != len(expected) {
-		t.Fatalf("Could not generate primes up to 30: got %v", primes)
+		t.Fatalf("Could not generate primes up to 200: got %v", primes)
 	}
 	for i, p := range primes {
 		if expected[i] != p {
-			t.Fatalf("Could not generate primes up to 30: got %v", primes)
+			t.Fatalf("Could not generate primes up to 200: got %v", primes)
+		}
+	}
+
+	primes = []int64{2, 3}
+	genPrimesAtkin(200)
+	if len(primes) != len(expected) {
+		t.Fatalf("Could not generate primes up to 200: got %v", primes)
+	}
+	for i, p := range primes {
+		if expected[i] != p {
+			t.Fatalf("Could not generate primes up to 200: got %v", primes)
 		}
 	}
 }
@@ -22,6 +33,27 @@ func BenchmarkPrimeSieve100(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		primes = []int64{2, 3}
 		genPrimes(100)
+	}
+}
+
+func BenchmarkPrimeSieve1000000(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		primes = []int64{2, 3}
+		genPrimes(1000000)
+	}
+}
+
+func BenchmarkPrimeAtkinSieve100(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		primes = []int64{2, 3}
+		genPrimesAtkin(100)
+	}
+}
+
+func BenchmarkPrimeAtkinSieve1000000(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		primes = []int64{2, 3}
+		genPrimesAtkin(1000000)
 	}
 }
 
