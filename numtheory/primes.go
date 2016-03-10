@@ -42,8 +42,6 @@ func genPrimesAtkin(max int64) {
 	for x := int64(1); x <= int64(math.Ceil(math.Sqrt(float64(max-1)/4))); x++ {
 		n := 4*x*x + 1
 		for y := int64(1); ; y += 2 {
-			n += 2 + 2*(y+y+1)
-			n = 4*x*x + y*y
 			if n > max {
 				break
 			}
@@ -51,6 +49,7 @@ func genPrimesAtkin(max int64) {
 			case 1, 13, 17, 29, 37, 41, 49, 53:
 				list[n] = !list[n]
 			}
+			n += 2 + 2*(y+y+1)
 		}
 	}
 	// 3x^2 + y^2 = n
