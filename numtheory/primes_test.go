@@ -60,10 +60,31 @@ func BenchmarkPrimeSieve100(b *testing.B) {
 	}
 }
 
+func BenchmarkPrimeSieve100000(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		primes = []int64{2, 3}
+		genPrimes(100000)
+	}
+}
+
+func BenchmarkPrimeSieve1000000(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		primes = []int64{2, 3}
+		genPrimes(1000000)
+	}
+}
+
 func BenchmarkPrimeSieve10000000(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		primes = []int64{2, 3}
 		genPrimes(10000000)
+	}
+}
+
+func BenchmarkPrimeSieve100000000(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		primes = []int64{2, 3}
+		genPrimes(100000000)
 	}
 }
 
@@ -74,10 +95,31 @@ func BenchmarkPrimeAtkinSieve100(b *testing.B) {
 	}
 }
 
+func BenchmarkPrimeAtkinSieve100000(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		primes = []int64{2, 3}
+		genPrimesAtkin(100000)
+	}
+}
+
+func BenchmarkPrimeAtkinSieve1000000(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		primes = []int64{2, 3}
+		genPrimesAtkin(1000000)
+	}
+}
+
 func BenchmarkPrimeAtkinSieve10000000(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		primes = []int64{2, 3}
 		genPrimesAtkin(10000000)
+	}
+}
+
+func BenchmarkPrimeAtkinSieve100000000(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		primes = []int64{2, 3}
+		genPrimesAtkin(100000000)
 	}
 }
 
