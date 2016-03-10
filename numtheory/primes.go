@@ -78,8 +78,12 @@ func fastmod5(n int64) int {
 func genPrimesAtkin(max int64) {
 	realMax := max
 	max = (max/60 + 1) * 60
-	results := []int64{2, 3, 5}
-	list := make([]bool, (max+1)/2)
+	results := make([]int64, 0, int(math.Ceil(float64(max)/math.Log(float64(max)))))
+	results = append(results, 2)
+	results = append(results, 3)
+	results = append(results, 5)
+	size := int((max / 2 / 64) + 1)
+	mem := make([]uint64, size*2, size*2)
 	// 4x^2 + y^2 = n
 	for x := int64(1); x <= int64(math.Ceil(math.Sqrt(float64(max-1)/4))); x++ {
 		n := 4*x*x + 1
@@ -91,7 +95,9 @@ func genPrimesAtkin(max int64) {
 			}
 			switch n % 60 {
 			case 1, 13, 17, 29, 37, 41, 49, 53:
-				list[n>>1] = !list[n>>1]
+				loc := n >> 6
+				bit := uint(n & 63)
+				mem[loc] ^= uint64(1) << bit
 			}
 			n += 2 + 2*(y+y+1)
 			// n60 += 2 + 2*(y60+y60+1)
@@ -115,7 +121,9 @@ func genPrimesAtkin(max int64) {
 			}
 			switch n % 60 {
 			case 7, 19, 31, 43:
-				list[n>>1] = !list[n>>1]
+				loc := n >> 6
+				bit := uint(n & 63)
+				mem[loc] ^= uint64(1) << bit
 			}
 
 			n += 2 + 2*(y+y+1)
@@ -140,7 +148,9 @@ func genPrimesAtkin(max int64) {
 			}
 			switch n % 60 {
 			case 11, 23, 47, 59:
-				list[n>>1] = !list[n>>1]
+				loc := n >> 6
+				bit := uint(n & 63)
+				mem[loc] ^= uint64(1) << bit
 			}
 			n += 4 * (y - 1)
 			// n60 += 4 * (y60 - 1)
@@ -162,7 +172,9 @@ func genPrimesAtkin(max int64) {
 			if n > max {
 				break
 			}
-			if list[n>>1] {
+			loc := n >> 6
+			bit := uint(n & 63)
+			if mem[loc]&(1<<bit) != 0 {
 				n2 := n * n
 				c := int64(0)
 				for v := int64(0); c < max; v++ {
@@ -173,7 +185,9 @@ func genPrimesAtkin(max int64) {
 						if c > max {
 							break
 						}
-						list[c>>1] = false
+						loc := c >> 6
+						bit := uint(c & 63)
+						mem[loc] &= (0xffffffffffffffff ^ (1 << bit))
 					}
 				}
 			}
@@ -187,7 +201,9 @@ func genPrimesAtkin(max int64) {
 			if n > realMax {
 				break
 			}
-			if list[n>>1] {
+			loc := n >> 6
+			bit := uint(n & 63)
+			if mem[loc]&(1<<bit) != 0 {
 				results = append(results, n)
 			}
 		}
