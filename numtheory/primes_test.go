@@ -4,6 +4,30 @@ import (
 	"testing"
 )
 
+func TestMod60(t *testing.T) {
+	for n := 0; n < 10000000; n++ {
+		if fastmod60(int64(n)) != (n % 60) {
+			t.Fatalf("fastmod60(%d) = %d, but should be %d", n, fastmod60(int64(n)), n%60)
+		}
+	}
+}
+
+func TestMod12(t *testing.T) {
+	for n := 0; n < 10000000; n++ {
+		if fastmod12(int64(n)) != (n % 12) {
+			t.Fatalf("fastmod12(%d) = %d, but should be %d", n, fastmod12(int64(n)), n%12)
+		}
+	}
+}
+
+func TestMod5(t *testing.T) {
+	for n := 0; n < 10000000; n++ {
+		if fastmod5(int64(n)) != (n % 5) {
+			t.Fatalf("fastmod5(%d) = %d, but should be %d", n, fastmod5(int64(n)), n%5)
+		}
+	}
+}
+
 func TestPrimeGeneration(t *testing.T) {
 	primes = []int64{2, 3}
 	genPrimes(200)
@@ -36,10 +60,10 @@ func BenchmarkPrimeSieve100(b *testing.B) {
 	}
 }
 
-func BenchmarkPrimeSieve1000000(b *testing.B) {
+func BenchmarkPrimeSieve10000000(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		primes = []int64{2, 3}
-		genPrimes(1000000)
+		genPrimes(10000000)
 	}
 }
 
@@ -50,10 +74,10 @@ func BenchmarkPrimeAtkinSieve100(b *testing.B) {
 	}
 }
 
-func BenchmarkPrimeAtkinSieve1000000(b *testing.B) {
+func BenchmarkPrimeAtkinSieve10000000(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		primes = []int64{2, 3}
-		genPrimesAtkin(1000000)
+		genPrimesAtkin(10000000)
 	}
 }
 
