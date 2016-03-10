@@ -32,49 +32,6 @@ func genPrimes(n int64) {
 	}
 }
 
-var mod60table = [][]int{
-	{0, 36, 12, 48, 24},
-	{25, 1, 37, 13, 49},
-	{50, 26, 2, 38, 14},
-	{15, 51, 27, 3, 39},
-	{40, 16, 52, 28, 4},
-	{5, 41, 17, 53, 29},
-	{30, 6, 42, 18, 54},
-	{55, 31, 7, 43, 19},
-	{20, 56, 32, 8, 44},
-	{45, 21, 57, 33, 9},
-	{10, 46, 22, 58, 34},
-	{35, 11, 47, 23, 59},
-}
-
-func fastmod60(n int64) int {
-	r12 := fastmod12(n)
-	r5 := fastmod5(n)
-	return mod60table[r12][r5]
-}
-
-func fastmod12(n int64) int {
-	q := (n >> 1) + (n >> 3)
-	q = q + (q >> 4)
-	q = q + (q >> 8)
-	q = q + (q >> 16)
-	q = q >> 3
-	r := n - q*12
-	q = q + ((r + 4) >> 4)
-	return int(n - q*12)
-}
-
-func fastmod5(n int64) int {
-	q := (n >> 1) + (n >> 2)
-	q = q + (q >> 4)
-	q = q + (q >> 8)
-	q = q + (q >> 16)
-	q = q >> 2
-	r := n - q*5
-	q = q + (7 * r >> 5)
-	return int(n - q*5)
-}
-
 func genPrimesAtkin(max int64) {
 	realMax := max
 	max = (max/60 + 1) * 60
@@ -87,8 +44,6 @@ func genPrimesAtkin(max int64) {
 	// 4x^2 + y^2 = n
 	for x := int64(1); x <= int64(math.Ceil(math.Sqrt(float64(max-1)/4))); x++ {
 		n := 4*x*x + 1
-		// n60 := int(n % 60)
-		// y60 := 1
 		for y := int64(1); ; y += 2 {
 			if n > max {
 				break
@@ -100,21 +55,11 @@ func genPrimesAtkin(max int64) {
 				mem[loc] ^= uint64(1) << bit
 			}
 			n += 2 + 2*(y+y+1)
-			// n60 += 2 + 2*(y60+y60+1)
-			// for n60 >= 60 {
-			// 	n60 -= 60
-			// }
-			// y60 += 2
-			// if y60 >= 60 {
-			// 	y60 -= 60
-			// }
 		}
 	}
 	// 3x^2 + y^2 = n
 	for x := int64(1); x <= int64(math.Ceil(math.Sqrt(float64(max-1)/3))); x += 2 {
 		n := 3*x*x + 2*2
-		// n60 := int(n % 60)
-		// y60 := 2
 		for y := int64(2); n < max; y += 2 {
 			if n > max {
 				break
@@ -127,21 +72,11 @@ func genPrimesAtkin(max int64) {
 			}
 
 			n += 2 + 2*(y+y+1)
-			// n60 += 2 + 2*(y60+y60+1)
-			// for n60 >= 60 {
-			// 	n60 -= 60
-			// }
-			// y60 += 2
-			// if y60 >= 60 {
-			// 	y60 -= 60
-			// }
 		}
 	}
 	// 3x^2 - y^2 = n
 	for x := int64(2); x <= int64(math.Ceil(math.Sqrt(float64(max)/3))); x++ {
 		n := 3*x*x - (x-1)*(x-1)
-		// y60 := (x - 1) % 60
-		// n60 := n % 60
 		for y := x - 1; y >= 0; y -= 2 {
 			if n > max {
 				break
@@ -153,14 +88,6 @@ func genPrimesAtkin(max int64) {
 				mem[loc] ^= uint64(1) << bit
 			}
 			n += 4 * (y - 1)
-			// n60 += 4 * (y60 - 1)
-			// for n60 >= 60 {
-			// 	n60 -= 60
-			// }
-			// y60 -= 2
-			// if y60 < 0 {
-			// 	y60 += 60
-			// }
 		}
 	}
 
@@ -181,7 +108,6 @@ func genPrimesAtkin(max int64) {
 					base := n2 * 60 * v
 					for _, y := range s {
 						c = base + n2*int64(y)
-						//c = n * n * (60*v + int64(y))
 						if c > max {
 							break
 						}
