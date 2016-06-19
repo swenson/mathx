@@ -3,13 +3,13 @@
 /*
 Package mathx provides extended math functionality in Go with no third-party libraries.
 
-In particular:
+This package is a work-in-progress, and should be considered beta quality.
 
-* Arbitrary-precision floating-point operations
+The experimental directory contains alpha-quality work-in-progress code, such as
+
 * Arbitrary-precision decimal operations
 * Some integer polynomial operations
 * Some number theoretic operations
 
-This package is a work-in-progress, and should be considered alpha quality.
 */
 package mathx

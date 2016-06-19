@@ -4,12 +4,13 @@
 
 An extended math library for Go.
 
-Support arbitrary precision floating-point number, decimals,
-number theory operations, algebraic operations, and others.
-
-Currently a work-in-progress, alpha quality.
+Currently a work-in-progress, beta quality.
 
 `go get github.com/swenson/mathx`
+
+## Experimental
+
+The experimental library is for more alpha-quality work, and things in it may disappear at anytime.
 
 ## License
 
