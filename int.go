@@ -3,13 +3,14 @@
 package mathx
 
 import (
-	"math"
+	"fmt"
 	"math/big"
+	"math/rand"
 )
 
 // Int is an immutable arbitrary-precision integer type, wrapping
 // the built-in math/big.Int (which is mutable). This package
-// also a simpler, two-argument API. For example:
+// also has a simpler, two-argument API. For example:
 //
 //   a := mathx.NewInt(0)
 //   b := a.Add64(123)
@@ -122,41 +123,204 @@ func (z *Int) Div(y *Int) *Int {
 	return (*Int)(x.Div(x, (*big.Int)(y)))
 }
 
-// Sqrt computes the square root of this number.
-// Uses Newton's Method.
-func (z *Int) Sqrt() *Int {
-	if z.BitLen() <= 52 {
-		sqrt := int64(math.Sqrt(float64(z.Int64())))
-		return NewInt(sqrt)
-	}
-	if z.Sign() < 0 {
-		return nil
-	} else if z.Sign() == 0 {
-		return NewInt(0)
-	} else if z.Cmp(NewInt(1)) == 0 {
-		return NewInt(1)
-	}
-
-	// initial guess
-	s := z.Rsh(uint(z.BitLen() / 2))
-	t := NewInt(0)
-
-	for i := 0; s.Cmp(t) != 0 && i < z.BitLen()/2+10; i++ {
-		// compute iteration
-		t = z.Div(s)
-		t = t.Add(s)
-		t = t.Rsh(1)
-		s, t = t, s
-	}
-	return s
+// Abs returns the absolute value of this integer.
+func (z *Int) Abs() *Int {
+	return (*Int)(new(big.Int).Abs((*big.Int)(z)))
 }
 
-// IsSquare returns true if this number is a perfect square.
-func IsSquare(z *big.Int) bool {
-	if z.Sign() < 0 {
-		return false
-	}
-	s := (*Int)(z).Sqrt()
-	s = s.Mul(s)
-	return s.Cmp((*Int)(z)) == 0
+// And returns the value of this bitwise-ANDed to the argument.
+func (z *Int) And(x *Int) *Int {
+	return (*Int)(new(big.Int).And((*big.Int)(z), (*big.Int)(x)))
+}
+
+// AndNot returns the value of this bitwise-AND-NOTed to the argument.
+func (z *Int) AndNot(x, y *Int) *Int {
+	return (*Int)(new(big.Int).AndNot((*big.Int)(z), (*big.Int)(x)))
+}
+
+// Append returns the value of this with the given string (and base) appended.
+func (z *Int) Append(buf []byte, base int) []byte {
+	x := z.copy()
+	return (*big.Int)(x).Append(buf, base)
+}
+
+// Binomial returns n choose k.
+func Binomial(n, k int64) *Int {
+	return (*Int)(new(big.Int).Binomial(n, k))
+}
+
+// Bits returns (a copy of) the underlying raw data.
+func (z *Int) Bits() []big.Word {
+	return (*big.Int)(z.copy()).Bits()
+}
+
+// Bytes returns (a copy of) the underlying raw data.
+func (z *Int) Bytes() []byte {
+	return (*big.Int)(z.copy()).Bytes()
+}
+
+// DivMod returns the quotient and remainder when divided by y, modulo m, using Euclidean
+// (non-Go standard) division.
+func (z *Int) DivMod(y, m *Int) (*Int, *Int) {
+	a, b := new(big.Int).DivMod((*big.Int)(z), (*big.Int)(y), (*big.Int)(m))
+	return (*Int)(a), (*Int)(b)
+}
+
+// Exp returns this**y, modulo m if m != 0.
+func (z *Int) Exp(y, m *Int) *Int {
+	return (*Int)(new(big.Int).Exp((*big.Int)(z), (*big.Int)(y), (*big.Int)(m)))
+}
+
+// Format sets the state to this formatted as specified by the conversion character.
+func (z *Int) Format(s fmt.State, ch rune) {
+	(*big.Int)(z).Format(s, ch)
+}
+
+// GCD returns the GCD of this and y.
+func (z *Int) GCD(y *Int) *Int {
+	return (*Int)(new(big.Int).GCD((*big.Int)(z), (*big.Int)(y), nil, nil))
+}
+
+// ExtendedGCD returns the GCD (g) of this and b, and also returns
+// x and y such that this * x + b * y = g.
+func (z *Int) ExtendedGCD(b *Int) (*Int, *Int, *Int) {
+	x := new(Int)
+	y := new(Int)
+	g := (*Int)(new(big.Int).GCD((*big.Int)(z), (*big.Int)(b), (*big.Int)(x), (*big.Int)(y)))
+	return g, x, y
+}
+
+// GobDecode decodes the data from the buffer, and changes this.
+// WARNING: this breaks immutability since it can change the underlying data.
+// This is unavoidable with the way that Gob works.
+func (z *Int) GobDecode(buf []byte) error {
+	return (*big.Int)(z).GobDecode(buf)
+}
+
+// GobEncode encodes this as a gob byte array.
+func (z *Int) GobEncode() ([]byte, error) {
+	return (*big.Int)(z).GobEncode()
+}
+
+// MarshalJSON marshals this to a JSON byte array.
+func (z *Int) MarshalJSON() ([]byte, error) {
+	return (*big.Int)(z).MarshalJSON()
+}
+
+// MarshalText marshals this to a text string.
+func (z *Int) MarshalText() (text []byte, err error) {
+	return (*big.Int)(z).MarshalText()
+}
+
+// Mod returns this modulo the argument.
+func (z *Int) Mod(y *Int) *Int {
+	return (*Int)(new(big.Int).Mod((*big.Int)(z), (*big.Int)(y)))
+}
+
+// ModInverse returns the inverse of this modulo the argument.
+func (z *Int) ModInverse(n *Int) *Int {
+	return (*Int)(new(big.Int).ModInverse((*big.Int)(z), (*big.Int)(n)))
+}
+
+// ModSqrt returns the square root of this modulo the argument.
+func (z *Int) ModSqrt(p *Int) *Int {
+	return (*Int)(new(big.Int).ModSqrt((*big.Int)(z), (*big.Int)(p)))
+}
+
+// MulRange returns the product of all integers between a and b (inclusive). argument.
+func MulRange(a, b int64) *Int {
+	return (*Int)(new(big.Int).MulRange(a, b))
+}
+
+// Neg returns this with the sign flipped.
+func (z *Int) Neg() *Int {
+	return (*Int)(new(big.Int).Neg((*big.Int)(z)))
+}
+
+// Not returns this with all bits inverted.
+func (z *Int) Not() *Int {
+	return (*Int)(new(big.Int).Not((*big.Int)(z)))
+}
+
+// Or returns this bitwise-ORed with the argument.
+func (z *Int) Or(y *Int) *Int {
+	return (*Int)(new(big.Int).Or((*big.Int)(z), (*big.Int)(y)))
+}
+
+// ProbablyPrime retusn whether or not this is probably prime (with certainty 1 - ¼ⁿ).
+func (z *Int) ProbablyPrime(n int) bool {
+	return (*big.Int)(z).ProbablyPrime(n)
+}
+
+// Quo returns this divided by y with truncated (Go) division.
+func (z *Int) Quo(y *Int) *Int {
+	return (*Int)(new(big.Int).Quo((*big.Int)(z), (*big.Int)(y)))
+}
+
+// QuoRem returns the quotient and remainder of this divided by y with truncated (Go) division.
+func (z *Int) QuoRem(y *Int) (*Int, *Int) {
+	r := new(big.Int)
+	a, b := new(big.Int).QuoRem((*big.Int)(z), (*big.Int)(y), r)
+	return (*Int)(a), (*Int)(b)
+}
+
+// Rand returns a random number between 0 (inclusive) and n (exclusive).
+func Rand(rnd *rand.Rand, n *Int) *Int {
+	return (*Int)(new(big.Int).Rand(rnd, (*big.Int)(n)))
+}
+
+// Rem returns the remainder (using truncated Go division) of this divided by y.
+func (z *Int) Rem(y *Int) *Int {
+	return (*Int)(new(big.Int).Rem((*big.Int)(z), (*big.Int)(y)))
+}
+
+// Scan implements the fmt.Scanner interface, and changes the underling big.Int.
+// WARNING: this breaks immutability since it can change the underlying data.
+// This is unavoidable with the way that scanning works.
+func (z *Int) Scan(s fmt.ScanState, ch rune) error {
+	return (*big.Int)(z).Scan(s, ch)
+}
+
+// SetBit returns this with the ith bit set to b.
+func (z *Int) SetBit(i int, b uint) *Int {
+	return (*Int)(new(big.Int).SetBit((*big.Int)(z), i, b))
+}
+
+// SetBits returns a new (copy) set from the given data.
+func SetBits(abs []big.Word) *Int {
+	return (*Int)(new(big.Int).SetBits(abs)).copy()
+}
+
+// SetBytes returns a new (copy) set from the given data.
+func (z *Int) SetBytes(buf []byte) *Int {
+	return (*Int)(new(big.Int).SetBytes(buf)).copy()
+}
+
+// Text returns this printed as a string in the given base.
+func (z *Int) Text(base int) string {
+	return (*big.Int)(z).Text(base)
+}
+
+// Uint64 retusn this casted to a uint64.
+func (z *Int) Uint64() uint64 {
+	return (*big.Int)(z).Uint64()
+}
+
+// UnmarshalJSON unmarshals the JSON buffer into this.
+// WARNING: this breaks immutability since it can change the underlying data.
+// This is unavoidable with the way that unmarshaling works.
+func (z *Int) UnmarshalJSON(text []byte) error {
+	return (*big.Int)(z).UnmarshalJSON(text)
+}
+
+// UnmarshalText unmarshals the text buffer into this.
+// WARNING: this breaks immutability since it can change the underlying data.
+// This is unavoidable with the way that unmarshaling works.
+func (z *Int) UnmarshalText(text []byte) error {
+	return (*big.Int)(z).UnmarshalText(text)
+}
+
+// Xor returns this bitwise-XORed with the argument.
+func (z *Int) Xor(y *Int) *Int {
+	return (*Int)(new(big.Int).Xor((*big.Int)(z), (*big.Int)(y)))
 }

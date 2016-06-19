@@ -80,7 +80,7 @@ func (p *IntPolynomial) IsIrreducible() bool {
 		ac4.Mul(ac4, &a)
 		ac4.Mul(ac4, &c)
 		b2.Sub(b2, ac4)
-		return !mathx.IsSquare(b2)
+		return !mathx.IsSquare((*mathx.Int)(b2))
 	}
 	/*
 		// check the gcd of the coefficients
