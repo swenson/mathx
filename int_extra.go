@@ -2,7 +2,15 @@ package mathx
 
 // This file is for Int operations that are not in the standard library.
 
-import "math"
+import (
+	"math"
+	"math/big"
+)
+
+// Float returns this converted to a Float.
+func (z *Int) Float() *Float {
+	return (*Float)(new(big.Float).SetInt((*big.Int)(z)))
+}
 
 // Sqrt computes the square root of this number.
 // Uses Newton's Method.
