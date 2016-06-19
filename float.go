@@ -36,7 +36,7 @@ func (z *Float) Cmp(y *Float) int {
 }
 
 func (z *Float) copy() *Float {
-	return (*Float)(new(big.Float).Copy((*big.Float)(z)))
+	return (*Float)(new(big.Float).Set((*big.Float)(z)))
 }
 
 func (z *Float) Float32() (float32, big.Accuracy) {
@@ -71,7 +71,7 @@ func (z *Float) IsInt() bool {
 
 func (z *Float) MantExp() (*Float, int) {
 	y := new(big.Float)
-	exp := y.MantExp((*big.Float)(z))
+	exp := (*big.Float)(z).MantExp(y)
 	return (*Float)(y), exp
 }
 
