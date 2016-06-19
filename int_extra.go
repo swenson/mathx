@@ -2,10 +2,7 @@ package mathx
 
 // This file is for Int operations that are not in the standard library.
 
-import (
-	"math"
-	"math/big"
-)
+import "math"
 
 // Sqrt computes the square root of this number.
 // Uses Newton's Method.
@@ -37,11 +34,11 @@ func (z *Int) Sqrt() *Int {
 }
 
 // IsSquare returns true if this number is a perfect square.
-func IsSquare(z *big.Int) bool {
+func IsSquare(z *Int) bool {
 	if z.Sign() < 0 {
 		return false
 	}
-	s := (*Int)(z).Sqrt()
+	s := z.Sqrt()
 	s = s.Mul(s)
-	return s.Cmp((*Int)(z)) == 0
+	return s.Cmp(z) == 0
 }
