@@ -9,7 +9,7 @@ import (
 
 // Int is an immutable arbitrary-precision integer type, wrapping
 // the built-in math/big.Int (which is mutable). This package
-// also a simpler, two-argument API. For example:
+// also has a simpler, two-argument API. For example:
 //
 //   a := mathx.NewInt(0)
 //   b := a.Add64(123)
