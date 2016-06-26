@@ -12,12 +12,17 @@ Currently a work-in-progress, beta quality.
 
 The experimental library is for more alpha-quality work, and things in it may disappear at anytime.
 
+## Contributors
+
+* Christopher Swenson ([swenson](github.com/swenson))
+* Georgia Reh ([greh](github.com/greh))
+
 ## License
 
 All code in this repository, unless otherwise specified, is hereby
 licensed under the MIT Public License:
 
-Copyright (c) 2013–2015 Christopher Swenson.
+Copyright (c) 2013–2016 Christopher Swenson.
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
