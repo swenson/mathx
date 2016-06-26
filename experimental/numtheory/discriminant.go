@@ -16,8 +16,7 @@
 package numtheory
 
 import (
-	"math/big"
-
+	"github.com/swenson/mathx"
 	"github.com/swenson/mathx/poly"
 )
 
@@ -28,26 +27,23 @@ type factor64 struct {
 
 // Discriminant returns the discriminant of the polynomial defining this
 // number field.
-func (k *NumberField) Discriminant() *big.Int {
+func (k *NumberField) Discriminant() *mathx.Int {
 	return Discriminant(k.polynomial)
 }
 
 // Discriminant returns the discriminant of this polynomial.
-func Discriminant(p *poly.IntPolynomial) *big.Int {
+func Discriminant(p *poly.IntPolynomial) *mathx.Int {
 	if p.Degree() == 2 {
 		c, b, a := p.Coeff(0), p.Coeff(1), p.Coeff(2)
-		b2 := big.NewInt(0).Mul(b, b)
-		ac4 := big.NewInt(4)
-		ac4 = ac4.Mul(ac4, a)
-		ac4 = ac4.Mul(ac4, c)
-		return b2.Sub(b2, ac4)
+		ac4 := mathx.NewInt(4).Mul(a).Mul(c)
+		return b.Mul(b).Sub(ac4)
 	}
 	return nil
 }
 
 // IsFundamentalDiscriminant returns true if the given discriminant is
 // fundamental.
-func IsFundamentalDiscriminant(D *big.Int) bool {
+func IsFundamentalDiscriminant(D *mathx.Int) bool {
 	d := D.Int64()
 	absd := d
 	if d < 0 {
@@ -68,7 +64,7 @@ func IsFundamentalDiscriminant(D *big.Int) bool {
 }
 
 func makeFundamentalDiscriminant(D int64) int64 {
-	if IsFundamentalDiscriminant(big.NewInt(D)) {
+	if IsFundamentalDiscriminant(mathx.NewInt(D)) {
 		return D
 	}
 	factors := Factorization64(D)

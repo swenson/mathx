@@ -16,7 +16,6 @@
 package numtheory
 
 import (
-	"math/big"
 	"testing"
 
 	"github.com/swenson/mathx"
@@ -56,7 +55,7 @@ func TestFundamentalDiscriminantsSmall(t *testing.T) {
 	good := mathx.NewIntSet(fundamentals)
 
 	for d := -31; d <= 33; d++ {
-		a := IsFundamentalDiscriminant(big.NewInt(int64(d)))
+		a := IsFundamentalDiscriminant(mathx.NewInt(int64(d)))
 		b := good.Contains(d)
 		if a != b {
 			t.Errorf("Fundamental discriminant failed for ", d)

@@ -16,31 +16,31 @@
 package poly
 
 import (
-	"math/big"
 	"strconv"
 
 	"github.com/swenson/mathx"
 )
 
-var intOne = big.NewInt(1)
+var intZero = mathx.NewInt(0)
+var intOne = mathx.NewInt(1)
 
 // IntPolynomial represents an integer polynomial of arbitrary size.
 type IntPolynomial struct {
-	coeffs []big.Int
+	coeffs []mathx.Int
 }
 
 // NewIntPolynomial64 creates a new polynomial for the given
 // coefficients (assumed to be c0, c1, ...).
 func NewIntPolynomial64(coeffs ...int64) *IntPolynomial {
 	p := new(IntPolynomial)
-	p.coeffs = make([]big.Int, len(coeffs))
+	p.coeffs = make([]mathx.Int, len(coeffs))
 	for i, c := range coeffs {
-		p.coeffs[i].SetInt64(c)
+		p.coeffs[i] = *mathx.NewInt(c)
 	}
 	return p
 }
 
-func (p *IntPolynomial) Coeff(i int) *big.Int {
+func (p *IntPolynomial) Coeff(i int) *mathx.Int {
 	return &p.coeffs[i]
 }
 
@@ -52,7 +52,7 @@ func (p *IntPolynomial) Degree() int {
 // IsIrreducible returns true if this polynomial is irreducible.
 // It currently only works on degree <= 2.
 func (p *IntPolynomial) IsIrreducible() bool {
-	g := p.coeffs[0]
+	g := &p.coeffs[0]
 	if g.Sign() == 0 {
 		return false
 	}
@@ -61,7 +61,7 @@ func (p *IntPolynomial) IsIrreducible() bool {
 		if c.Sign() == 0 {
 			continue
 		}
-		(&g).GCD(nil, nil, &g, &c)
+		g = g.GCD(&c)
 		if g.Cmp(intOne) == 0 {
 			break
 		}
@@ -74,12 +74,11 @@ func (p *IntPolynomial) IsIrreducible() bool {
 	}
 	if p.Degree() == 2 {
 		c, b, a := p.coeffs[0], p.coeffs[1], p.coeffs[2]
-		b2 := big.NewInt(0)
-		b2.Mul(&b, &b)
-		ac4 := big.NewInt(4)
-		ac4.Mul(ac4, &a)
-		ac4.Mul(ac4, &c)
-		b2.Sub(b2, ac4)
+		b2 := b.Mul(&b)
+		ac4 := mathx.NewInt(4)
+		ac4 = ac4.Mul(&a)
+		ac4 = ac4.Mul(&c)
+		b2 = b2.Sub(ac4)
 		return !mathx.IsSquare((*mathx.Int)(b2))
 	}
 	/*
@@ -140,7 +139,7 @@ func eliminateSpaces(s string) string {
 // e.g., "x^2 - 4*x + 3", into an IntPolynomial.
 func ParseIntPoly(s string) *IntPolynomial {
 	s = eliminateSpaces(s)
-	var coeffs []big.Int
+	var coeffs []mathx.Int
 
 	neg := false
 	inX := false
@@ -195,15 +194,16 @@ func ParseIntPoly(s string) *IntPolynomial {
 	return p
 }
 
-func setCoeff(coeffs []big.Int, degreeS, coeff string, neg bool) []big.Int {
+func setCoeff(coeffs []mathx.Int, degreeS, coeff string, neg bool) []mathx.Int {
 	degree, _ := strconv.Atoi(degreeS)
 	for degree >= len(coeffs) {
-		coeffs = append(coeffs, *big.NewInt(0))
+		coeffs = append(coeffs, *intZero)
 	}
-	coeffs[degree].SetString(coeff, 10)
+	c, _ := mathx.NewIntFromString(coeff, 10)
 	if neg {
-		coeffs[degree].Neg(&coeffs[degree])
+		c = c.Neg()
 	}
+	coeffs[degree] = *c
 	return coeffs
 }
 
@@ -214,7 +214,7 @@ func (p *IntPolynomial) String() string {
 		return p.coeffs[0].String()
 	}
 	s := ""
-	temp := big.NewInt(0)
+	temp := intZero
 	for i := len(p.coeffs) - 1; i >= 0; i-- {
 		c := p.coeffs[i]
 		if i == len(p.coeffs)-1 && c.Cmp(intOne) == 0 {
@@ -227,7 +227,7 @@ func (p *IntPolynomial) String() string {
 		if c.Sign() == 0 {
 			continue
 		}
-		temp.Abs(&c)
+		temp = c.Abs()
 		sign := " + "
 		if c.Sign() < 0 {
 			sign = " - "
