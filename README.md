@@ -14,8 +14,8 @@ The experimental library is for more alpha-quality work, and things in it may di
 
 ## Contributors
 
-* Christopher Swenson ([swenson](github.com/swenson))
-* Georgia Reh ([greh](github.com/greh))
+* Christopher Swenson ([swenson](http://github.com/swenson))
+* Georgia Reh ([greh](http://github.com/greh))
 
 ## License
 
