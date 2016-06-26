@@ -178,7 +178,7 @@ func (z *Int) Format(s fmt.State, ch rune) {
 
 // GCD returns the GCD of this and y.
 func (z *Int) GCD(y *Int) *Int {
-	return (*Int)(new(big.Int).GCD((*big.Int)(z), (*big.Int)(y), nil, nil))
+	return (*Int)(new(big.Int).GCD(nil, nil, (*big.Int)(z), (*big.Int)(y)))
 }
 
 // ExtendedGCD returns the GCD (g) of this and b, and also returns
@@ -186,7 +186,7 @@ func (z *Int) GCD(y *Int) *Int {
 func (z *Int) ExtendedGCD(b *Int) (*Int, *Int, *Int) {
 	x := new(Int)
 	y := new(Int)
-	g := (*Int)(new(big.Int).GCD((*big.Int)(z), (*big.Int)(b), (*big.Int)(x), (*big.Int)(y)))
+	g := (*Int)(new(big.Int).GCD((*big.Int)(x), (*big.Int)(y), (*big.Int)(z), (*big.Int)(b)))
 	return g, x, y
 }
 
