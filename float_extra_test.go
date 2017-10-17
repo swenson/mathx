@@ -23,6 +23,27 @@ var floatSqrtTestCases = []struct {
 	{"0.25", "0.5"},
 }
 
+func BenchmarkFloatSqrt256(b *testing.B) {
+	x, _, _ := ParseFloat("234901236105.21378943509845", 10, 256, big.ToNearestEven)
+	for i := 0; i < b.N; i++ {
+		x.Sqrt()
+	}
+}
+
+func BenchmarkFloatSqrt512(b *testing.B) {
+	x, _, _ := ParseFloat("234901236105.21378943509845", 10, 512, big.ToNearestEven)
+	for i := 0; i < b.N; i++ {
+		x.Sqrt()
+	}
+}
+
+func BenchmarkFloatSqrt1024(b *testing.B) {
+	x, _, _ := ParseFloat("234901236105.21378943509845", 10, 1024, big.ToNearestEven)
+	for i := 0; i < b.N; i++ {
+		x.Sqrt()
+	}
+}
+
 func TestFloatSqrt(t *testing.T) {
 	for _, testCase := range floatSqrtTestCases {
 		x, _, _ := ParseFloat(testCase.a, 10, 256, big.ToNearestEven)
